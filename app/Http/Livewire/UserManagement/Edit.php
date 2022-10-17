@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Livewire\UserManagement;
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+
+class Edit extends Component
+{
+    use WithFileUploads;
+    use AuthorizesRequests;
+
+    public User $user;
+
+    public $roles;
+    public $county_code;
+    public $email='';
+    public $phone='';
+    public $name =''; 
+    public $role_id=''; 
+
+    protected function rules(){
+        return [
+            'user.email' => 'required|email|unique:App\Models\User,email,'.$this->user->id,
+            'user.name' =>'required',
+            'user.phone' =>'required|min:8|unique:App\Models\User,phone,'.$this->user->id,            
+            'role_id' => 'required|exists:Spatie\Permission\Models\Role,id',
+        ];
+    }
+
+    public function mount($id) {
+
+        $this->user = User::find($id);
+        $this->roles = Role::get(['id','name']);
+        $this->role_id  = Role::where('name', $this->user->getRoleNames()->implode(','))->pluck('id','id')->first() ;
+        $this->county_code = '966';
+    }
+
+    public function updated($propertyName){
+
+        $this->validateOnly($propertyName);
+
+    } 
+
+    public function update(){
+        
+        $this->validate();
+        $this->user->save();
+
+        return redirect(route('user-management'))->with('status', 'User successfully updated.');
+    }
+
+    public function render()
+    {
+       // $this->authorize('manage-users', User::class);
+        
+        return view('livewire.user-management.edit');
+    }
+}
