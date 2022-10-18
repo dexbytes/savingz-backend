@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use DB;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -51,7 +50,7 @@ class Edit extends Component
         
         $this->validate();
         $this->user->save();
-        
+
         $this->user->roles()->detach();
 
         if( $this->role_id) {
