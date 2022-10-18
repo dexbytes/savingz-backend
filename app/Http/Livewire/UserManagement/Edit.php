@@ -2,12 +2,13 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use DB;
 use App\Models\User;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Edit extends Component
 {
@@ -50,6 +51,12 @@ class Edit extends Component
         
         $this->validate();
         $this->user->save();
+        
+        $this->user->roles()->detach();
+
+        if( $this->role_id) {
+            $this->user->assignRole(explode(',', $this->role_id));     
+        }
 
         return redirect(route('user-management'))->with('status', 'User successfully updated.');
     }
