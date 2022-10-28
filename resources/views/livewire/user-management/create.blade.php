@@ -1,6 +1,6 @@
 <div class="container-fluid py-4 bg-gray-200">
     <div class="row mb-5">
-        <div class="col-lg-9 col-12 mx-auto position-relative">
+        <div class="col-lg-10 col-12 mx-auto position-relative">
             @if (session('status'))
             <div class="row">
                 <div class="col-sm-12">
@@ -25,7 +25,7 @@
                     <form wire:submit.prevent="store">
                         <div class="row">
 
-                            <div class="col-12 mb-4">
+                            <div class="col-6 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Full Name *</label>
                                     <input wire:model.lazy="name" type="text" class="form-control" placeholder="Enter a full name">
@@ -34,7 +34,7 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>
-                            <div class="col-12 mb-4">
+                            <div class="col-6 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Phone Number *</label>
                                     <input aria-label="Text input with dropdown button" wire:model.lazy="phone" type="tel" class="form-control" placeholder="Enter a Phone Number without country code e.g 5056440289">
@@ -44,7 +44,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-12 mb-4">
+                            <div class="col-6 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Email *</label>
                                     <input wire:model.lazy="email" type="email" class="form-control" placeholder="Enter a Email">
@@ -54,27 +54,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-12 mb-4">
-                                <div class="input-group input-group-static">
-                                    <label>Password *</label>
-                                    <input wire:model.lazy="password" type="password" class="form-control" placeholder="Enter a Password">
-                                </div>
-                                @error('password')
-                                <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-
-                            <div class="col-12 mb-4">
-                                <div class="input-group input-group-static">
-                                    <label>Confirmation Password *</label>
-                                    <input wire:model.lazy="passwordConfirmation" type="text" class="form-control" placeholder="Enter a Confirmation Password">
-                                </div>
-                                @error('passwordConfirmation')
-                                <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
-
-                            <div class="col-12 mb-4">
+                            <div class="col-6 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Select Role *</label>
                                     <select class="form-control" wire:model="role_id"
@@ -89,6 +69,47 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>
+
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>Password *</label>
+                                    <input wire:model.lazy="password" type="password" class="form-control" placeholder="Enter a Password">
+                                </div>
+                                @error('password')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>Confirmation Password *</label>
+                                    <input wire:model.lazy="passwordConfirmation" type="password" class="form-control" placeholder="Enter a Confirmation Password">
+                                </div>
+                                @error('passwordConfirmation')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>Aadhar Card Number </label>
+                                    <input wire:model.lazy="aadharNumber" type="text" maxlength="12" class="form-control" placeholder="Enter a Aadhar Card Number">
+                                </div>
+                                @error('aadharNumber')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+                            
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>PAN Card Number </label>
+                                    <input wire:model.lazy="panNumber" type="text" maxlength="10" id="panNumber" class="form-control" placeholder="Enter a PAN Card Number">
+                                </div>
+                                @error('panNumber')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+
+                          
                          </div>
         
                         <div class="row">
@@ -108,4 +129,12 @@
 </div>
 @push('js')
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
+<script>
+    const panNumber = document.getElementById("panNumber");
+    panNumber.addEventListener("input", ()=>{
+        panNumber.value = panNumber.value.toUpperCase();
+    });
+</script> 
 @endpush
+
+
