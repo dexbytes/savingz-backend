@@ -208,6 +208,16 @@
                         </li>
                     @endcan
                         <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('investment-type-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment-types') === false ? '' : 'active' }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    money
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Investment Types</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a data-bs-toggle="" href=""
                                 class="nav-link text-white "
                                 aria-controls="dashboardsExamples" role="button" aria-expanded="false">
