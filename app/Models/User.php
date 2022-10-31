@@ -38,7 +38,9 @@ class User extends Authenticatable
         'remember_token',
         'user_name',
         'status',
-        'profile_photo'
+        'profile_photo',
+        'aadhar_number',
+        'pan_number',
     ];
 
     /**

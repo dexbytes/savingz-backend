@@ -26,6 +26,8 @@ class Create extends Component
     public $password='';
     public $role_id='';
     public $passwordConfirmation='';
+    public $panNumber='';
+    public $aadharNumber='';
 
     protected $rules = [
         'email' => 'required|email|unique:App\Models\User,email',
@@ -33,6 +35,8 @@ class Create extends Component
         'phone' =>'required|min:8|unique:App\Models\User,phone',
         'password' => 'required|same:passwordConfirmation|min:7',
         'role_id' => 'required|exists:Spatie\Permission\Models\Role,id',
+        'aadharNumber' => 'nullable|numeric|digits:12|unique:App\Models\User,aadhar_number',
+        'panNumber'   => 'nullable|size:10|unique:App\Models\User,pan_number',
     ];
 
     public function mount() {
@@ -56,7 +60,9 @@ class Create extends Component
                 'name' => $this->name,
                 'phone' => $this->county_code.''.$this->phone,
                 'county_code' => $this->county_code,
-                'password' => $this->password,           
+                'password' => $this->password,  
+                'aadhar_number' => $this->aadharNumber,
+                'pan_number' => $this->panNumber,      
             ]);
 
         if( $this->role_id){
