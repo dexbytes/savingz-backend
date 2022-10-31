@@ -77,11 +77,20 @@
                                 <span class="material-symbols-outlined">
                                     person
                                 </span>
-                                <span class="sidenav-normal ms-3 ps-1"> All </span>
+                                <span class="sidenav-normal ms-3 ps-1"> All Users</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'add-user' && Route::current()->parameter('role') == '' ? 'active' : '' }}"
+                                href="{{ route('add-user') }}">
+                                <span class="material-symbols-outlined">
+                                    person_add
+                                </span>
+                                <span class="sidenav-normal ms-3 ps-1"> Add New User</span>
                             </a>
                         </li>
                     
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link text-white {{ (Route::currentRouteName() == 'user-management' && Route::current()->parameter('role') == 'provider') ? 'active' : '' }}"
                                 href="{{  route('user-management', ['role' => 'provider']) }}">
                                 <span class="material-symbols-outlined">
@@ -89,9 +98,9 @@
                                 </span>
                                 <span class="sidenav-normal ms-3 ps-1"> Providers </span>
                             </a>
-                        </li>
+                        </li> --}}
                     
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
                                 href="{{  route('user-management', ['role' => 'customer']) }}">
                                 <span class="material-symbols-outlined">
@@ -99,9 +108,9 @@
                                 </span>
                                 <span class="sidenav-normal ms-3 ps-1"> Customers </span>
                             </a>
-                        </li>
+                        </li> --}}
                    
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'driver' ? 'active' : '' }}"
                                 href="{{  route('user-management', ['role' => 'driver']) }}">
                                 <span class="material-symbols-outlined">
@@ -109,7 +118,7 @@
                                 </span>
                                 <span class="sidenav-normal  ms-3 ps-1"> Drivers </span>
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                     @endcan
                
@@ -149,7 +158,7 @@
                 @endcan   
                 @endcan
             
-                    @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
+                    {{-- @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
                         <li class="nav-item mt-3">
                             <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MARKETPLACE</h6>
                         </li>
@@ -199,6 +208,16 @@
                         </li>
                     @endcan
                         <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('investment-type-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment-types') === false ? '' : 'active' }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    money
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Investment Types</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a data-bs-toggle="" href=""
                                 class="nav-link text-white "
                                 aria-controls="dashboardsExamples" role="button" aria-expanded="false">
@@ -209,13 +228,13 @@
                             </a>
                         </li>
                         </li>
-                    @endcan
+                    @endcan --}}
 
-                        <li class="nav-item mt-3">
+                        {{-- <li class="nav-item mt-3">
                             <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">ECOMMERCE</h6>
-                        </li>
+                        </li> --}}
 
-                     @can('product-management', 'product-category-management', 'product-tag-management', 'product-addon-management')
+                     {{-- @can('product-management', 'product-category-management', 'product-tag-management', 'product-addon-management')
                         <li class="nav-item ">
                             <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'products') === false ? '' : 'active' }}  "
                                 data-bs-toggle="collapse" aria-expanded="false" href="#projectsExample">
@@ -278,9 +297,9 @@
                                 </ul>
                             </div>
                         </li>
-                        @endcan
+                        @endcan --}}
 
-                        @can('order-management')
+                        {{-- @can('order-management')
                         <li class="nav-item ">
                             <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'orders')=== false ? '' : 'active' }} "
                                 data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples">
@@ -322,7 +341,7 @@
                                 </ul>
                             </div>
                         </li>
-                        @endcan
+                        @endcan --}}
         @role('Admin')                
             <li class="nav-item">
                 <hr class="horizontal light" />

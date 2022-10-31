@@ -272,6 +272,16 @@ class AppServiceProvider extends ServiceProvider
                 return $this;
             }
         });
+
+        Builder::macro('searchMultipleInvestmentType', function ($string) {
+            if($string) {
+                return $this->where(function($query) use ($string) {
+                    $query->where('name', 'like', '%'.$string.'%');
+                });
+            } else {
+                return $this;
+            }
+        });
  
 
     }
