@@ -80,6 +80,27 @@
                                 <span class="sidenav-normal ms-3 ps-1"> All Users</span>
                             </a>
                         </li>
+                       
+                         <li class="nav-item">
+                            <a class="nav-link text-white {{ (Route::currentRouteName() == 'user-management' && Route::current()->parameter('role') == 'provider') ? 'active' : '' }}"
+                                href="{{  route('user-management', ['role' => 'provider']) }}">
+                                <span class="material-symbols-outlined">
+                                    person
+                                </span>
+                                <span class="sidenav-normal ms-3 ps-1"> Providers </span>
+                            </a>
+                        </li>  
+                    
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
+                                href="{{  route('user-management', ['role' => 'customer']) }}">
+                                <span class="material-symbols-outlined">
+                                    person
+                                </span>
+                                <span class="sidenav-normal ms-3 ps-1"> Customers </span>
+                            </a>
+                        </li> 
+
                         <li class="nav-item">
                             <a class="nav-link text-white {{ Route::currentRouteName() == 'add-user' && Route::current()->parameter('role') == '' ? 'active' : '' }}"
                                 href="{{ route('add-user') }}">
@@ -90,38 +111,39 @@
                             </a>
                         </li>
                     
-                        {{-- <li class="nav-item">
-                            <a class="nav-link text-white {{ (Route::currentRouteName() == 'user-management' && Route::current()->parameter('role') == 'provider') ? 'active' : '' }}"
-                                href="{{  route('user-management', ['role' => 'provider']) }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal ms-3 ps-1"> Providers </span>
-                            </a>
-                        </li> --}}
-                    
-                        {{-- <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
-                                href="{{  route('user-management', ['role' => 'customer']) }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal ms-3 ps-1"> Customers </span>
-                            </a>
-                        </li> --}}
-                   
-                        {{-- <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'driver' ? 'active' : '' }}"
-                                href="{{  route('user-management', ['role' => 'driver']) }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal  ms-3 ps-1"> Drivers </span>
-                            </a>
-                        </li> --}}
+                        
                     </ul>
                     @endcan
                
+                    <li class="nav-item mt-3">
+                        <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Investments</h6>
+                    </li>
+
+                
+                    <li class="nav-item">
+                        <a data-bs-toggle="" href="#"
+                            class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment') === false ? '' : 'active' }}"
+                            aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                            <span class="material-symbols-outlined">
+                                savings
+                            </span>
+                            <span class="nav-link-text ms-2 ps-1">Investments</span>
+                        </a>
+                    </li>
+        
+                    @can('investment-type-management') 
+                       <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('investment-type-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment-types') === false ? '' : 'active' }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    money
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Investment Types</span>
+                            </a>
+                        </li>
+                    @endcan
+
                     @can('request-management')     
                         <li class="nav-item ">
                             <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'tickets') === false ? '' : 'active' }}   "
@@ -207,16 +229,7 @@
                             </a>
                         </li>
                     @endcan
-                        <li class="nav-item">
-                            <a data-bs-toggle="" href="{{ route('investment-type-management') }}"
-                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment-types') === false ? '' : 'active' }}"
-                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                                <span class="material-symbols-outlined">
-                                    money
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">Investment Types</span>
-                            </a>
-                        </li>
+                  
                         <li class="nav-item">
                             <a data-bs-toggle="" href=""
                                 class="nav-link text-white "
