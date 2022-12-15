@@ -14,7 +14,7 @@
                 </div>
             </div>
             @endif
-           
+            <form wire:submit.prevent="store">
             <!-- Card Basic Info -->
             <div class="card mt-4" id="basic-info">
                 <div class="card-header">
@@ -22,7 +22,6 @@
                     <p>Create new role</p>
                 </div>
                 <div class="card-body pt-0">
-                    <form wire:submit.prevent="store">
                         <div class="row ">
                             <div class="col-12 mb-4">
                                 <div class="input-group input-group-static">
@@ -33,7 +32,6 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>
-
                             <div class="col-12  mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Role Description</label>
@@ -43,10 +41,34 @@
                                 @error('content')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
-                            </div>                    
-
+                            </div>  
                         </div>
-        
+                </div>
+            </div>
+
+            <div class="card mt-4" id="basic-info">
+                <div class="card-header">
+                    <h5>Permissions</h5>
+                </div>
+                <div class="card-body pt-0">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="input-group input-group-static">
+                                    <div class="row justify-content-start row-cols-3">
+                                        @foreach($permissions as $permission)
+                                            <div class="form-check">
+                                                <input wire:model.defer="selectedPermissions" name="selectedPermissions" class="form-check-input" type="checkbox" value="{{ $permission->name }}">
+                                                <label class="custom-control-label">{{ $permission->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @error('selectedPermissions')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="d-flex justify-content-end mt-4">
@@ -56,10 +78,9 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
                 </div>
             </div>
- 
+            </form>
         </div>
     </div>
 </div>

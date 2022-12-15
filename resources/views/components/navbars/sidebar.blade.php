@@ -5,9 +5,15 @@
         <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0 p-4 d-flex align-items-center text-wrap" href="{{ route('dashboard') }}">
-                <img src="{{ asset('assets') }}/img/logo-ct.png" class="navbar-brand-img h-100" alt="main_logo">
+              
+                @if(config('app_settings.app_logo.value'))
+                    <img src="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_logo.value')) }} " class="navbar-brand-img h-100" alt="main_logo">
+                @else
+                    <img src="{{ asset('assets') }}/img/logo-ct.png  " class="navbar-brand-img h-100" alt="main_logo">
+                @endif
+
                 <span class="ms-2 font-weight-bold text-white">
-                 @role('Provider') {{session('store_name')}} |  @endrole {{config('app.name')}}
+                    @role('Provider') {{session('store_name')}} |  @endrole {{ config('app_settings.app_name.value') ?? config('app.name')}}
                 </span>                
             </a>
     </div>
@@ -17,8 +23,8 @@
             <li class="nav-item mb-2 mt-0">
                 <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-white {{ strpos(Request::route()->uri(), 'account')=== false ? '' : 'active' }} " aria-controls="ProfileNav"
                     role="button" aria-expanded="false">
-                    @if (auth()->user()->picture)
-                    <img src="/storage/{{(auth()->user()->picture)}}" alt="avatar" class="avatar">
+                    @if (auth()->user() && auth()->user()->profile_photo)
+                    <img src="{{ Storage::disk(config('app_settings.filesystem_disk.value'))->url(auth()->user()->profile_photo) }}" alt="avatar" class="avatar">
                     @else
                     <img src="{{ asset('assets') }}/img/default-avatar.png" alt="avatar" class="avatar">
                     @endif
@@ -41,6 +47,8 @@
                     </ul>
                 </div>
             </li>
+            
+        @can('dashboard')
             <hr class="horizontal light mt-0">
             <li class="nav-item  {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }} ">
                 <a data-bs-toggle="" href="{{ route('dashboard') }}"
@@ -52,6 +60,7 @@
                     <span class="nav-link-text ms-2 ps-1">Dashboard</span>
                 </a>
             </li>
+        @endcan
         @can('user-management')
             <li class="nav-item mt-3">
                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">USERS</h6>
@@ -72,16 +81,16 @@
 
                     <ul class="nav nav-sm flex-column ms-2">
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management' && Route::current()->parameter('role') == '' ? 'active' : '' }}"
+                            <a class="nav-link text-white  {{ in_array(Route::currentRouteName(), ['user-management', 'add-user', 'edit-user']) && Route::current()->parameter('role') == '' ? 'active' : '' }}"
                                 href="{{ route('user-management') }}">
                                 <span class="material-symbols-outlined">
                                     person
                                 </span>
-                                <span class="sidenav-normal ms-3 ps-1"> All Users</span>
+                                <span class="sidenav-normal ms-3 ps-1"> All </span>
                             </a>
                         </li>
-                       
-                         <li class="nav-item">
+                    
+                        <li class="nav-item">
                             <a class="nav-link text-white {{ (Route::currentRouteName() == 'user-management' && Route::current()->parameter('role') == 'provider') ? 'active' : '' }}"
                                 href="{{  route('user-management', ['role' => 'provider']) }}">
                                 <span class="material-symbols-outlined">
@@ -89,7 +98,7 @@
                                 </span>
                                 <span class="sidenav-normal ms-3 ps-1"> Providers </span>
                             </a>
-                        </li>  
+                        </li>
                     
                         <li class="nav-item">
                             <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
@@ -99,52 +108,21 @@
                                 </span>
                                 <span class="sidenav-normal ms-3 ps-1"> Customers </span>
                             </a>
-                        </li> 
-
+                        </li>
+                   
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'add-user' && Route::current()->parameter('role') == '' ? 'active' : '' }}"
-                                href="{{ route('add-user') }}">
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'driver' ? 'active' : '' }}"
+                                href="{{  route('user-management', ['role' => 'driver']) }}">
                                 <span class="material-symbols-outlined">
-                                    person_add
+                                    person
                                 </span>
-                                <span class="sidenav-normal ms-3 ps-1"> Add New User</span>
+                                <span class="sidenav-normal  ms-3 ps-1"> Drivers </span>
                             </a>
                         </li>
-                    
-                        
                     </ul>
                     @endcan
                
-                    <li class="nav-item mt-3">
-                        <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Investments</h6>
-                    </li>
-
-                
-                    <li class="nav-item">
-                        <a data-bs-toggle="" href="#"
-                            class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment') === false ? '' : 'active' }}"
-                            aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                            <span class="material-symbols-outlined">
-                                savings
-                            </span>
-                            <span class="nav-link-text ms-2 ps-1">Investments</span>
-                        </a>
-                    </li>
-        
-                    @can('investment-type-management') 
-                       <li class="nav-item">
-                            <a data-bs-toggle="" href="{{ route('investment-type-management') }}"
-                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'investment-types') === false ? '' : 'active' }}"
-                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                                <span class="material-symbols-outlined">
-                                    money
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">Investment Types</span>
-                            </a>
-                        </li>
-                    @endcan
-
-                    @can('request-management')     
+                    @can('ticket-management')
                         <li class="nav-item ">
                             <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'tickets') === false ? '' : 'active' }}   "
                                 data-bs-toggle="collapse" aria-expanded="false" href="#ticketsExample">
@@ -157,37 +135,48 @@
                                 id="ticketsExample">
                                 <ul class="nav nav-sm flex-column ms-2">
                                     <li class="nav-item">
-                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' ? 'active' : '' }} "
-                                            href="">
+                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' && Route::current()->parameter('status') == ''  ? 'active' : '' }} "
+                                            href="{{ route('ticket-management') }}">
                                             <span class="material-symbols-outlined">
                                                 list
                                             </span>
-                                            <span class="sidenav-normal  ms-3  ps-1"> All </span>
+                                            <span class="sidenav-normal  ms-3  ps-1">All </span>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' ? 'active' : '' }}"
-                                            href="">
+                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' && Route::current()->parameter('status') == 'open'  ? 'active' : '' }}"
+                                            href="{{ route('ticket-management', ['status' => 'open']) }}">
                                             <span class="material-symbols-outlined">
                                              pending_actions
                                             </span>
-                                            <span class="sidenav-normal  ms-3  ps-1"> Pending Requests </span>
+                                            <span class="sidenav-normal ms-3 ps-1">Pending Requests </span>
                                         </a>
                                     </li>
+                                    <!-- @can('ticket-category-management')
+                                        <li class="nav-item">
+                                            <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-category-management' ? 'active' : '' }}"
+                                                href="{{ route('ticket-category-management') }}">
+                                                <span class="material-symbols-outlined">
+                                                category
+                                                </span>
+                                                <span class="sidenav-normal ms-3 ps-1"> Categories </span>
+                                            </a>
+                                        </li>
+                                   @endcan -->                                    
                                 </ul>
                             </div>
                         </li>
-                @endcan   
+                    @endcan   
                 @endcan
             
-                    {{-- @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
-                        <li class="nav-item mt-3">
-                            <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MARKETPLACE</h6>
-                        </li>
-                    @can('unverified-stores')
+                @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
+                    <li class="nav-item mt-3">
+                        <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MARKETPLACE</h6>
+                    </li>
+                @can('unverified-stores')
                         <li class="nav-item">
                             <a data-bs-toggle="" href="{{ route('store-management' , ['application_status' => 'approved']) }}"
-                                class="nav-link text-white {{ Route::currentRouteName() == 'store-management' ? 'active' : '' }} "
+                                class="nav-link text-white {{  in_array(Route::currentRouteName(), ['store-management', 'add-store', 'edit-store']) ? 'active' : '' }} "
                                 aria-controls="dashboardsExamples" role="button" aria-expanded="false">
                                 <span class="material-symbols-outlined">
                                     store
@@ -229,25 +218,15 @@
                             </a>
                         </li>
                     @endcan
-                  
-                        <li class="nav-item">
-                            <a data-bs-toggle="" href=""
-                                class="nav-link text-white "
-                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                                <span class="material-symbols-outlined">
-                                    settings
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">Setting</span>
-                            </a>
-                        </li>
-                        </li>
-                    @endcan --}}
-
-                        {{-- <li class="nav-item mt-3">
+                  </li>
+                    
+                    @endcan
+                    @can('product-management', 'product-category-management', 'product-tag-management', 'product-addon-management')
+                        <li class="nav-item mt-3">
                             <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">ECOMMERCE</h6>
-                        </li> --}}
-
-                     {{-- @can('product-management', 'product-category-management', 'product-tag-management', 'product-addon-management')
+                        </li>
+                    @endcan
+                     @can('product-management', 'product-category-management', 'product-tag-management', 'product-addon-management','store-promotion')
                         <li class="nav-item ">
                             <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'products') === false ? '' : 'active' }}  "
                                 data-bs-toggle="collapse" aria-expanded="false" href="#projectsExample">
@@ -310,9 +289,9 @@
                                 </ul>
                             </div>
                         </li>
-                        @endcan --}}
+                        @endcan
 
-                        {{-- @can('order-management')
+                        @can('order-management')
                         <li class="nav-item ">
                             <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'orders')=== false ? '' : 'active' }} "
                                 data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples">
@@ -344,7 +323,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link text-white {{ (Route::currentRouteName() == 'order-management' && Route::current()->parameter('orderStatus') == 'completed') ? 'active' : '' }}"
-                                            href="{{ route('order-management', ['order_status' => 'completed']) }}">
+                                            href="{{ route('order-management', ['orderStatus' => 'completed']) }}">
                                             <span class="material-symbols-outlined">
                                             fact_check
                                             </span>
@@ -354,125 +333,311 @@
                                 </ul>
                             </div>
                         </li>
-                        @endcan --}}
-        @role('Admin')                
-            <li class="nav-item">
-                <hr class="horizontal light" />
-                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Setting</h6>
-            </li>
-            @can('role-management')
-            <li class="nav-item ">
-                <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'roles') === false ? '' : 'active' }}   "
-                    data-bs-toggle="collapse" aria-expanded="false" href="#usersExample">
-                    <span class="material-symbols-outlined">
-                        group
-                        </span>
-                    <span class="sidenav-normal  ms-2 ps-1"> Roles <b class="caret"></b></span>
-                </a>
-                <div class="collapse {{ strpos(Request::route()->uri(), 'roles') === false ? '' : 'show' }} "
-                    id="usersExample">
-                    <ul class="nav nav-sm flex-column ms-2">
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'role-management'  || Route::currentRouteName() == 'edit-role' ? 'active' : '' }} "
-                                href="{{ route('role-management') }}">
-                                <span class="material-symbols-outlined">
-                                    table_view
-                                </span>
-                                <span class="sidenav-normal  ms-3  ps-1"> List </span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'new-role' ? 'active' : '' }}"
-                                href="{{ route('new-role') }}">
-                                <span class="material-symbols-outlined">
-                                    group_add
-                                </span>
-                                <span class="sidenav-normal  ms-3  ps-1"> Add New Role </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-        @endcan
-        @can('faq-management')
-            <li class="nav-item">
-                <a data-bs-toggle="" href="{{ route('faq-management') }}"
-                    class="nav-link text-white {{ strpos(Request::route()->uri(), 'faq') === false ? '' : 'active'  }}"
-                    aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                    <span class="material-symbols-outlined">
-                        quiz
-                        </span>
-                    <span class="nav-link-text ms-2 ps-1">FAQ</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a data-bs-toggle="" href="{{ route('page-management') }}"
-                    class="nav-link text-white {{ strpos(Request::route()->uri(), 'pages') === false ? '' : 'active' }}"
-                    aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                    <span class="material-symbols-outlined">
-                        pages
-                        </span>
-                    <span class="nav-link-text ms-2 ps-1">Pages</span>
-                </a>
-            </li>
-        @endcan
-        @can('country-management', 'state-management', 'city-management')
-            <li class="nav-item ">
-                <a class="nav-link text-white  {{ strpos(Request::route()->uri(), 'location')=== false ? '' : 'active' }}"
-                    data-bs-toggle="collapse" aria-expanded="false" href="#LocationExample">
-                    <span class="material-symbols-outlined">
-                    public
-                        </span>
-                    <span class="sidenav-normal  ms-2 ps-1"> Location <b class="caret"></b></span>
-                </a>
-                <div class="collapse {{ strpos(Request::route()->uri(), 'location')=== false ? '' : 'show' }}"
-                    id="LocationExample">
-                    <ul class="nav nav-sm flex-column ms-2">
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'country-management' ? 'active' : '' }}"
-                                href="{{ route('country-management') }}">
-                                <span class="material-symbols-outlined">
-                                    home_pin
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">Country</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'state-management' ? 'active' : '' }}"
-                                href="{{ route('state-management') }}">
-                                <span class="material-symbols-outlined">
-                                    flag
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">State</span>
+                        @endcan
 
+                        @can('transaction-management')
+                        <li class="nav-item ">
+                            <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'transactions')=== false ? '' : 'active' }} "
+                                data-bs-toggle="collapse" aria-expanded="false" href="#transactions">
+                                <span class="material-symbols-outlined">
+                                    payments
+                                    </span>
+                                <span class="sidenav-normal ms-2 ps-1">Payment<b class="caret"></b></span>
+                            </a>
+                            <div class="collapse {{ strpos(Request::route()->uri(), 'transactions')=== false ? '' : 'show' }} "
+                                id="transactions">
+                                <ul class="nav nav-sm flex-column ms-2">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'transaction-management' ? 'active' : '' }}"
+                                            href="{{ route('transaction-management') }}">
+                                            <span class="material-symbols-outlined">
+                                                receipt_long
+                                                </span>
+                                            <span class="sidenav-normal ms-2 ps-1">Transactions</span>
+                                        </a>
+                                    </li>     
+                                </ul>
+                            </div>
+                        </li>
+                        @endcan
+
+                        @can('review-management')
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('review-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'reviews') === false ? '' : 'active'  }}"
+                                aria-controls="review" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    reviews
+                                </span>
+                                <span class="nav-link-text ms-2 ps-1">Reviews</span>
+                            </a>
+                        </li>
+                        @endcan
+
+                        @can('message-management')
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('message-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'messages') === false ? '' : 'active'  }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    sms
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Messages</span>
+                            </a>
+                        </li>
+                        @endcan
+
+
+ 
+                        @can('promotion-management')
+ 
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('promotion-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'promotions') === false ? '' : 'active'  }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    campaign
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Promotions</span>
+                            </a>
+                        </li>
+                        @endcan
+
+                        @role('Provider')   
+                        
+                           @can('store-promotion') 
+                            <li class="nav-item">
+                                <a data-bs-toggle="" href="{{ route('store-promotion') }}"
+                                    class="nav-link text-white {{ strpos(Request::route()->uri(), 'promotion/store/promotion') === false ? '' : 'active'  }}"
+                                    aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                    <span class="material-symbols-outlined">
+                                        campaign
+                                        </span>
+                                    <span class="nav-link-text ms-2 ps-1">Promotions</span>
+                                </a>
+                            </li>
+                        @endcan
+                        @endrole 
+ 
+                        @can('ecommerce-settings')
+                            <li class="nav-item">
+                                <a data-bs-toggle="" href="{{ route('ecommerce-settings') }}"
+                                    class="nav-link text-white {{ strpos(Request::route()->uri(), 'ecommerce-settings') === false ? '' : 'active' }} "
+                                    aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                    <span class="material-symbols-outlined">
+                                        settings
+                                        </span>
+                                    <span class="nav-link-text ms-2 ps-1">Setting</span>
+                                </a>
+                            </li>
+                        @endcan
+
+
+                @role('Provider')                
+                    <li class="nav-item">
+                        <hr class="horizontal light" />
+                        <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Setting</h6>
+                    </li>
+
+                    @can('provider-manage-store')
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('provider-manage-store') }}"
+                                class="nav-link text-white {{ Route::currentRouteName() == 'provider-manage-store'  ? 'active' : ''  }}"
+                                aria-controls="provider-manage-store" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                settings_applications
+                                </span>
+                                <span class="nav-link-text ms-2 ps-1">Settings</span>
+                            </a>
+                        </li>
+                    @endcan
+                        
+                @endrole 
+
+                @role('Admin')                
+                    <li class="nav-item">
+                        <hr class="horizontal light" />
+                        <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">Setting</h6>
+                    </li>
+                    @can('slider-management')
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('slider-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'slider') === false ? '' : 'active'  }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    tune
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Sliders</span>
+                            </a>
+                        </li> 
+                    @endcan
+            
+                    @can('tax-management')
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('tax-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'taxes') === false ? '' : 'active'  }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    Percent
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Taxes</span>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('faq-management')
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('faq-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'faq') === false ? '' : 'active'  }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    quiz
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">FAQ</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'city-management' ? 'active' : '' }}"
-                                href="{{ route('city-management') }} ">
+                            <a data-bs-toggle="" href="{{ route('page-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'pages') === false ? '' : 'active' }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
                                 <span class="material-symbols-outlined">
-                                    pin_drop
+                                    pages
                                     </span>
-                                <span class="nav-link-text ms-2 ps-1">City</span>
+                                <span class="nav-link-text ms-2 ps-1">Pages</span>
                             </a>
                         </li>
-                    </ul>
-                </div>
-            </li>
-        @endcan
-            <li class="nav-item">
-                <a data-bs-toggle="" href=""
-                    class="nav-link text-white "
-                    aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                    <span class="material-symbols-outlined">
-                        list
-                        </span>
-                    <span class="nav-link-text ms-2 ps-1">Basic Settings</span>
-                </a>
-            </li>
-        @endrole                    
-        </ul>
-    </div>
+                    @endcan
+                
+                @can('site-cache', 'site-settings', 'country-management', 'state-management', 'city-management', 'role-management')
+                    <li class="nav-item ">
+                        <a class="nav-link text-white {{ in_array(Route::currentRouteName(), ['site-cache', 'site-settings', 'country-management', 'state-management', 'city-management', 'role-management']) ? 'active' : ''}}   "
+                            data-bs-toggle="collapse" aria-expanded="false" href="#systemSetting">
+                            <span class="material-symbols-outlined">
+                                admin_panel_settings
+                            </span>
+                            <span class="sidenav-normal ms-2 ps-1"> Platform Administration <b class="caret"></b></span>
+                        </a>
+
+                        <div class="collapse {{ in_array(Route::currentRouteName(), ['site-cache', 'site-settings', 'country-management', 'state-management', 'city-management', 'role-management']) ? 'show' : '' }} "
+                            id="systemSetting">
+                            <ul class="nav nav-sm flex-column ms-2">
+
+                                @can('site-settings')
+                                    <li class="nav-item">
+                                        <a href="{{ route('site-settings') }}"
+                                            class="nav-link text-white {{ Route::currentRouteName() == 'site-settings' ? 'active' : '' }}"
+                                            aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                            <span class="material-symbols-outlined">
+                                                display_settings
+                                            </span>
+                                            <span class="nav-link-text ms-2 ps-1">General Settings</span>
+                                        </a>
+                                    </li>
+                                @endcan
+
+                             
+                                @can('country-management', 'state-management', 'city-management')
+                                    <li class="nav-item ">
+                                        <a class="nav-link text-white  {{ strpos(Request::route()->uri(), 'location')=== false ? '' : 'active' }}"
+                                            data-bs-toggle="collapse" aria-expanded="false" href="#LocationExample">
+                                            <span class="material-symbols-outlined">
+                                            public
+                                                </span>
+                                            <span class="sidenav-normal  ms-2 ps-1"> Location <b class="caret"></b></span>
+                                        </a>
+                                        <div class="collapse {{ strpos(Request::route()->uri(), 'location')=== false ? '' : 'show' }}"
+                                            id="LocationExample">
+                                            <ul class="nav nav-sm flex-column ms-2">
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'country-management' ? 'active' : '' }}"
+                                                        href="{{ route('country-management') }}">
+                                                        <span class="material-symbols-outlined">
+                                                            home_pin
+                                                            </span>
+                                                        <span class="nav-link-text ms-2 ps-1">Country</span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'state-management' ? 'active' : '' }}"
+                                                        href="{{ route('state-management') }}">
+                                                        <span class="material-symbols-outlined">
+                                                            flag
+                                                            </span>
+                                                        <span class="nav-link-text ms-2 ps-1">State</span>
+
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'city-management' ? 'active' : '' }}"
+                                                        href="{{ route('city-management') }} ">
+                                                        <span class="material-symbols-outlined">
+                                                            pin_drop
+                                                            </span>
+                                                        <span class="nav-link-text ms-2 ps-1">City</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                @endcan
+                        
+                            
+                                @can('role-management')
+                                    <li class="nav-item ">
+                                        <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'roles') === false ? '' : 'active' }}   "
+                                            data-bs-toggle="collapse" aria-expanded="false" href="#usersExample">
+                                            <span class="material-symbols-outlined">
+                                                group
+                                                </span>
+                                            <span class="sidenav-normal  ms-2 ps-1"> Roles <b class="caret"></b></span>
+                                        </a>
+                                        <div class="collapse {{ strpos(Request::route()->uri(), 'roles') === false ? '' : 'show' }} "
+                                            id="usersExample">
+                                            <ul class="nav nav-sm flex-column ms-2">
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'role-management'  || Route::currentRouteName() == 'edit-role' ? 'active' : '' }} "
+                                                        href="{{ route('role-management') }}">
+                                                        <span class="material-symbols-outlined">
+                                                            table_view
+                                                        </span>
+                                                        <span class="sidenav-normal  ms-3  ps-1"> List </span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'new-role' ? 'active' : '' }}"
+                                                        href="{{ route('new-role') }}">
+                                                        <span class="material-symbols-outlined">
+                                                            group_add
+                                                        </span>
+                                                        <span class="sidenav-normal  ms-3  ps-1"> Add New Role </span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                @endcan
+
+                                   
+                                @can('site-cache')
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'site-cache' ? 'active' : '' }} "
+                                            href="{{ route('site-cache') }}">
+                                            <span class="material-symbols-outlined">
+                                                cached
+                                            </span>
+                                            <span class="sidenav-normal ms-3 ps-1"> Cache management</span>
+                                        </a>
+                                    </li>
+                                @endcan
+
+                            </ul>
+                        </div>
+                    </li>
+                @endcan
+
+
+                @endrole                    
+            </ul>
+        </div>
 
 
 </aside>

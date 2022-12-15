@@ -6,8 +6,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
 use App\Models\Driver\UserDriver;
+use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 
 class Index extends Component
 {
@@ -20,11 +21,12 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $perPage = 10;
     public $account_status = '';
-    public $filter = [];
+    public $filter = ['role' => null, 'status' => null];
     public $deleteId = '';
     public $actionStatus = '';
     public $userId = '';
- 
+    public $roles;
+
     protected $listeners = ['remove', 'confirmApplication'];
 
     protected $queryString = ['sortField', 'sortDirection', 'account_status'];
@@ -35,6 +37,7 @@ class Index extends Component
         $this->filter['role'] = $role;
         $this->filter['account_status'] = $this->account_status;
         $this->perPage = config('commerce.pagination_per_page');
+        $this->roles = Role::where('status', 1)->get(['id','name']);
     }
 
     public function sortBy($field){
@@ -50,7 +53,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.user-management.index',[
-            'users' => User::with(['roles', 'driver'])->searchMultipleUsers($this->search, $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'users' => User::with(['roles', 'driver', 'store'])->searchMultipleUsers(trim(strtolower($this->search)), $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -82,11 +85,8 @@ class Index extends Component
     {
         User::find($this->deleteId)->delete();
 
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'User Delete Successfully!', 
-                'text' => 'It will not list on users table soon.'
-            ]);
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'User Delete Successfully!']);
     }
 
     

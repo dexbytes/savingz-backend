@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Stores\Store;
 
 class ProductAddons extends Model
 {
@@ -53,5 +54,15 @@ class ProductAddons extends Model
     public function productAddonOptionValues(): HasMany
     {
         return $this->hasMany(AddonOptionValue::class, 'product_addon_option_id', 'product_addon_option_id');
+    }
+
+     /**
+     * BelongsTo relation with Store
+     *
+     * @return BelongsTo
+     */
+   public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class, 'store_id', 'id');
     }
 }

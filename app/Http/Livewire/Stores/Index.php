@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Stores;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Stores\Store;
+use App\Models\Stores\StoreType;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Index extends Component
@@ -18,19 +19,21 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $perPage = 10;
     public $application_status = 'approved';
-    public $filter = [];
+    public $filter = ["status" => null, "store_type" => null];
     public $deleteId = '';
     public $actionStatus = '';
     public $storeId = '';
+    public $storeTypes;
     protected $listeners = ['remove', 'confirmApplication'];
 
     protected $queryString = ['sortField', 'sortDirection', 'application_status'];
     protected $paginationTheme = 'bootstrap';
 
 
-    public function mount() {
+    public function mount() {  
         $this->filter['application_status'] = $this->application_status;        
         $this->perPage = config('commerce.pagination_per_page');
+        $this->storeTypes = StoreType::get(["id","name"]);
     }
 
     public function sortBy($field){
@@ -44,10 +47,8 @@ class Index extends Component
  
     public function render()
     {
-       // $this->authorize('manage-users', User::class);
-     
         return view('livewire.store.index',[
-            'stores' => Store::where('is_primary' , 0)->searchMultipleStore($this->search, $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'stores' => Store::where('is_primary' , 0)->searchMultipleStore(trim(strtolower($this->search)), $this->filter)->withAvg('OrderRating','rating')->withCount('OrderRating')->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
    
@@ -79,11 +80,9 @@ class Index extends Component
     {
         Store::find($this->deleteId)->delete();
 
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'User Delete Successfully!', 
-                'text' => 'It will not list on users table soon.'
-            ]);
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Store Delete Successfully!']);
+
     }    
 
      /**
@@ -136,5 +135,31 @@ class Index extends Component
 
    }
 
+
+       /**
+     * update searchable status
+     *
+     * @return response()
+     */
+    public function searchableConfirm($store)
+    {        
+        $is_searchable = ( $store['is_searchable'] == 1 ) ? 0 : 1;
+        Store::where('id', '=' , $store['id']  )->update(['is_searchable' => $is_searchable]);     
+
+   }
+
+    /**
+     * update featured status
+     *
+     * @return response()
+     */
+    public function featuresConfirm($store)
+    {  
+        $is_features = ( $store['is_features'] == 1 ) ? 0 : 1;
+        Store::where('id', '=' , $store['id']  )->update(['is_features' => $is_features]);      
+
+   }
+
+ 
 
 }

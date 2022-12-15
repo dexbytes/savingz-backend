@@ -36,6 +36,17 @@
 
                             <div class="col-12  mb-4">
                                 <div class="input-group input-group-static">
+                                    <label>Country Code *</label>
+                                    <input wire:model.lazy="country_code" type="text" class="form-control"
+                                        placeholder="Enter a country code e.g. 1, 91, 966 etc..">
+                                </div>
+                                @error('country_code')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>     
+
+                            <div class="col-12  mb-4">
+                                <div class="input-group input-group-static">
                                     <label>Country Iso Code *</label>
                                     <input wire:model.lazy="country_ios_code" type="text" class="form-control"
                                         placeholder="Enter a country ios code">
@@ -43,7 +54,9 @@
                                 @error('country_ios_code')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
-                            </div>        
+                            </div>     
+                            
+                            
                             
                             <div class="col-12  mb-4">
                                 <div class="input-group input-group-static">

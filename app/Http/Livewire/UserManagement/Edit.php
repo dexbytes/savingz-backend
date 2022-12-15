@@ -2,12 +2,13 @@
 
 namespace App\Http\Livewire\UserManagement;
 
-use App\Models\User;
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Component;
+use Livewire\WithFileUploads;
+use App\Models\Worlds\Country;
 
 class Edit extends Component
 {
@@ -15,33 +16,33 @@ class Edit extends Component
     use AuthorizesRequests;
 
     public User $user;
-
     public $roles;
-    public $county_code;
-    public $email='';
-    public $phone='';
-    public $name =''; 
-    public $role_id=''; 
-    public $aadhar_number='';
-    public $pan_number='';
+    public $role_id; 
+    public $countries = '';
+
+    protected $listeners = [
+        'getRoleIdForInput'
+    ];
 
     protected function rules(){
         return [
             'user.email' => 'required|email|unique:App\Models\User,email,'.$this->user->id,
             'user.name' =>'required',
             'user.phone' =>'required|min:8|unique:App\Models\User,phone,'.$this->user->id,            
-            'role_id' => 'required|exists:Spatie\Permission\Models\Role,id',
-            'user.aadhar_number' => 'nullable|numeric|digits:12|unique:App\Models\User,aadhar_number,'.$this->user->id,
-            'user.pan_number'    => 'nullable|size:10|unique:App\Models\User,pan_number,'.$this->user->id,
+            'role_id' => 'required|exists:Spatie\Permission\Models\Role,name',
+            'user.country_code' => 'required',
         ];
     }
 
     public function mount($id) {
 
         $this->user = User::find($id);
-        $this->roles = Role::get(['id','name']);
-        $this->role_id  = Role::where('name', $this->user->getRoleNames()->implode(','))->pluck('id','id')->first() ;
-        $this->county_code = '966';
+      
+        $this->user->phone = substr($this->user->phone , +(strlen($this->user->country_code)));
+
+        $this->roles = Role::where('guard_name', 'web')->where('status', 1)->get(['id','name']);
+        $this->role_id  = Role::where('name', $this->user->getRoleNames()->implode(','))->pluck('name','name')->first() ;
+        $this->countries = Country::all();
     }
 
     public function updated($propertyName){
@@ -50,24 +51,40 @@ class Edit extends Component
 
     } 
 
+    public function resetField(){
+        $this->user->phone = substr($this->user->phone , (strlen($this->user->country_code)));
+    }
+
     public function update(){
         
         $this->validate();
-        $this->user->save();
+        $this->user->phone =  $this->user->country_code. $this->user->phone;
+        
+       // updateOrCreate(['store_id' => $store_id, 'key' => 'business_hours'], ['value'=> $business_hours]);
 
-        $this->user->roles()->detach();
-
-        if( $this->role_id) {
-            $this->user->assignRole(explode(',', $this->role_id));     
+        if(!$this->user->hasRole($this->role_id)){
+            $this->user->syncRoles(explode(',', $this->role_id));     
         }
 
+        $this->user->save();
+
+        $this->resetField();
         return redirect(route('user-management'))->with('status', 'User successfully updated.');
     }
 
-    public function render()
+    public function hydrate()
     {
-       // $this->authorize('manage-users', User::class);
-        
+        $this->emit('select2');
+    }
+
+    public function getRoleIdForInput($value){ 
+        $this->role_id = $value;
+    }
+
+    public function render()
+    {  
         return view('livewire.user-management.edit');
     }
+
+  
 }

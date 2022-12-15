@@ -26,6 +26,7 @@ class Country extends Model
         'order',
         'is_default',
         'status',
+        'country_code'
     ];
     
     /**

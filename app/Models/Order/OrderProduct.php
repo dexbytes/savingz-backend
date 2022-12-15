@@ -57,8 +57,10 @@ class OrderProduct extends Model
     function getProductImage()
     {
         if (emptry($this->productImage)) {
-            return (!empty($this->productImage->media->file_name)) ? Storage::disk('public')->url($this->productImage->media->file_name) : null;
+            return (!empty($this->productImage->media->file_name)) ? Storage::disk(config('app_settings.filesystem_disk.value'))->url($this->productImage->media->file_name) : null;
         }
         return $this->productImage;
     }
+
+    
 }

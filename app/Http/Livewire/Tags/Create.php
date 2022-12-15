@@ -32,7 +32,7 @@ class Create extends Component
         Tag::create([
             'title'  => $this->title,
             'status' => $this->status ? 1:0,
-            'type'   => "Search",
+            'type'   => "search",
         ]);
 
         return redirect(route('product-tag-management'))->with('status','Tag successfully created.');

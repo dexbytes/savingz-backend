@@ -25,19 +25,31 @@ class CreatePermissionSeeder extends Seeder
         foreach ($routes as $route) {  
             if ($route->getName() != '' && $route->getAction()['middleware']['0'] == 'web') {
                 $permission = Permission::where('name', $route->getName())->where('guard_name', 'web')->first();
-              
                 if ($permission === null) {
                     permission::create(['name' => $route->getName()]);
                 }
             }
         }
 
-        
+
+        $defaultRoutes = $this->_defaultPerission();
+
+        foreach ($defaultRoutes as $name) {              
+            $permission = Permission::where('name', $name)->where('guard_name', 'web')->first();
+            if ($permission === null) {
+                permission::create(['name' => $name ]);
+            }             
+        }
                 
     }
 
 
 
+    public function _defaultPerission(){
+        return [
+            'review-delete'
+        ];
+    }
  
 
 

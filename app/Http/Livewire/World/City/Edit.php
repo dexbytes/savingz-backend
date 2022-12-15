@@ -51,6 +51,11 @@ class Edit extends Component
     public function edit(){
 
         $this->validate();
+
+        if($this->city->is_default){
+            Cities::where('is_default', 1)->where('country_id', $this->city->country_id )->where('state_id', $this->city->state_id )->update(['is_default' => 0]);
+        }
+
         $this->city->update();
 
         return redirect(route('city-management'))->with('status', 'City successfully updated.');

@@ -4,17 +4,17 @@
             <!-- Card Profile -->
             <div class="card card-body" id="profile">
                 <div class="row justify-content-center align-items-center">
-                    @error('picture')
+                    @error('profile_photo')
                     <p class='text-danger'>{{ $message }} </p>
                     @enderror
                     <div class="col-sm-auto col-4">
                         <form wire:submit.prevent="update" enctype="multipart/form-data">
                             <div class="avatar avatar-xl position-relative preview">
-                                @if($picture)
-                                <img src="{{ $picture->temporaryUrl() }}" class="w-100 rounded-circle shadow-sm"
+                                @if($profile_photo)
+                                 <img src="{{ $profile_photo->temporaryUrl() }}" class="w-100 rounded-circle shadow-sm"
                                     alt="Profile Photo">
-                                @elseif (auth()->user()->picture)
-                                <img src="/storage/{{(auth()->user()->picture)}}" alt="avatar"
+                                @elseif ($user->profile_photo)
+                                    <img src="{{ Storage::disk(config('app_settings.filesystem_disk.value'))->url($user->profile_photo) }}" alt="avatar"
                                     class="w-100 rounded-circle shadow-sm">
                                 @else
                                 <img src="{{ asset('assets') }}/img/default-avatar.png" alt="avatar"
@@ -26,7 +26,8 @@
                                         aria-hidden="true" data-bs-original-title="Edit Image"
                                         aria-label="Edit Image"></i><span class="sr-only">Edit Image</span>
                                 </label>
-                                <input wire:model='picture' type="file" id="file-input">
+                               
+                                <input wire:model='profile_photo' type="file" id="file-input">
                             </div>
                     </div>
                     <div class="col-sm-auto col-8 my-auto">
@@ -46,9 +47,7 @@
                             </small>
                         </label>
                         <div class="form-check form-switch ms-2 my-auto">
-                            <!-- <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault23" checked
-                                onchange="visible()"> -->
-                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault23" checked disabled>
+                           <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault23" checked disabled>
                         </div>
                     </div>
                 </div>

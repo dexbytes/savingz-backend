@@ -16,9 +16,7 @@ class StoreOwners extends Model
     protected $fillable = [
         'id',
         'store_id',
-        'user_id',
-        'created_at',
-        'updated_at'
+        'user_id'
     ];
 
 
@@ -31,6 +29,13 @@ class StoreOwners extends Model
         return $this->belongsTo(User::class);
     }
 
-    
+    /**
+     * HasOne relation with User
+     *
+     * @return HasOne
+     */
+    public function store(){
+        return $this->belongsTo(Store::class);
+    }
 
 }

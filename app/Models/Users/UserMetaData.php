@@ -21,10 +21,7 @@ class UserMetaData extends Model
         'id',
         'user_id',
         'key',
-        'value',
-        'created_at',
-        'updated_at',
-
+        'value'
     ];
 
     public function user(): BelongsTo

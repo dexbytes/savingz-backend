@@ -22,7 +22,7 @@
 
 |Email|Password|Access|
 |:------------|:------------|:------------|
-|superadmin@admin.com|admin123|Super Admin Access|
+|admin@admin.com|admin123|Super Admin Access|
 
 ##### Update swagger
 `php artisan l5-swagger:generate`

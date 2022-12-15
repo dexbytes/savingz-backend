@@ -9,8 +9,10 @@
                             <h5 class="mb-0">Roles</h5>
                         </div>
                         <div class="col-6 text-end">
+                            @can('new-role')
                             <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('new-role') }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Role</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -75,20 +77,23 @@
                             <x-table.cell>{{ $role->id }}</x-table.cell>
                             <x-table.cell>{{ $role->name }}</x-table.cell> 
                             <x-table.cell>{{ $role->content }}</x-table.cell>                            
-                            <x-table.cell>{{ $role->created_at }}</x-table.cell>
+                            <x-table.cell>{{ $role->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell>
-                                <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('edit-role', $role)}}"
-                                    data-original-title="" title="">
-                                    <i class="material-icons">edit</i>
-                                    <div class="ripple-container"></div>
-                                </a>                               
-                            @if(!in_array($role->name, $this->defaultRoles) )                               
-                                <button type="button" class="btn btn-danger btn-link" data-original-title="Remove" title="Remove"
-                                    wire:click="destroyConfirm({{ $role->id }})">
-                                    <i class="material-icons">delete</i>
-                                    <div class="ripple-container"></div>
-                                </button>
-                            @endif
+                                <div class="dropdown dropup dropleft">
+                                    <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="material-icons">
+                                            more_vert
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @can('edit-role')
+                                        <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-role', $role)}}">Edit</a></li>
+                                        @endcan
+                                        @if(!in_array($role->name, $this->defaultRoles) )
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $role->id }})">Delete</a></li>
+                                        @endif 
+                                    </ul>
+                                </div>
                             </x-table.cell>
                         </x-table.row>
                         @endforeach

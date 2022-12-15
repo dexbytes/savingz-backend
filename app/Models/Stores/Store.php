@@ -11,9 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Stores\StoreAddress;
 use App\Models\Stores\StoreMetaData;
 use App\Models\Order\Order;
-use App\Models\Product\AddonOption;
-use App\Models\Product\Product;
 use App\Models\Stores\StoreOwners;
+use App\Models\Products\Product;
+use App\Models\OrderReviews\OrderReview;
+use App\Constants\OrderReviewTypes;
 
 class Store extends Model
 {
@@ -29,6 +30,7 @@ class Store extends Model
         'name',
         'descriptions',
         'phone',
+        'restaurant_type',
         'country_code',
         'email',
         'content',
@@ -39,9 +41,12 @@ class Store extends Model
         'status',
         'application_status',
         'is_open',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+        'is_searchable',
+        'is_features',
+        'order_number',
+        'commission_type',
+        'commission_value',
+        'is_global_commission'
     ];
 
     /**
@@ -53,18 +58,6 @@ class Store extends Model
     {
         return $this->hasOne(StoreAddress::class);
     }
-
-
-      /**
-     * HasOne relation with Product
-     *
-     * @return HasOne
-     */
-    public function product(): HasOne
-    {
-        return $this->hasOne(Product::class);
-    }
-
 
     /**
      * HasMany relation with StoreMetaData
@@ -88,26 +81,6 @@ class Store extends Model
     }
 
     /**
-     * HasMany relation with Order
-     *
-     * @return hasMany
-     */
-    public function productCategories(): HasMany
-    {
-        return $this->hasMany(productCategories::class);
-    }
-
-     /**
-     * HasMany relation with Order
-     *
-     * @return hasMany
-     */
-    public function addOnOption(): HasMany
-    {
-        return $this->hasMany(AddonOption::class);
-    }
-
-    /**
      * HasOne relation with StoreMetaData
      *
      * @return HasOne
@@ -117,10 +90,8 @@ class Store extends Model
         return $this->hasOne(storeMetaData::class);
     }
 
-
-
-    /**
-     * Get Meta data by key 
+  /**
+     * Get Meta data by key
      *
      * @return Array
      */
@@ -134,7 +105,7 @@ class Store extends Model
     }
 
     /**
-     * Get Meta data by key 
+     * Get Meta data by key
      *
      * @return Array,
      */
@@ -162,11 +133,11 @@ class Store extends Model
 
 
     /**
-     * Get Business Houes 
+     * Get Business Houes
      *
      * @return Array
      */
-    public function getBusinessHours()
+    public function getBusinessHours($format = 'g:i A')
     {
         $businessHours = $this->getMetadata('business_hours');
 
@@ -175,8 +146,8 @@ class Store extends Model
             foreach ($businessHours as $key => $value) {
                 $businessHours[$key]['closing_time'] = (int) $value['closing_time'];
                 $businessHours[$key]['opening_time'] = (int) $value['opening_time'];
-                $businessHours[$key]['opening_time_format'] = intdiv($value['opening_time'], 60) . ':' . ($value['opening_time'] % 60);
-                $businessHours[$key]['closing_time_format'] = intdiv($value['closing_time'], 60) . ':' . ($value['closing_time'] % 60);
+                $businessHours[$key]['opening_time_format'] = date($format, $value['opening_time']);
+                $businessHours[$key]['closing_time_format'] = date($format, $value['closing_time']);
             }
 
             return $businessHours;
@@ -185,54 +156,85 @@ class Store extends Model
         return [];
     }
 
-
-    public function getDefaultBusinessHours()
+   /**
+     * @return Array
+     */
+    public function timeOptions($start = "06:00", $end = "23:00",  $format = 'H:i')
     {
-        $storeOpeningHoursArray = [
-            [
-                'status'    => 1,
-                'days'  => 'Monday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ],
-            [
-                'status'    => 1,
-                'days'  => 'Tuesday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ],
-            [
-                'status'    => 1,
-                'days'  => 'Wednesday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ],
-            [
-                'status'    => 1,
-                'days'  => 'Thursday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ],
-            [
-                'status'    => 1,
-                'days'  => 'Friday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ],
-            [
-                'status'    => 1,
-                'days'  => 'Saturday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ],
-            [
-                'status'    => 1,
-                'days'  => 'Sunday',
-                'opening_time'  => '480',
-                'closing_time'  => '1200',
-            ]
+        $return = array();
+        $tNow = $tStart = strtotime($start);
+        $tEnd = strtotime($end);
+
+        while ($tNow <= $tEnd) {
+            $timestamp = (date("H", $tNow) * 3600) + (date("i", $tNow) * 60);
+            $return[$timestamp] = date($format, $tNow);
+            $tNow = strtotime('+30 minutes', $tNow);
+        }
+
+        return $return;
+    }
+
+    /**
+     * @return Array
+     */
+    public function getDefaultDays()
+    {
+        return [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
         ];
+    }
+
+    public function getDefaultBusinessHours($start = "07:00", $end = "23:00")
+    {
+        $storeOpeningHoursArray = array();
+        $startTime = strtotime($start);
+        $endTime = strtotime($end);
+        $days = $this->getDefaultDays();
+
+        $startTime = (date("H", $startTime) * 3600) + (date("i", $startTime) * 60);
+        $endTime = (date("H", $endTime) * 3600) + (date("i", $endTime) * 60);
+
+        foreach ($days as $key => $value) {
+            $storeOpeningHoursArray[] = [
+                'status'    => 1,
+                'days'  => $value,
+                'opening_time'  => $startTime,
+                'closing_time'  => $endTime,
+            ];
+        }
 
         return json_encode($storeOpeningHoursArray);
+    }
+
+    /**
+     * Get all of the comments for the Store
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+    //Filter
+    // This is the scope we added
+     public function scopeFilter($query, $filters,$request)
+     {
+         return $filters->apply($query,$request);
+     }
+
+     /**
+     * Get the User Order review
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function OrderRating()
+    {
+        return $this->hasOne(OrderReview::class, 'store_id', 'id')->where('rating_for',OrderReviewTypes::STORE);
     }
 }

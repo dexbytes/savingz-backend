@@ -2,11 +2,11 @@
 
 namespace App\Models\Products;
 
-use App\Models\Stores\Store;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Stores\Store;
 
 class ProductCategories extends Model
 {
@@ -34,10 +34,13 @@ class ProductCategories extends Model
         return $this->hasOne(Product::class);
     }
 
+  /**
+     * HasOne relation with Products
+     *
+     * @return HasOne
+     */
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class, 'store_id', 'id');
     }
-
-    
 }

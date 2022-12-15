@@ -9,9 +9,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Stores\Store;
+use Carbon\Carbon;
 use App\Models\Order\OrderMeta;
 use App\Models\Order\OrderProduct;
+use App\Constants\OrderDriverStatus;
+use App\Models\Order\OrderDelivery;
+use App\Models\Order\OrderStatusHistory;
 use App\Models\User;
+use App\Models\Stores\StoreOwners; 
+use App\Models\Stores\StoreAddress;
+use App\Models\OrderReviews\OrderReview;
+use App\Models\Order\Transaction;
+use App\Models\Order\OrderParticipants;
+use Illuminate\Support\Facades\Log;
+
 
 class Order extends Model
 {
@@ -40,13 +51,23 @@ class Order extends Model
         'content',
         'is_scheduled',
         'scheduled_time',
+        'reminder_time',
+        'reminder_time',
+        'dilivery_duration',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
+
+    protected $casts = [
+        'scheduled_time' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+     ];
+
     /**
-     * BelongsTo relation with store 
+     * BelongsTo relation with store
      *
      * @return BelongsTo
      */
@@ -55,8 +76,22 @@ class Order extends Model
         return $this->belongsTo(Store::class, 'store_id', 'id');
     }
 
+    public function storeOwner() {
+        return $this->belongsTo(StoreOwners::class, 'store_id', 'store_id');
+    }
+
+  /**
+     * HasOne relation with OrderDelivery
+     *
+     * @return HasOne
+     */
+    public function OrderDriver(): HasOne
+    {
+        return $this->hasOne(OrderDelivery::class, 'order_id', 'id')->whereIn('delivery_status',[OrderDriverStatus::ACCEPTED,OrderDriverStatus::COMPLETED]);
+    }
+
     /**
-     * BelongsTo relation with store 
+     * BelongsTo relation with store
      *
      * @return BelongsTo
      */
@@ -105,8 +140,8 @@ class Order extends Model
         return $this->hasOne(Store::class, 'id', 'store_id');
     }
 
-    /**
-     * Get Meta data by key 
+   /**
+     * Get Meta data by key
      *
      * @return Array
      */
@@ -120,7 +155,7 @@ class Order extends Model
     }
 
     /**
-     * Get Meta data by key 
+     * Get Meta data by key
      *
      * @return Array,
      */
@@ -146,7 +181,7 @@ class Order extends Model
     }
 
     /**
-     * Get Business Houes 
+     * Get Business Houes
      *
      * @return Array
      */
@@ -159,5 +194,106 @@ class Order extends Model
         }
 
         return [];
+    }
+    /**
+     * HasOne relation with StoreAddress
+     *
+     * @return HasOne
+     */
+    public function StoreAddress(): HasOne
+    {
+        return $this->hasOne(StoreAddress::class,'store_id','store_id');
+    }
+
+    /**
+     * HasMany relation with OrderMeta
+     *
+     * @return HasMany
+     */
+    public function orderUpdateHistory(): HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class,'order_id','id');
+    }
+
+    public function GetCurrentDurationAttribute()
+    {
+      $timestamp  = Carbon::create($this->dilivery_duration)->timestamp-Carbon::now()->timestamp;
+      if ($timestamp < 0) {
+        return 0;
+      }
+      return gmdate("i",$timestamp);
+    }
+
+    // /**
+    //  * for getting order view,{customer,driver,store}
+    //  *
+    //  * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    //  */
+    // public function OrderReview($type)
+    // {
+    //     return OrderReview::where('order_id',$this->id)->where('rating_for',$type)->where('status',true)->first();
+    // }
+
+      /**
+     * Get the User Order review
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function OrderReview()
+    {
+        return $this->hasMany(OrderReview::class, 'order_id', 'id')->where('status',true);
+    }
+
+    /**
+     * Get all of the TransactionHistory for the Order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function TransactionHistory(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'order_id', 'id');
+    }
+
+
+    /**
+     * Get the orderParticipant associated with the Order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function orderParticipant(): HasOne
+    {
+        return $this->hasOne(orderParticipants::class, 'order_id', 'id');
+    }
+
+
+    public function UpdateHistory($id,$new_status)
+    {
+        OrderStatusHistory::create(
+            [
+                'user_id' => auth()->user()->id,
+                'role' => auth()->user()->getRoleNames()->implode(','),
+                'order_id' => $id,
+                'old_status' => $this->order_status,
+                'new_status' => $new_status,
+                'title' => __('order/customer_message.status.:type status has been changed :old_status to :new_status (:txn_id)',['type' => "Order",'old_status' => ucfirst(str_replace('_', ' ', $this->order_status)),'new_status' => ucfirst(str_replace('_', ' ',$new_status)),'txn_id'=> null]),
+                
+            ]
+        );
+        
+        return $this;
+    }
+    public function CreateHistory()
+    {
+        OrderStatusHistory::create(
+            [
+                'user_id' => $this->user_id,
+                'role'    => auth()->user()->getRoleNames()->implode(','),
+                'order_id'  => $this->id,
+                'old_status' => $this->order_status,
+                'new_status' => $this->order_status,
+                'title'   => __('order/customer_message.status.:type status has been changed :old_status to :new_status (:txn_id)',['type' => "Order",'old_status' => ucfirst(str_replace('_', ' ', $this->order_status)),'new_status' =>ucfirst(str_replace('_', ' ', $this->order_status)),'txn_id'=>null]),
+            ]
+            );
+        return $this;
     }
 }

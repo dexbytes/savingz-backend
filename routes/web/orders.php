@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+use App\Http\Livewire\Order\Details;
 use Illuminate\Support\Facades\Route;
 
  
@@ -18,6 +20,7 @@ use App\Http\Livewire\Order\Index as OrderIndex;
  
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('orders/list', OrderIndex::class)->name('order-management');
+    Route::get('orders/list/{order_status?}', OrderIndex::class)->name('order-management');
+    Route::get('order-details/{id}' , Details::class )->name('order-details');
  
 });

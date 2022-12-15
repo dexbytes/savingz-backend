@@ -2,10 +2,10 @@
 use App\Http\Livewire\Account\Profile\Edit as EditProfile;
 use App\Http\Livewire\Auth\ForgetPassword;
 use App\Http\Livewire\Auth\Login;
+use App\Http\Livewire\Auth\AllLogin;
 use App\Http\Livewire\Auth\Register;
 use App\Http\Livewire\Auth\ResetPassword;
 use App\Http\Livewire\Dashboard\Index;
-use App\Http\Livewire\Dashboard\Sales;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -23,11 +23,11 @@ Route::get('sign-in', Login::class)->name('login');
 Route::get('forget-password', ForgetPassword::class)->middleware('guest')->name('forget-password');
 Route::get('reset-password/{id}', ResetPassword::class)->middleware('guest')->name('reset-password');
 
-
+Route::get('login', AllLogin::class)->middleware('guest');
 
 Route::group(['middleware' => 'auth','scopes:admin'], function () {
 
     Route::get('account/profile', EditProfile::class)->name('edit-profile');
-    Route::get('dashboard', Sales::class)->name('dashboard');
-    Route::get('dashboard/analytics', Index::class)->name('analytics');
+    Route::get('dashboard', Index::class)->name('dashboard');
+    
 });

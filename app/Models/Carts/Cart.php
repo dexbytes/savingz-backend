@@ -6,19 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\User;
+
 
 class Cart extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'id',
         'user_id',
+        'store_id',
         'cart_number',
-        'session_id',
-        'token',
         'status',
         'content',
         'created_at',
@@ -32,7 +34,7 @@ class Cart extends Model
         static::creating(function ($cart_number) {
             $cart_number->cart_number = rand(10000000,99999999);
         });
-        
+
     }
 
     public function createSlug($cart_number){
@@ -50,4 +52,13 @@ class Cart extends Model
     {
         return $this->hasMany(CartsParticipants::class, 'cart_id');
     }
-}   
+    /**
+     * Get the user that owns the Cart
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}

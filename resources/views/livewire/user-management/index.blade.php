@@ -15,8 +15,12 @@
                             </h5>
                         </div>
                         <div class="col col-6 text-end">
-                            <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-user') }}"><i
-                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Add User</a>
+                            @if($this->filter['role'] == '' || $this->filter['role'] == 'provider')
+                                @can('add-user')
+                                    <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-user', ['role' => $this->filter['role']]) }}"><i
+                                            class="material-icons text-sm">add</i>&nbsp;&nbsp;Add New</a>
+                                @endcan
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -40,7 +44,7 @@
                
                
                 <div class="d-flex flex-row justify-content-between mx-4">
-                    <div class="d-flex mt-3 align-items-center justify-content-center">
+                    <div class="d-flex mt-3">
                         <p class="text-secondary pt-2">Show&nbsp;&nbsp;</p>
                         <select wire:model="perPage" class="form-control mb-2" id="entries">
                             <option value="10">10</option>
@@ -50,6 +54,26 @@
                         </select>
                         <p class="text-secondary pt-2">&nbsp;&nbsp;entries</p>
                     </div>
+
+                    <div class="d-flex mt-3">
+                        <p class="text-secondary pt-2">Status&nbsp;&nbsp;</p>
+                        <select wire:model="filter.status" class="form-control mb-2" id="status">
+                            <option value="">Any Status</option>
+                            <option value="1">Active</option>
+                            <option value="0">In Active</option>                           
+                        </select>
+                    </div>
+                    
+                    <div class="d-flex mt-3">
+                        <p class="text-secondary pt-2">Role&nbsp;&nbsp;</p>
+                        <select wire:model="filter.role" class="form-control mb-2" id="roles">
+                            <option value="">Any Role</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->name }}"> {{ $role->name }}</option>
+                            @endforeach                       
+                        </select>
+                    </div>
+                   
                     <div class="mt-3 ">
                         <input wire:model="search" type="text" class="form-control" placeholder="Search...">
                     </div>
@@ -75,6 +99,7 @@
                             <x-table.heading>Status
                             </x-table.heading>
                         @endif
+                       
                         @if(empty($this->filter['role']))
                             <x-table.heading>Role
                             </x-table.heading>
@@ -93,22 +118,21 @@
                         <x-table.row wire:key="row-{{ $user->id }}">
                             <x-table.cell>{{ $user->id }}</x-table.cell>
                             <x-table.cell class="position-relative">
-                                @if ($user->picture)
-                                <img src="/storage/{{($user->picture)}} " alt="picture"
+                                @if ($user->profile_photo)
+                                <img src="{{ Storage::disk(config('app_settings.filesystem_disk.value'))->url($user->profile_photo)}}" alt="picture"
                                     class="avatar avatar-sm me-3">
                                 @else
                                 <img src="{{ asset('assets') }}/img/default-avatar.png" alt="avatar"
                                     class="avatar avatar-sm me-3">
                                 @endif
                             </x-table.cell>
-                            <x-table.cell>{{ $user->name }}</x-table.cell>
-                            <!-- <x-table.cell>{{ $user->email }}</x-table.cell> -->
-                            <x-table.cell>{{ $user->phone }}</x-table.cell>
+                            <x-table.cell><a href="{{ route('view-user', $user) }}">{{ $user->name }}</a></x-table.cell>                          
+                            <x-table.cell>+{{$user->country_code}} {{ substr($user->phone , +(strlen($user->country_code)))  }}</x-table.cell>
                             <x-table.cell> 
                             @if ($user->id != auth()->id() || $user->id  != 1)
                                 <div class="form-check form-switch ms-3">
                                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{ $user->id }},{{ $user->status}})"
-                                        @if($user->status) checked="" @endif>
+                                        @if($user->status) checked="" @endif   @if($this->account_status == 'waiting') disabled @endif>
                                 </div>
                             @endif
                             </x-table.cell>
@@ -130,7 +154,7 @@
                                 <x-table.cell>{{ $user->getRoleNames()->implode(',') }}
                                 </x-table.cell>
                             @endif
-                            <x-table.cell>{{ $user->created_at }}</x-table.cell>
+                            <x-table.cell>{{ $user->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell>                              
                             
                             @if($this->account_status == 'waiting')
@@ -145,19 +169,22 @@
                                     <div class="ripple-container"></div>
                                 </button>
                             @else
-                                <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('edit-user', $user) }}"
-                                    data-original-title="Edit" title="Edit">
-                                    <i class="material-icons">edit</i>
-                                    <div class="ripple-container"></div>
-                                </a>
-                                @if ($user->id != auth()->id() || $user->id  != 1)
-                              
-                                <button type="button" class="btn btn-danger btn-link" data-original-title="Remove" title="Remove"
-                                     wire:click="destroyConfirm({{ $user->id }})">
-                                    <i class="material-icons">delete</i>
-                                    <div class="ripple-container"></div>
-                                </button>
-                                @endif
+                                <div class="dropdown dropup dropleft">
+                                    <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="material-icons">
+                                            more_vert
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+ 
+                                        @can('view-user')
+                                            <li><a class="dropdown-item"  data-original-title="view" title="view" href="{{ route('view-user', $user) }}">Edit</a></li>
+                                        @endcan
+                                        @if ($user->id != auth()->id() || $user->id  != 1)
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $user->id }})">Delete</a></li>
+                                        @endif 
+                                    </ul>
+                                </div>
                             @endif    
                             </x-table.cell>
                         </x-table.row>

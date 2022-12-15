@@ -55,7 +55,6 @@ class PushDeliveredMessage extends Model
         return $this->hasOne(PushMessage::class, 'id', 'message_id');
     }
 
-
     public function device(): HasOne
     {
         return $this->hasOne(PushDevice::class, 'id', 'device_id');

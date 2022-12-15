@@ -24,7 +24,7 @@
                     <form wire:submit.prevent="update">
                         <div class="row">
 
-                            <div class="col-6 mb-4">
+                            <div class="col-12 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Full Name *</label>
                                     <input wire:model.lazy="user.name" type="text" class="form-control" placeholder="Enter a full name">
@@ -33,7 +33,21 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>
-                            <div class="col-6 mb-4">
+
+                            <div class="col-2  mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>Country Code *</label>
+                                    <select class="form-control input-group input-group-dynamic" wire:model.lazy="user.country_code" id="countryCode" onfocus="focused(this)" onfocusout="defocused(this)">
+                                            @foreach ($countries  as $countryValue)
+                                                <option value="{{ $countryValue['country_code'] }}">{{ $countryValue['country_code']}}</option>
+                                            @endforeach
+                                     </select>
+                                </div>
+                                @error('country_code')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+                            <div class="col-10 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Phone Number *</label>
                                     <input aria-label="Text input with dropdown button" wire:model.lazy="user.phone" type="tel" class="form-control" placeholder="Enter a Phone Number without country code e.g 5056440289">
@@ -43,7 +57,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-6 mb-4">
+                            <div class="col-12 mb-4">
                                 <div class="input-group input-group-static">
                                     <label>Email *</label>
                                     <input wire:model.lazy="user.email" type="email" class="form-control" placeholder="Enter a Email">
@@ -52,42 +66,24 @@
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>
-                            @if(!$user->hasRole('Admin'))
-                                <div class="col-6 mb-4">
-                                    <div class="input-group input-group-static">
-                                        <label>Select Role *</label>  
-                                        <select class="form-control" wire:model="role_id"
-                                            data-style="select-with-transition" title="Role" data-size="100" id="role">
-                                            @foreach ($roles as $role)
-                                            <option value="{{ $role->id }}">                                        
-                                                {{ $role->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    @error('role_id')
-                                    <p class='text-danger inputerror'>{{ $message }} </p>
-                                    @enderror
-                                </div>
-                            @endif
-                            <div class="col-6 mb-4">
+
+                         @if ($user->id != auth()->id() || $user->id  != 1)
+                            <div class="col-12 mb-4">
                                 <div class="input-group input-group-static">
-                                    <label>Aadhar Card Number </label>
-                                    <input wire:model.lazy="user.aadhar_number" type="text" maxlength="12" class="form-control" placeholder="Enter a Aadhar Card Number">
+                                    <label>Select a Role *</label>  
+                                    <select class="form-control" wire:model="role_id"
+                                        data-style="select-with-transition" title="Role" data-size="100" id="role">
+                                        @foreach ($roles as $role)
+                                        <option value="{{ $role->name }}">                                        
+                                            {{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                @error('user.aadhar_number')
+                                @error('role_id')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
                             </div>
-                            
-                            <div class="col-6 mb-4">
-                                <div class="input-group input-group-static">
-                                    <label>PAN Card Number </label>
-                                    <input wire:model.lazy="user.pan_number" type="text" id="panNumber" maxlength="10" class="form-control" placeholder="Enter a PAN Card Number">
-                                </div>
-                                @error('user.pan_number')
-                                <p class='text-danger inputerror'>{{ $message }} </p>
-                                @enderror
-                            </div>
+                        @endif
 
                          </div>
         
@@ -108,10 +104,5 @@
 </div>
 @push('js')
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
-<script>
-    const panNumber = document.getElementById("panNumber");
-    panNumber.addEventListener("input", ()=>{
-        panNumber.value = panNumber.value.toUpperCase();
-    });
-</script>
+<script src="{{ asset('assets') }}/js/plugins/quill.min.js"></script>
 @endpush

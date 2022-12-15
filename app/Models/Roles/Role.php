@@ -28,5 +28,5 @@ class Role extends Model
      *
      * @var string
      */
-    protected $guard_name = 'web';
+    protected $guard_name = 'api';
 }

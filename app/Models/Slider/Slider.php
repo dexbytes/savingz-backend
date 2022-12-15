@@ -44,7 +44,7 @@ class Slider extends Model
 
     public function sliderImage(): HasMany
     {
-        return $this->hasMany(SliderImage::class,);
+        return $this->hasMany(SliderImage::class);
     }
 
     protected static function boot()

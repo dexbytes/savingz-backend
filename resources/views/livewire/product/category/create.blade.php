@@ -55,8 +55,7 @@
                                 @enderror
                             </div>        
                             <div class="col-12 mb-2">
-                                <div class="form-group">
-                                    
+                                <div class="form-group">                                    
                                     <div class="form-check">
                                         <input wire:model="status" class="form-check-input" type="checkbox"  id="flexCheckFirst">
                                         <label class="form-check-label">Status</label>

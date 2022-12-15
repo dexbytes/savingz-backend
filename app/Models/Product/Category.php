@@ -78,6 +78,6 @@ class Category extends Model
         return Model::where(function ($query) use ($store_id) {
             $query->where('store_id', '=', null)
                 ->orWhere('store_id', '=', $store_id);
-        })->get();
+        })->where('status',true)->get();
     }
 }

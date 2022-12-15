@@ -42,7 +42,12 @@ class Create extends Component
     public function store(){
 
         $this->validate();
-        state::create([
+
+        if($this->is_default){
+            State::where('is_default', 1)->where('country_id', $this->country_id )->update(['is_default' => 0]);
+        }
+
+        State::create([
             'name'         => $this->name,
             'country_id'  => $this->country_id,
             'is_default'   => $this->is_default?1:0,

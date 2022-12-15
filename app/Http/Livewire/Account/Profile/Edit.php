@@ -13,9 +13,7 @@ class Edit extends Component
     use WithFileUploads;
 
     public User $user;
-
-    public $picture;
-
+    public $profile_photo;
     public $confirmationPassword='';
     public $new_password="";
     public $old_password='';
@@ -30,6 +28,8 @@ class Edit extends Component
 
     public function mount() { 
         $this->user = auth()->user();
+        $this->user->phone = substr($this->user->phone , +(strlen($this->user->country_code)));
+      
     }
 
     public function updated($propertyName){
@@ -41,9 +41,10 @@ class Edit extends Component
     public function update()
     {
         $this->validate();
-  
+        $this->user->phone  = $this->user->country_code.$this->user->phone ;
         $this->user->save();
-
+        
+        $this->user->phone = substr($this->user->phone , +(strlen($this->user->country_code)));
         return back()->withStatus('Profile successfully updated.');
     }
 
@@ -74,6 +75,26 @@ class Edit extends Component
             return back()->with(['error' =>"Old password doesn't match"]);
         }
     } 
+
+
+    /**
+     * update store status
+     *
+     * @return response()
+     */
+    public function updatedProfilePhoto()
+    {        
+        $this->validate([
+            'profile_photo' => 'required|mimes:jpg,jpeg,png|max:1024',
+        ]);
+          
+        $profile_photo = $this->profile_photo->store('profile', config('app_settings.filesystem_disk.value'));
+        User::where('id', '=' , $this->user->id )->update(['profile_photo' => $profile_photo]);  
+        
+        $this->dispatchBrowserEvent('alert', 
+        ['type' => 'success',  'message' => 'Profile photo Updated Successfully!']);
+
+   }
 
     public function render()
     {

@@ -64,12 +64,9 @@ class Index extends Component
     public function remove()
     {
         faq::find($this->deleteId)->delete();
-
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'FAQ Delete Successfully!', 
-                'text' => 'It will not list on FAQ table soon.'
-            ]);
+        
+        $this->dispatchBrowserEvent('alert', 
+        ['type' => 'success',  'message' => 'FAQ Delete Successfully!']);
     }
 
      /**
@@ -88,7 +85,7 @@ class Index extends Component
     {
         //$this->authorize('manage-items', User::class);
         return view('livewire.faq.index', [
-            'faqs' => Faq::searchMultipleFaqs($this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'faqs' => Faq::searchMultipleFaqs(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

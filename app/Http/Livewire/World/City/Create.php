@@ -54,6 +54,10 @@ class Create extends Component
 
         $this->validate();
 
+        if($this->is_default){
+            Cities::where('is_default', 1)->where('country_id', $this->country_id )->where('state_id', $this->state_id )->update(['is_default' => 0]);
+        }
+
         Cities::create([
             'name'         => $this->name,
             'country_id'  => $this->country_id,

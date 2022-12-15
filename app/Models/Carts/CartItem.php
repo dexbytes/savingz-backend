@@ -9,11 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CartItem extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory ;
 
     protected $fillable = [
         'id',
-        'device_cart_id',
         'user_id',
         'store_id',
         'product_id',

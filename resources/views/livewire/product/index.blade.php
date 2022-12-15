@@ -1,8 +1,8 @@
-<div class="container-fluid py-4 bg-gray-200">
+ <div class="container-fluid py-4 bg-gray-200">
     <div class="row">
         <div class="col-12">
             <div class="card">                
-                <!-- Card header -->               
+                <!-- Card header -->                
                 <div class="card-header pb-0">
                     <div class="d-lg-flex">                        
                         <div>
@@ -11,15 +11,16 @@
                         <div>
                             @if ($destroyMultiple)
                             <a class="btn btn-link fst-normal lh-1 pe-3 mb-0 ms-auto w-25 w-md-auto me-12" wire:click="destroyMultiple()">
-                                Delete selected products
+                                Delete
                             </a>
                             @endif
                         </div>
                         <div class="ms-auto my-auto mt-lg-0 mt-4">
-                            <div class="ms-auto my-auto">                                
-                                <a href="" class="btn bg-gradient-primary btn-sm mb-0"
-                                    target="_blank">+&nbsp; New Product</a>
-                                    
+                            <div class="ms-auto my-auto">
+                                @can('add-product') 
+                                   <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-product') }}"><i
+                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Product</a>
+                                @endcan    
                                 {{-- <button type="button" class="btn btn-outline-primary btn-sm mb-0" data-bs-toggle="modal"
                                     data-bs-target="#import">
                                     Import
@@ -69,38 +70,43 @@
                             <p class="text-secondary pt-2">Show&nbsp;&nbsp;</p>
                             <select wire:model="perPage" class="form-control mb-2" id="entries">
                                 <option value="10">10</option>
-                                <option value="25">25</option>
-                                <option selected value="50">50</option>
-                                <option value="100">100</option>                               
+                                <option selected value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
                             </select>
                             <p class="text-secondary pt-2">&nbsp;&nbsp;entries</p>
                         </div>
                         <div class="mt-3 ">
-                            <input wire:model="search" type="text" class="form-control border p-2" placeholder="Search...">
+                            <input wire:model="search" type="text" class="form-control  p-2" placeholder="Search...">
                         </div>
                     </div>
 
-                    <x-table>
+                    <x-table wire:loading.table>
+
                         <x-slot name="head">
                             <x-table.heading>
                             </x-table.heading>
                             <x-table.heading sortable wire:click="sortBy('id')"
                                 :direction="$sortField === 'id' ? $sortDirection : null"> ID
                             </x-table.heading>
-                            <x-table.heading sortable wire:click="sortBy('name')"
-                            :direction="$sortField === 'product' ? $sortDirection : null"> Product
+                            <x-table.heading  > Product
                             </x-table.heading>
-                            <x-table.heading> Category
+                            <x-table.heading  > Category
                             </x-table.heading>
                             <x-table.heading sortable wire:click="sortBy('price')"
                             :direction="$sortField === 'price' ? $sortDirection : null">Price
-                            </x-table.heading>                           
-                            <x-table.heading>Status
+                            </x-table.heading>
+                           @if(auth()->user()->hasRole('Admin'))
+                            <x-table.heading>Store
+                            </x-table.heading>
+                            @endif
+                            <x-table.heading sortable wire:click="sortBy('status')"
+                            :direction="$sortField === 'status' ? $sortDirection : null">Status
                             </x-table.heading>
                             <x-table.heading>Actions</x-table.heading>
                         
                         </x-slot>
-                        
+                            
                         <x-slot name="body">
                             @foreach ($products as $product)
                             <x-table.row wire:key="row-{{$product->id }}">
@@ -109,51 +115,49 @@
                                      <input class="form-check-input" type="checkbox" id="customCheck1" value="{{ $product->id }}" wire:model="destroyMultiple">
                                  </div></x-table.cell>
                                 <x-table.cell>{{ $product->id }}</x-table.cell>
-                                <x-table.cell>                                     
-                                    <div class="d-flex">                                       
-                                        @if ($product->picture)
-                                        <img src="/storage/{{($user->picture)}} " alt="picture"
+                                <x-table.cell>
+                                     
+                                    <div class="d-flex">
+                                       @if ($product->image)
+                                        <img src="{{ Storage::disk(config('app_settings.filesystem_disk.value'))->url($product->image->image_path) }} " alt="picture"
                                             class="w-10 ms-3 rounded-circle shadow-sm">
                                         @else
-                                        <img src="{{ asset('assets') }}/img/default-food-avatar.jpg" alt="avatar"
+                                        <img src="{{ Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.product_image.value')) }}" alt="avatar"
                                             class="w-10 ms-3 rounded-circle">
                                         @endif
-                                        <h6 class="ms-3 my-auto">{{ $product->name }}
-                                        @if(auth()->user()->hasRole('Admin'))
-                                            <br>
-                                            <span class="text-xs text-secondary mb-0">
-                                                    {{ $product->store->name }}
-                                            </span>
-                                        @endif
-                                        </h6>
-                                      
-                                    </div>                                         
+                                        <h6 class="ms-3 my-auto">{{ $product->name }}</h6>                                      
+                                    </div>
                                 </x-table.cell>
-                                <x-table.cell> {{ $product->productCategories->name}}</x-table.cell>
-                                <x-table.cell> {{ $currency}} {{ $product->price }}</x-table.cell>
+
+                                
+                                <x-table.cell>@if($product->productCategories) {{ $product->productCategories->name}}  @endif</x-table.cell>
+                                <x-table.cell> {{ \Utils::ConvertPrice($product->price) }}</x-table.cell>                               
+                                @if(auth()->user()->hasRole('Admin'))
+                                    <x-table.cell><a  href="{{ route('edit-store', $product->Productstore) }}">{{$product->Productstore->name}} </a></x-table.cell> 
+                                @endif                                
                                 <x-table.cell>
                                     <div class="form-check form-switch ms-3">
                                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{ $product->id }},{{ $product->status}})"
                                             @if($product->status) checked="" @endif>
                                     </div>
                                 </x-table.cell>
-                                <x-table.cell>                                  
-                                     
-                                        <a href="javascript:;" data-bs-toggle="tooltip"
-                                            data-bs-original-title="Preview">
-                                            <i
-                                                class="material-icons text-secondary position-relative text-lg">visibility</i>
-                                        </a>
-                                        <a href="javascript:;" class="mx-3" data-bs-toggle="tooltip"
-                                            data-bs-original-title="Edit">
-                                            <i
-                                                class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
-                                        </a>
-                                        <a href="javascript:;" data-bs-toggle="tooltip"
-                                            data-bs-original-title="Delete"  wire:click="destroyConfirm({{ $product->id }})">
-                                            <i class="material-icons text-secondary position-relative text-lg">delete</i>
-                                        </a>
-                                                                      
+                                <x-table.cell>    
+                                    
+                                   <div class="dropdown dropup dropleft">
+                                        <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="material-icons">
+                                                more_vert
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"> 
+                                            @can('edit-product') 
+                                            <li><a class="dropdown-item"  data-original-title="Edit" title="Edit"  href="{{ route('edit-product', $product) }}">Edit</a></li>
+                                            @endcan
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $product->id }})">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                                                  
+                             
                                 </x-table.cell>
                             </x-table.row>
                             @endforeach
@@ -163,13 +167,6 @@
                     <div id="datatable-bottom">
                         {{ $products->links() }}
                     </div>
-
-                    @if( $products->total() == 0)
-                        <div>
-                            <p class="text-center">No records found!</p>
-                        </div>
-                    @endif
-
                 </div>
             </div>
         </div>

@@ -9,8 +9,10 @@
                             <h5 class="mb-0">Categories</h5>
                         </div>
                         <div class="col-6 text-end">
+                            @can('add-category')
                             <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-category') }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;&nbsp;Add category</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -81,8 +83,8 @@
                         <x-table.row wire:key="row-{{  $category->id }}">
                             <x-table.cell>{{  $category->id }}</x-table.cell>
                             <x-table.cell >
-                                    @if ( $category->image)
-                                    <img src="/storage/{{( $category->image)}} " alt="picture"
+                                    @if ($category->image)
+                                    <img src="{{ Storage::disk(config('app_settings.filesystem_disk.value'))->url($category->image) }} " alt="picture"
                                         class="avatar avatar-sm me-3">
                                     @else
                                     <img src="{{ asset('assets') }}/img/default-food-avatar.jpg" alt="avatar"
@@ -97,7 +99,7 @@
                                     @endif  
                                 </x-table.cell>
                             @endif
-                           <x-table.cell>{{  $category->created_at }}</x-table.cell>
+                           <x-table.cell>{{  $category->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                            <x-table.cell> <div class="form-check form-switch ms-3">
                              @if((array_key_exists('store_id', $filter) && $filter['store_id'] == $category->store_id) || (auth()->user()->hasRole('Admin')))
                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{  $category->id }},{{ $category->status}})"
@@ -109,19 +111,27 @@
                             </div></x-table.cell>
                             <x-table.cell>
                                                            
-                           
+                               
                                 @if((array_key_exists('store_id', $filter) && $filter['store_id'] == $category->store_id) || (auth()->user()->hasRole('Admin')))
-                                    <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('edit-category', $category) }}"
-                                        data-original-title="" title="">
-                                        <i class="material-icons">edit</i>
-                                        <div class="ripple-container"></div>
-                                    </a>                               
-                                    <button type="button" class="btn btn-danger btn-link" data-original-title="Remove" title="Remove"
-                                        wire:click="destroyConfirm({{  $category->id }})">
-                                        <i class="material-icons">delete</i>
-                                        <div class="ripple-container"></div>
-                                    </button>
+                                     
+                                    <div class="dropdown dropup dropleft">
+                                        <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="material-icons">
+                                                more_vert
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @can('edit-category')
+                                            <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-category', $category) }}">Edit</a></li>
+                                            @endcan
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $category->id }})">Delete</a></li>
+                                        </ul>
+                                    </div>
+
                                 @endif
+
+
+
                             </x-table.cell>
                         </x-table.row>
                         @endforeach

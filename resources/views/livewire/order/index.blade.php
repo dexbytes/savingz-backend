@@ -1,35 +1,5 @@
 <div class="container-fluid py-4">
-<div class="d-sm-flex justify-content-between">
-        <div>
-            <!-- <a href="javascript:;" class="btn btn-icon bg-gradient-primary">
-                New order
-            </a> -->
-        </div>
-        <div class="d-flex">
-            <div class="dropdown d-inline">
-                <a href="javascript:;" class="btn btn-outline-dark dropdown-toggle " data-bs-toggle="dropdown"
-                    id="navbarDropdownMenuLink2">
-                    Filters
-                </a>
-                <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2"
-                    data-popper-placement="left-start">
-                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Paid</a></li>
-                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Refunded</a></li>
-                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Canceled</a></li>
-                    <li>
-                        <hr class="horizontal dark my-2">
-                    </li>
-                    <li><a class="dropdown-item border-radius-md text-danger" href="javascript:;">Remove
-                            Filter</a></li>
-                </ul>
-            </div>
-            <button class="btn btn-icon btn-outline-dark ms-2 export" data-type="csv" type="button">
-                <i class="material-icons text-xs position-relative">archive</i>
-                Export CSV
-            </button>
-        </div>
-    </div>
-
+  
     <div class="row">
         <div class="col-12">
             <div class="card">                
@@ -54,8 +24,37 @@
                             </select>
                             <p class="text-secondary pt-2">&nbsp;&nbsp;entries</p>
                         </div>
+
+                        <div class="d-flex mt-3 align-items-center justify-content-center">
+                            <p class="text-secondary pt-2">Status&nbsp;&nbsp;</p>
+                            <select wire:model="filter.order_status" class="form-control mb-2" id="status">
+                                <option value="">Any Status</option>
+                                @foreach($allOrderStatus as $orderStatus)
+                                    <option value={{ $orderStatus }}>{{  ucfirst(str_replace('_', ' ', $orderStatus)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @if(auth()->user()->hasRole('Admin'))
+                        <div class="d-flex mt-3 align-items-center justify-content-center">
+                            <p class="text-secondary pt-2">Store&nbsp;&nbsp;</p>
+                            <select wire:model="filter.store_id" class="form-control mb-2" id="roles">
+                                <option value="">Any Store</option>
+                                @foreach ($stores as $store)
+                                    <option value="{{ $store->id }}"> {{ $store->name }}</option>
+                                @endforeach                       
+                            </select>
+                        </div>
+                    @endif    
+                        <div class="d-flex mt-3 align-items-center justify-content-center">
+                            <p class="text-secondary pt-2">Date&nbsp;&nbsp;</p> 
+                            <div class="input-group input-group-static mb-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
+                            dateFormat: '{{config('app_settings.date_format.value')}}'});">
+                               <input wire:model="filter.created_at"  x-ref="picker" class="form-control" type="text" placeholder="Select Any Date" />
+                            </div>
+                        </div>
+                        
                         <div class="mt-3 ">
-                            <input wire:model="search" type="text" class="form-control border p-2" placeholder="Search...">
+                            <input wire:model="search" type="text" class="form-control p-2" placeholder="Search...">
                         </div>
                     </div>
 
@@ -78,28 +77,25 @@
                             <x-table.heading>Actions</x-table.heading>
                         
                         </x-slot>
-                        
                         <x-slot name="body">
                             @foreach ($orders as $order)
+
                             <x-table.row wire:key="row-{{$order->id }}">
                                 <x-table.cell>{{ $order->id }}</x-table.cell>
-                                <x-table.cell>#{{ $order->order_number }}</x-table.cell>
-                                <x-table.cell>{{ $order->created_at }}</x-table.cell>
-                                <x-table.cell>{{ $order->order_status }}</x-table.cell>
+                                <x-table.cell><a href="{{ route('order-details', $order) }}">#{{ $order->order_number }}</a></x-table.cell>
+                                <x-table.cell>{{ $order->created_at->format(config('app_settings.date_format.value').' '.config('app_settings.time_format.value')) }}</x-table.cell>
+                                <x-table.cell><span class="text-{{$statusLabels[$order->order_status]}}"> {{  ucfirst(str_replace('_', ' ', $order->order_status)) }}</span></x-table.cell>
                                 <x-table.cell>{{ $order->store->name }}</x-table.cell>
-                                <x-table.cell>{{ $order->user->name }}</x-table.cell>
-                                <x-table.cell>{{ $order->total_amount }}</x-table.cell>
-                                <x-table.cell>                                  
-                                    <a href="javascript:;" data-bs-toggle="tooltip"
+                                <x-table.cell><a href="{{ route('view-user',  $order->user) }}">{{ $order->user->name }}</a></x-table.cell>
+                                <x-table.cell>{{ \Utils::ConvertPrice($order->total_amount) }}</x-table.cell>
+                                <x-table.cell> 
+                                    @can('order-details')                               
+                                    <a href="{{ route('order-details', $order) }}" data-bs-toggle="tooltip"
                                         data-bs-original-title="Preview">
-                                        <i
-                                            class="material-icons text-secondary position-relative text-lg">visibility</i>
+                                        <i class="material-icons text-secondary position-relative text-lg">visibility</i>
                                     </a>
-                                    <a href="javascript:;" class="mx-3" data-bs-toggle="tooltip"
-                                        data-bs-original-title="Edit">
-                                        <i
-                                            class="material-icons text-secondary position-relative text-lg">drive_file_rename_outline</i>
-                                    </a>
+                                    @endcan
+                                    
                                     <a href="javascript:;" data-bs-toggle="tooltip"
                                         data-bs-original-title="Delete"  wire:click="destroyConfirm({{ $order->id }})">
                                         <i class="material-icons text-secondary position-relative text-lg">delete</i>
@@ -128,6 +124,7 @@
 </div>
 <!--   Core JS Files   -->
 @push('js')
+<script src="{{ asset('assets') }}/js/plugins/flatpickr.min.js"></script>
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="{{ asset('assets') }}/js/plugins/datatables.js"></script>
   

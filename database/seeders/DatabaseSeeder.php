@@ -16,16 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-       
-          
-        $this->call(CreatePermissionSeeder::class);  
-        $this->call(CreateAdminPermissionsSeeder::class);
-        $this->call(CreateProviderPermissionsSeeder::class);
-       
-       // $this->call(CreateAboutUsPageSeeder::class);
-        $this->call(FaqCategorySeeder::class);
-
- 
+                
+        $this->call(CreatePermissionSeeder::class);  // Create all route permission 
+        $this->call(CreateAdminPermissionsSeeder::class); // Assign all permission to admin
+        $this->call(CreateProviderPermissionsSeeder::class); // Assign all permission to admin
  
     }
 }

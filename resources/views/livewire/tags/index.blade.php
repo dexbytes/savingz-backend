@@ -9,8 +9,10 @@
                             <h5 class="mb-0">Tags</h5>
                         </div>
                         <div class="col-6 text-end">
+                            @can('new-product-tag')
                             <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('new-product-tag') }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Tag</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -70,16 +72,20 @@
                                     @if( $tag->status) checked="" @endif>
                             </div></x-table.cell>
                             <x-table.cell>
-                                <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('edit-product-tag', $tag) }}"
-                                    data-original-title="Edit" title="Edit">
-                                    <i class="material-icons">edit</i>
-                                    <div class="ripple-container"></div>
-                                </a>  
-                                <button type="button" class="btn btn-danger btn-link" data-original-title="Remove" title="Remove"
-                                    wire:click="destroyConfirm({{ $tag->id }})">
-                                    <i class="material-icons">delete</i>
-                                    <div class="ripple-container"></div>
-                                </button>
+                                <div class="dropdown dropup dropleft">
+                                    <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="material-icons">
+                                            more_vert
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @can('edit-product-tag')
+                                            <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-product-tag', $tag) }}">Edit</a></li>
+                                        @endcan
+                                        <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $tag->id }})">Delete</a></li>
+                                   </ul>
+                                </div>   
+
                             </x-table.cell>
                         </x-table.row>
                         @endforeach

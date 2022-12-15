@@ -47,9 +47,9 @@ class Index extends Component
     }
 
     public function render()
-    {
+    {  
         return view('livewire.product.category.index',[
-            'categories' => ProductCategories::with(['store'])->searchMultipleCategory($this->search, $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'categories' => ProductCategories::with(['store'])->searchMultipleCategory(trim(strtolower($this->search)), $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -80,12 +80,9 @@ class Index extends Component
     public function remove()
     {
         ProductCategories::find($this->deleteId)->delete();
-
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'Category Delete Successfully!', 
-                'text' => 'It will not list on Product Category table soon.'
-            ]);
+                
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Category Delete Successfully!']);
     }
 
      /**

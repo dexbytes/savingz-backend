@@ -8,7 +8,7 @@
                     <a class="opacity-3 text-dark" href="javascript:;">
                         <svg width="12px" height="12px" class="mb-1" viewBox="0 0 45 40" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <title>shop </title>
+                            <title>{{ config('app_settings.app_name.value') ?? config('app.name')}} </title>
                             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g transform="translate(-1716.000000, -439.000000)" fill="#252f40" fill-rule="nonzero">
                                     <g transform="translate(1716.000000, 291.000000)">
@@ -24,7 +24,7 @@
                                 </g>
                             </g>
                         </svg>
-                    </a>
+                    </a>    
                 </li>
                 <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
                 <li class="breadcrumb-item text-sm text-dark active text-capitalize" aria-current="page">{{ str_replace('-', ' ', Route::currentRouteName()) }}</li>
@@ -72,7 +72,7 @@
                         </i>
                     </a>
                 </li> --}}
-                <li class="nav-item dropdown pe-2">
+                {{--  <li class="nav-item dropdown pe-2">
                     <a href="javascript:;" class="nav-link text-body p-0 position-relative" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="material-icons cursor-pointer">
@@ -96,33 +96,9 @@
                                     </div>
                                 </div>
                             </a>
-                        </li>
-                        <li class="mb-2">
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex align-items-center py-1">
-                                    <span class="material-icons">podcasts</span>
-                                    <div class="ms-2">
-                                        <h6 class="text-sm font-weight-normal my-auto">
-                                            Manage podcast session
-                                        </h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item border-radius-md" href="javascript:;">
-                                <div class="d-flex align-items-center py-1">
-                                    <span class="material-icons">shopping_cart</span>
-                                    <div class="ms-2">
-                                        <h6 class="text-sm font-weight-normal my-auto">
-                                            Payment successfully completed
-                                        </h6>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
+                        </li>                        
                     </ul>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>

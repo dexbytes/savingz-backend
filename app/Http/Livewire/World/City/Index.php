@@ -42,7 +42,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.world.city.index',[
-            'cities' => Cities::searchMultipleCity($this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'cities' => Cities::searchMultipleCity(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -72,12 +72,9 @@ class Index extends Component
     public function remove()
     {
         Cities::find($this->deleteId)->delete();
-
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'City Delete Successfully!', 
-                'text' => 'It will not list on City table soon.'
-            ]);
+      
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'City Delete Successfully!']);
     }
 
      /**

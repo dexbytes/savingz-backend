@@ -15,13 +15,15 @@ class Create extends Component
     public $nationality = '';
     public $is_default = '';
     public $status = '';
+    public $country_code = '';
 
     protected $rules = [
         'name' => 'required|max:50|unique:App\Models\Worlds\Country,name',
         'country_ios_code' =>'required|Max:2|Min:1|nullable|unique:App\Models\Worlds\Country,country_ios_code',
         'nationality' => 'nullable|string',
         'is_default'=> 'nullable|between:0,1',
-        'status' => 'nullable|between:0,1'
+        'status' => 'nullable|between:0,1',
+        'country_code' => 'required|numeric|unique:App\Models\Worlds\Country,country_code',       
     ];
 
 
@@ -33,16 +35,25 @@ class Create extends Component
 
     public function store(){
 
-         $this->validate();
-        Country::create([
-            'name'         => $this->name,
-            'country_ios_code'  => $this->country_ios_code,
-            'nationality'        => $this->nationality,
-            'is_default'     => $this->is_default?1:0,
-            'status' => $this->status?1:0,
-        ]);
-        
+        $this->validate();
 
+        if(Country::where('is_default', 1)->doesntExist()) {
+            $this->is_default = 1;
+        }
+
+        if($this->is_default){
+            Country::where('is_default', 1)->update(['is_default' => 0]);
+        }
+   
+        Country::create([
+            'name' => $this->name,
+            'country_ios_code'  => $this->country_ios_code,
+            'nationality'  => $this->nationality,
+            'is_default'  => $this->is_default ? 1 : 0,
+            'status' => $this->status ? 1 : 0,
+            'country_code' => $this->country_code
+        ]);       
+        
         return redirect(route('country-management'))->with('status','Country successfully created.');
     }
 

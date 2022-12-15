@@ -30,11 +30,7 @@ class StoreAddress extends Model
         'is_primary',
         'addrees_type',
         'latitude',
-        'longitude',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-
+        'longitude'
     ];
 
     /**

@@ -43,7 +43,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.world.state.index',[
-            'states' => State::searchMultipleState($this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'states' => State::searchMultipleState(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -74,12 +74,10 @@ class Index extends Component
     public function remove()
     {
         State::find($this->deleteId)->delete();
+        
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'State Delete Successfully!']);
 
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'State Delete Successfully!', 
-                'text' => 'It will not list on State table soon.'
-            ]);
     }
 
      /**

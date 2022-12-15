@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Slider\Slider;
+use Carbon\Carbon;
 
 class SliderImage extends Model
 {
@@ -57,10 +58,17 @@ class SliderImage extends Model
 
 
 
-    
+
     public function getHomeSlider()
     {
-        return $this->where('status', 1)->orderBy('order_number', 'ASC')->get();
+        return $this->where('status', 1)->orderBy('order_number', 'ASC')->whereDate('start_date_time','<=' ,Carbon::now())->whereDate('end_date_time','>=' ,Carbon::now())->whereHas('slider', function($q) {
+            $q->where(function ($q)
+            {
+                $q->where('status', true);
+                $q->whereDate('start_date_time','<=' ,Carbon::now());
+                $q->whereDate('end_date_time','>=' ,Carbon::now());
+            });
+        })->get();
     }
-    
+
 }

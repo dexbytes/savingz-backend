@@ -25,19 +25,30 @@ class CreateProviderPermissionsSeeder extends Seeder
                 
     }
 
-
-
     protected function getPermissions() {
 
         return [
+            'dashboard',
             'register',
             'forget-password',
             'reset-password',
             'edit-profile',
             'dashboard-home',
             'product-management',
+            'add-product',
+            'add-category',
+            'edit-product',
+            'edit-category',
+            'create-product-addon',
+            'edit-product-addon',
+            'order-details',
+            'transaction-management',
             'product-category-management',
-            'product-addon-management'
+            'product-addon-management',
+            'order-management',
+            'provider-manage-store',
+            'review-management',
+            'store-promotion'
         ];
     }
 

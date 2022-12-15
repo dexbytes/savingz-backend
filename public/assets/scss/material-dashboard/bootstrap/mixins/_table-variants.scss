@@ -15,7 +15,7 @@
     --#{$variable-prefix}table-hover-color: #{color-contrast($hover-bg)};
 
     color: $color;
-    border-color: mix($color, $background, percentage($table-border-factor));
+    border-color: mix($color, $background, percentage($table-border-factor)); 
   }
 }
 // scss-docs-end table-variant

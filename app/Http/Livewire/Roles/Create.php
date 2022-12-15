@@ -13,12 +13,14 @@ class Create extends Component
  
     public $name = '';
     public $content = '';
+    public $permissions;
+    public $selectedPermissions = [];
 
     protected $rules = [
-        'name' => 'required|max:255|unique:Spatie\Permission\Models\Role,name',
+        'name'    => 'required|max:255|unique:Spatie\Permission\Models\Role,name',
         'content' =>'nullable|min:5',
+        'selectedPermissions' => 'nullable',
     ];
-
 
     public function updated($propertyName){
 
@@ -26,10 +28,16 @@ class Create extends Component
 
     } 
 
-    public function store(){
+    public function mount() {
+        $this->permissions = Permission::where("guard_name", "=", "web")->get();
+    }
 
-        $validatedData = $this->validate();
-        Role::create($validatedData);
+
+    public function store() {
+
+       $validatedData = $this->validate();
+       $role = Role::create($validatedData);
+       $role->syncPermissions($this->selectedPermissions);
 
         return redirect(route('role-management'))->with('status','Role successfully created.');
     }

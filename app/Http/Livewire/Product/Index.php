@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Product;
 
 use App\Models\Products\Product;
 use App\Models\Products\ProductCategories;
+use App\Models\Products\ProductImages;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -20,13 +21,13 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $perPage = '';
     public $product = '';
-    public $currency = '';
     public $filter = [];
     public $CheckedProduct = [];
     public $deleteID='';
     public $productId = '';
     public $destroyMultiple =  [];
     public $deleteIDs =  [];
+    public $productImage ;
 
     protected $listeners = ['remove', 'confirm','deleteCheckedProduct','removeMultiple'];
 
@@ -35,9 +36,8 @@ class Index extends Component
     
  
     public function mount() {
-        $this->perPage = config('commerce.pagination_per_page');
-        $this->currency = config('commerce.price');
-       
+        $this->perPage = config('app_settings.pagination_per_page.value');
+        
         if(auth()->user()->hasRole('Provider')){
             $this->filter['is_provider'] = true;
             $this->filter['store_id'] = $this->getStoreId();
@@ -54,6 +54,7 @@ class Index extends Component
         }
         $this->sortField = $field;
     }
+    
 
       /**
      * Write code on Method
@@ -81,11 +82,8 @@ class Index extends Component
     {
         Product::find($this->deleteId)->delete();
 
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'Product Delete Successfully!', 
-                'text' => 'It will not list on product table soon.'
-            ]);
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Product Delete Successfully!']);
     }
     
      /**
@@ -115,18 +113,15 @@ class Index extends Component
     {
         Product::whereKey( $this->destroyMultiple )->delete();
         $this->destroyMultiple = [];
-          $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'products Delete Successfully!', 
-                'text' => 'It will not list on product table soon.'
-            ]);
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Products Delete Successfully!']);
     }
     
 
     public function render()
     {
         return view('livewire.product.index',[
-            'products' => Product::with(['productCategories', 'store'])->searchMultipleProduct($this->search, $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'products' => Product::with(['productCategories', 'Productstore' , 'image'])->searchMultipleProduct(trim(strtolower($this->search)), $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
             

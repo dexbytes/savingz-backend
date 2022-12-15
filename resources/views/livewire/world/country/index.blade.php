@@ -9,8 +9,10 @@
                             <h5 class="mb-0">Countries</h5>
                         </div>
                         <div class="col-6 text-end">
-                            <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-country') }}"><i
-                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Add country</a>
+                            @can('add-country')
+                                <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-country') }}"><i
+                                        class="material-icons text-sm">add</i>&nbsp;&nbsp;Add country</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -56,6 +58,9 @@
                         <x-table.heading sortable wire:click="sortBy('name')"
                         :direction="$sortField === 'name' ? $sortDirection : null"> Name
                         </x-table.heading>  
+                        <x-table.heading sortable wire:click="sortBy('country_code')"
+                        :direction="$sortField === 'country_code' ? $sortDirection : null"> Country Code
+                        </x-table.heading>  
                         <x-table.heading sortable wire:click="sortBy('country_ios_code')"
                             :direction="$sortField === 'country_ios_code' ? $sortDirection : null"> Country Iso Code
                         </x-table.heading> 
@@ -77,6 +82,7 @@
                         <x-table.row wire:key="row-{{  $country->id }}">
                             <x-table.cell>{{  $country->id }}</x-table.cell>
                             <x-table.cell > {{ $country->name }}</x-table.cell>
+                            <x-table.cell >+ {{ $country->country_code }}</x-table.cell>
                             <x-table.cell>{{ $country->country_ios_code }}</x-table.cell> 
                            
                             <x-table.cell> <div class="form-check form-switch ms-3">
@@ -85,17 +91,22 @@
                             </div></x-table.cell>                         
                             <x-table.cell>{{  $country->created_at }}</x-table.cell>
                             <x-table.cell>
-                                <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('edit-country', $country)}}"
-                                    data-original-title="" title="">
-                                    <i class="material-icons">edit</i>
-                                    <div class="ripple-container"></div>
-                                </a>                               
-                                               
-                                <button type="button" class="btn btn-danger btn-link" data-original-title="Remove" title="Remove"
-                                    wire:click="destroyConfirm({{ $country->id }})">
-                                    <i class="material-icons">delete</i>
-                                    <div class="ripple-container"></div>
-                                </button>
+                         
+                                <div class="dropdown dropup dropleft">
+                                    <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="material-icons">
+                                            more_vert
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @can('edit-country')
+                                            <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-country', $country) }}">Edit</a></li>
+                                        @endcan
+                                        <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $country->id }})">Delete</a></li>
+                                        
+                                    </ul>
+                                </div>
+
                            
                             </x-table.cell>
                         </x-table.row>

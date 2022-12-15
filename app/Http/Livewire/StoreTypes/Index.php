@@ -39,7 +39,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.store-types.index', [
-            'storeTypes' => StoreType::searchMultipleStoreType($this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'storeTypes' => StoreType::searchMultipleStoreType(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -70,12 +70,9 @@ class Index extends Component
     public function remove()
     {
         StoreType::find($this->deleteId)->delete();
-
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'Store Type Delete Successfully!', 
-                'text' => 'It will not list on store types table soon.'
-            ]);
+       
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Store Type Delete Successfully!']);
     }  
 
 

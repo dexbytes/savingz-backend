@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\UserManagement\Create as UserManagementCreate;
 use App\Http\Livewire\UserManagement\Edit as UserManagementEdit;
 use App\Http\Livewire\UserManagement\Index as UserManagementIndex;
+use App\Http\Livewire\UserManagement\View as  UserManagementView;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,4 +21,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('users/edit/{id}', UserManagementEdit::class)->name('edit-user');
     Route::get('users/create', UserManagementCreate::class)->name('add-user');
     Route::get('unverified/{role}', UserManagementIndex::class)->name('unverified-driver');
+    Route::get('users/view/{id}', UserManagementView::class)->name('view-user');
 });

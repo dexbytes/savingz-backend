@@ -24,7 +24,7 @@ class Login extends Component
 
     public function mount() {
 
-       $this->fill(['email' => 'admin@admin.com', 'password' => 'admin123']);
+       //$this->fill(['email' => 'admin@admin.com', 'password' => 'admin123']);
 
     }
 
@@ -95,13 +95,9 @@ class Login extends Component
 
           if(is_numeric($attributes['email'])){
             return ['phone'=> $attributes['email'], 'password'=> $attributes['password']];
-          }
-
-          elseif (filter_var( $attributes['email'], FILTER_VALIDATE_EMAIL)) {
+          }else{
             return ['email'=> $attributes['email'], 'password'=> $attributes['password']];
-          }
-
-          return ['username'=> $attributes['email'], 'password'=> $attributes['password']];
+          }          
     }
 
 

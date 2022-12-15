@@ -41,7 +41,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.page.index',[
-            'pages' => Post::searchMultiplePage($this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'pages' => Post::searchMultiplePage(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -72,11 +72,8 @@ class Index extends Component
     {
         Post::find($this->deleteId)->delete();
 
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'Page Delete Successfully!', 
-                'text' => 'It will not list on pages table soon.'
-            ]);
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Page Delete Successfully!']);
     }  
 
      /**

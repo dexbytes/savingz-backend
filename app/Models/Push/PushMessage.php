@@ -46,4 +46,10 @@ class PushMessage extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function PushDeliveredMessage(): BelongsTo
+    {
+        return $this->belongsTo(PushDeliveredMessage::class,'id','message_id');
+    }
+
 }

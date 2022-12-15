@@ -9,8 +9,10 @@
                             <h5 class="mb-0">Pages</h5>
                         </div>
                         <div class="col-6 text-end">
-                            <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-page') }}"><i
-                                    class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Page</a>
+                            @can('add-page')
+                                <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-page') }}"><i
+                                        class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Page</a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -76,7 +78,7 @@
                             <x-table.cell>{{ $page->id }}</x-table.cell>
                             <x-table.cell>{{ $page->title }}</x-table.cell>  
                             <x-table.cell>{{ $page->slug }}</x-table.cell>                                                  
-                            <x-table.cell>{{ $page->created_at }}</x-table.cell>
+                            <x-table.cell>{{ $page->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell> 
                                 @if(!in_array($page->slug, $this->defaultPages) )  
                                     <div class="form-check form-switch ms-3">
@@ -86,19 +88,22 @@
                                 @endif   
                             </x-table.cell> 
                          
-                            <x-table.cell>                                
-                                <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('edit-page', $page->id)}}"
-                                    data-original-title="" title="">
-                                    <i class="material-icons">edit</i>
-                                    <div class="ripple-container"></div>
-                                </a>
-                            @if(!in_array($page->slug, $this->defaultPages) )   
-                                <button type="button" class="btn btn-danger btn-link" data-original-title="Remove" title="Remove"
-                                    wire:click="destroyConfirm({{ $page->id }})">
-                                    <i class="material-icons">delete</i>
-                                    <div class="ripple-container"></div>
-                                </button>
-                            @endif   
+                            <x-table.cell>                               
+                                <div class="dropdown dropup dropleft">
+                                    <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="material-icons">
+                                            more_vert
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        @can('edit-page')
+                                            <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-page', $page) }}">Edit</a></li>
+                                        @endcan
+                                        @if(!in_array($page->slug, $this->defaultPages) )  
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $page->id }})">Delete</a></li>
+                                        @endif 
+                                    </ul>
+                                </div>
                             </x-table.cell>
                         </x-table.row>
                         @endforeach

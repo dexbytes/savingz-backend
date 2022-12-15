@@ -3,7 +3,6 @@
 namespace App\Http\Livewire\StoreTypes;
 use App\Models\Stores\StoreType;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-
 use Livewire\Component;
 
 class Edit extends Component

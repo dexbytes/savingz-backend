@@ -61,18 +61,15 @@ class Index extends Component
     public function remove()
     {
         Role::find($this->deleteId)->delete();
-
-        $this->dispatchBrowserEvent('swal:modal', [
-                'type' => 'success',  
-                'message' => 'Role Delete Successfully!', 
-                'text' => 'It will not list on roles table soon.'
-            ]);
+      
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Role Delete Successfully!']);
     }  
 
     public function render()
     {
         return view('livewire.roles.index', [
-            'roles' => Role::searchMultipleRole($this->search)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'roles' => Role::searchMultipleRole(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

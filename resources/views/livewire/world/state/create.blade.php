@@ -37,7 +37,7 @@
                             <div class="col-12  mb-4">
                                 <div class="input-group input-group-static">
                                     <label >Country *</label>
-                                    <select class="form-control input-group input-group-dynamic"wire:model.lazy="country_id"  id="projectName" onfocus="focused(this)" onfocusout="defocused(this)">
+                                    <select class="form-control input-group input-group-dynamic" wire:model.lazy="country_id"  id="countryName" onfocus="focused(this)" onfocusout="defocused(this)">
                                         <option value=''>Choose Your Country</option>
                                         @foreach ($country  as $value)
                                         <option value="{{ $value['id'] }}">{{ $value['name']}}</option>

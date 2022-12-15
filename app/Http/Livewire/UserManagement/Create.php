@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\UserManagement;
 
+use App\Models\Driver\UserDriver;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Livewire\Component;
@@ -18,7 +19,6 @@ class Create extends Component
 
 
     public $roles;
-    public $county_code;
     public $picture;
     public $email='';
     public $phone='';
@@ -26,23 +26,34 @@ class Create extends Component
     public $password='';
     public $role_id='';
     public $passwordConfirmation='';
-    public $panNumber='';
-    public $aadharNumber='';
+    public $countries;
+    public $country_code = '';
+    public $role = '';
+    
+
+    protected $queryString = ['role'];
 
     protected $rules = [
         'email' => 'required|email|unique:App\Models\User,email',
         'name' =>'required',
-        'phone' =>'required|min:8|unique:App\Models\User,phone',
-        'password' => 'required|same:passwordConfirmation|min:7',
-        'role_id' => 'required|exists:Spatie\Permission\Models\Role,id',
-        'aadharNumber' => 'nullable|numeric|digits:12|unique:App\Models\User,aadhar_number',
-        'panNumber'   => 'nullable|size:10|unique:App\Models\User,pan_number',
+        'phone' =>'required|numeric|min:8|unique:App\Models\User,phone',
+        'password' => 'required|min:7',
+        'passwordConfirmation' => 'required|min:7|same:password',
+        'role_id' => 'required|exists:Spatie\Permission\Models\Role,name',
+       // 'country_code' => 'required',
     ];
 
     public function mount() {
 
-        $this->roles = Role::get(['id','name']);
-        $this->county_code = '966';
+        $this->roles = Role::where('guard_name', 'web')->where('status', 1)->get(['id','name']);
+        $this->countries = Country::all();
+        $this->country_code = Country::where('is_default', 1)->value('country_code');
+        $this->role_id = ucfirst($this->role);
+ 
+        if(Role::where('name', $this->role_id)->doesntExist()) {
+            $this->role_id = '';
+            $this->role = '';
+        }      
     }
 
     public function updated($propertyName){
@@ -58,17 +69,22 @@ class Create extends Component
         $user = User::create([
                 'email' => $this->email,
                 'name' => $this->name,
-                'phone' => $this->county_code.''.$this->phone,
-                'county_code' => $this->county_code,
-                'password' => $this->password,  
-                'aadhar_number' => $this->aadharNumber,
-                'pan_number' => $this->panNumber,      
+                'phone' => $this->country_code.''.$this->phone,
+                'country_code' => $this->country_code,
+                'password' => $this->password,           
             ]);
+            if($this->role_id == 'Driver')
+            {
+                UserDriver::create([
+                    'user_id' => $user->id,
+                    'is_live' => 0
+                    ]);        
+            }
 
-        if( $this->role_id){
+        if($this->role_id){
             $user->assignRole(explode(',', $this->role_id));     
         }
-
+      
         return redirect(route('user-management'))->with('status','User successfully created.');
     }
 
