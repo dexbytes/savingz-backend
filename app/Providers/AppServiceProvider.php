@@ -77,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
                             $query->where('id', 'like', '%'.$string.'%')
                             ->orWhere(DB::raw('lower(name)'), 'like', '%'.$string.'%')
                             ->orWhere(DB::raw('lower(email)'), 'like', '%'.$string.'%')
+                            ->orWhere(DB::raw('lower(pan_card_number)'), 'like', '%'.$string.'%')
                             ->orWhere('phone', 'like', '%'.$string.'%')
                             ->orWhere('created_at', 'like', '%'.$string.'%');
                      });                     

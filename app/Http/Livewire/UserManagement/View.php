@@ -53,6 +53,8 @@ class View extends Component
             'user.phone' =>'required|min:8|unique:App\Models\User,phone,'.$this->user->id,            
             'role_id' => 'required',
             'user.country_code' => 'required',
+            'user.aadhar_card_number' => 'nullable|regex:/^\d{12}$/|unique:App\Models\User,aadhar_card_number,'.$this->user->id,  
+            'user.pan_card_number' => 'nullable|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/|unique:App\Models\User,pan_card_number,'.$this->user->id,  
         ];
     }
 
@@ -93,21 +95,10 @@ class View extends Component
         if(!empty($this->role_id)){
             $this->user->syncRoles($this->role_id);     
         }
-        if(!$this->user->hasRole('Driver')){
-        UserDriver::whereUserId($this->user->id)->delete();    
-        } 
-      
-         if($this->user->hasRole('Driver')){
-             UserDriver::updateOrCreate([
-                 'user_id' =>$this->user->id
-                ], ['user_id' => $this->user->id,
-                     'is_live' => 0 ]
-            ); 
-          }
-            
-      
+
         $this->user->save();
         $this->resetField();
+        
         $this->dispatchBrowserEvent('alert', 
         ['type' => 'success',  'message' => 'User successfully updated.']); 
     }

@@ -33,31 +33,7 @@
                             <span class="text-sm">Change Password</span>
                         </a>
                     </li>
-                    @if($this->user->hasRole('Customer'))
-                        <li class="nav-item pt-2">
-                            <a class="nav-link text-dark d-flex" data-scroll="" href="#address-info">
-                                <i class="material-icons text-lg me-2">location_on</i>
-                                <span class="text-sm">Address</span>
-                            </a>
-                        </li>
-                    @endif
-                    @if($this->user->hasRole('Provider'))
-                        <li class="nav-item pt-2">
-                            <a class="nav-link text-dark d-flex" data-scroll="" href="#stores">
-                                <i class="material-icons text-lg me-2">store</i>
-                                <span class="text-sm">Stores</span>
-                            </a>
-                        </li>
-                    @endif
-
-                    @if($this->user->hasRole('Driver'))
-                        <li class="nav-item pt-2">
-                            <a class="nav-link text-dark d-flex" data-scroll="" href="#commission-info">
-                                <i class="material-icons text-lg me-2">payments</i>
-                                <span class="text-sm">Commission Settings</span>
-                            </a>
-                        </li>
-                    @endif
+                   
                     <li class="nav-item pt-2">
                         <a class="nav-link text-dark d-flex" data-scroll="" href="#other-info">
                             <i class="material-icons text-lg me-2">info</i>
@@ -111,25 +87,9 @@
                         <div class="h-100">
                             <h5 class="mb-1 font-weight-bolder">
                              {{ $user->name }} ({{ $user->getRoleNames()->implode(',') }})
-                                
-                                @if($this->user->hasRole('Driver'))
-                                <span class="fa-sm material-symbols-outlined text-warning">
-                                   star
-                                   </span>{{$user->OrderRating('driver')}}   ({{ $user->OrderRatingCount('driver') }})
-                                @endif
-
-                                @if($this->user->hasRole('Customer'))
-                                  <span class="fa-sm material-symbols-outlined text-warning">
-                                    star
-                                    </span>{{$user->OrderRating('customer')}}   ({{ $user->OrderRatingCount('customer') }})
-                                @endif
-   
-                                @if($this->user->hasRole('Driver') && $user->driver) -  
-                                    <span class="badge badge-{{ $user->driver->is_live ? 'success' : 'danger' }} badge-sm my-auto ms-auto me-3">{{ $user->driver->is_live ? 'Online' : 'Offline' }}</span>
-                                @endif
                             </h5>
                             <p class="mb-0 font-weight-normal text-sm">
-                                + {{ $user->country_code }} {{ $user->phone }}
+                               @if($user->phone) + {{ $user->country_code }} {{ $user->phone }} @endif
                             </p>
                         </div>
                     </div>
@@ -228,7 +188,28 @@
                             @error('user.email')
                             <p class='text-danger inputerror'>{{ $message }} </p>
                             @enderror
-                        </div>                       
+                        </div> 
+                        
+                        <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>PAN Number </label>
+                                    <input wire:model.lazy="user.pan_card_number" type="text" class="form-control" placeholder="Enter a PAN Number">
+                                </div>
+                                @error('user.pan_card_number')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>Aadhar Number </label>
+                                    <input wire:model.lazy="user.aadhar_card_number" type="text" class="form-control" placeholder="Enter a Aadhar Number">
+                                </div>
+                                @error('user.aadhar_card_number')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+                        
                         @if (($user->id != auth()->id() || $user->id  != 1))
                         <div class="col-12 mb-4">
                             <div class="input-group input-group-static">

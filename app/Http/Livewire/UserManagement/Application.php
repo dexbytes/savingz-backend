@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Hash;
 
-class Index extends Component
+class Application extends Component
 {
 
     use AuthorizesRequests;
@@ -21,23 +21,30 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $perPage = 10;
     public $account_status = '';
-    public $filter = ['role' => null, 'status' => null];
+    public $filterStatus = ['pending', 'cancelled', 'declined', 'suspended'];
     public $deleteId = '';
     public $actionStatus = '';
     public $userId = '';
     public $roles;
+    public $filter = [];
 
     protected $listeners = ['remove', 'confirmApplication'];
 
-    protected $queryString = ['sortField', 'sortDirection', 'account_status'];
+    protected $queryString = ['sortField', 'sortDirection'];
     protected $paginationTheme = 'bootstrap';
 
 
-    public function mount($role = null) { 
-        $this->filter['role'] = $role;
-        $this->filter['account_status'] = $this->account_status;
+    public function mount($status = null) { 
+
+        if($status == 'pending'){
+            $this->filterStatus =  ['pending'];
+        }
+
+        if($status == 'declined'){
+            $this->filterStatus =  ['declined', 'cancelled', 'suspended'];
+        }
+        
         $this->perPage = config('commerce.pagination_per_page');
-        $this->roles = Role::where('status', 1)->get(['id','name']);
     }
 
     public function sortBy($field){
@@ -52,8 +59,8 @@ class Index extends Component
     
     public function render()
     {
-        return view('livewire.user-management.index',[
-            'users' => User::with(['roles'])->where('account_status', 'accepted' )->searchMultipleUsers(trim(strtolower($this->search)), $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+        return view('livewire.user-management.application',[
+            'users' => User::with(['roles'])->whereIn('account_status', $this->filterStatus)->searchMultipleUsers(trim(strtolower($this->search)), $this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 
@@ -104,10 +111,10 @@ class Index extends Component
         $this->dispatchBrowserEvent('swal:confirmApplication', [
                 'action' => 'confirmApplication',
                 'type' => 'warning',  
-                'confirmButtonText' =>  $status == 'approved' ? 'Yes, approve it!' : 'Yes reject it',
+                'confirmButtonText' =>  $status == 'accepted' ? 'Yes, approve it!' : 'Yes reject it',
                 'cancelButtonText' => 'No, cancel!',
-                'message' => $status == 'approved' ? 'Are you approve?' : 'Are you Reject', 
-                'text' =>  $status == 'approved' ?  'If approved, driver will be listed in driver sections!' : 'If rejected, driver will be not listed in driver sections!'
+                'message' => $status == 'accepted' ? 'Are you approve?' : 'Are you Reject', 
+                'text' =>  $status == 'accepted' ?  'If approved, Customer will be listed in customers sections!' : 'If rejected, customer will be not listed in customers sections!'
             ]);
     }  
 
@@ -118,19 +125,17 @@ class Index extends Component
      */
     public function confirmApplication()
     {        
-        UserDriver::where('user_id','=', $this->userId )->update(['account_status' => $this->actionStatus]);
-        
         $password = 'password';
-        User::where('id', '=' , $this->userId)->update(['status' => 1, 'password' => Hash::make( $password )]);
-
+        User::where('id', '=' , $this->userId)->update(['status' => 1, 'password' => Hash::make( $password ), 'account_status' => $this->actionStatus]);
+       
         //Twillo API
         $message = 'Your password is : '. $password;
         //Twillo::sendMessage($mobileNumber, $message);
 
         $this->dispatchBrowserEvent('swal:modal', [
             'type' => 'success',  
-            'message' => $this->actionStatus == 'approved' ? 'Driver Application Approved Successfully!' : 'Driver Application Rejected ', 
-            'text' => 'It will not list on users table soon.'
+            'message' => $this->actionStatus == 'accepted' ? 'Customer Application Approved Successfully!' : 'Customer Application Rejected ', 
+            'text' =>  $this->actionStatus == 'accepted' ?  'It will be list on users table soon.' : 'It will be not list on users table soon.'
         ]);
 
     }

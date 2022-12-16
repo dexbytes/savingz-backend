@@ -50,7 +50,10 @@ class User extends Authenticatable
         'remember_token',
         'user_name',
         'profile_photo',
-        'status'
+        'status',        
+        'pan_card_number',
+        'aadhar_card_number',
+        'account_status'
     ];
 
     /**

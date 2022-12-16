@@ -29,7 +29,8 @@ class Create extends Component
     public $countries;
     public $country_code = '';
     public $role = '';
-    
+    public $pan_card_number = '';
+    public $aadhar_card_number = '';
 
     protected $queryString = ['role'];
 
@@ -40,7 +41,9 @@ class Create extends Component
         'password' => 'required|min:7',
         'passwordConfirmation' => 'required|min:7|same:password',
         'role_id' => 'required|exists:Spatie\Permission\Models\Role,name',
-       // 'country_code' => 'required',
+        'country_code' => 'nullable|exists:App\Models\Worlds\Country,country_code',
+        'aadhar_card_number' => 'nullable|regex:/^\d{12}$/|unique:App\Models\User,aadhar_card_number',
+        'pan_card_number' => 'nullable|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/|unique:App\Models\User,pan_card_number',
     ];
 
     public function mount() {
@@ -71,8 +74,11 @@ class Create extends Component
                 'name' => $this->name,
                 'phone' => $this->country_code.''.$this->phone,
                 'country_code' => $this->country_code,
-                'password' => $this->password,           
+                'password' => $this->password,
+                'aadhar_card_number' => $this->aadhar_card_number,
+                'pan_card_number' => $this->pan_card_number     
             ]);
+            
             if($this->role_id == 'Driver')
             {
                 UserDriver::create([

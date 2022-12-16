@@ -18,23 +18,7 @@
         <div class="col-sm-3 mt-sm-0 mt-4">
             <div class="card">
                 <div class="card-body p-3 position-relative">
-                   @if(auth()->user()->hasRole('Provider'))
-                    <div class="row">
-                        <div class="col-7 text-start">
-                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Completed Order</p>
-                            <h5 class="font-weight-bolder mb-0">
-                                {{ $totalCompletedOrders }}
-                            </h5>
-                        </div>
-                        <div class="col-5">
-                            <div class="dropdown text-end">
-                                <a href="javascript:;" class="cursor-pointer text-secondary" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span class="ms-lg-n6 text-xs text-secondary">{{ $dateBeforeSeven->format('d M') }} - {{ $todayDate->format('d M') }}</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    @else
+                   
                     <div class="row">
                         <div class="col-7 text-start">
                             <p class="text-sm mb-1 text-capitalize font-weight-bold">New Customers</p>
@@ -50,7 +34,7 @@
                             </div>
                         </div>
                     </div>
-                    @endif
+                    
                 </div>
             </div>
         </div>
@@ -59,9 +43,9 @@
                 <div class="card-body p-3 position-relative">
                     <div class="row">
                         <div class="col-7 text-start">
-                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Total Order</p>
+                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Pending Request</p>
                             <h5 class="font-weight-bolder mb-0">
-                                {{ $totalOrders }}
+                                {{ $pendingRequest }}
                             </h5>
                         </div>
                         <div class="col-5">
@@ -79,22 +63,23 @@
         <div class="col-sm-3 mt-sm-0 mt-4">
             <div class="card">
                 <div class="card-body p-3 position-relative">
+                     
                     <div class="row">
                         <div class="col-7 text-start">
-                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Sales</p>
-                            <h5 class="font-weight-bolder mb-0 me-lg-n1">
-                                {{ \Utils::ConvertPrice($sales) }}
+                            <p class="text-sm mb-1 text-capitalize font-weight-bold">Total Bank Cards</p>
+                            <h5 class="font-weight-bolder mb-0">
+                                {{ $totalCompletedOrders }}
                             </h5>
                         </div>
                         <div class="col-5">
                             <div class="dropdown text-end">
-                                <a href="javascript:;" class="cursor-pointer text-secondary" id="dropdownUsers3" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a href="javascript:;" class="cursor-pointer text-secondary" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
                                     <span class="ms-lg-n6 text-xs text-secondary">{{ $dateBeforeSeven->format('d M') }} - {{ $todayDate->format('d M') }}</span>
                                 </a>
-
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -104,7 +89,7 @@
             <div class="card h-100">
                 <div class="card-header pb-0 p-3">
                     <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">Orders</h6>
+                        <h6 class="mb-0">Cards</h6>
                     </div>
                 </div>
                 <div class="card-body pb-0 p-3 mt-4">
@@ -140,7 +125,7 @@
             <div class="card">
                 <div class="card-header pb-0 p-3">
                     <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">Revenue</h6>
+                        <h6 class="mb-0">Customers</h6>
                     </div>
                     <div class="d-flex align-items-center">
                         <span class="badge badge-md badge-dot me-4">
@@ -149,7 +134,11 @@
                         </span>
                         <span class="badge badge-md badge-dot me-4">
                             <i class="bg-dark"></i>
-                            <span class="text-dark text-xs">Completed</span>
+                            <span class="text-dark text-xs">Without Cards</span>
+                        </span>
+                        <span class="badge badge-md badge-dot me-4">
+                            <i class="bg-warning"></i>
+                            <span class="text-dark text-xs">With Cards</span>
                         </span>
                     </div>
                 </div>

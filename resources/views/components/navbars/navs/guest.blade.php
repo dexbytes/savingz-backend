@@ -6,9 +6,9 @@
         @if(config('app_settings.app_logo.value'))
             <img src="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_logo.value')) }} " class="navbar-brand-img h-100" alt="main_logo">
         @else       
-            <span class="ms-2 font-weight-bold text-white">
+            <h3 class="ms-2 font-weight-bold text-white">
                 {{ config('app_settings.app_name.value') ?? config('app.name')}}
-            </span> 
+            </h3> 
         @endif  
    </a>
     

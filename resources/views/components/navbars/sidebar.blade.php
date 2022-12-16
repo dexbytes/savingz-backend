@@ -9,9 +9,9 @@
                 @if(config('app_settings.app_logo.value'))
                     <img src="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_logo.value')) }} " class="navbar-brand-img h-100" alt="main_logo">
                 @else
-                <span class="ms-2 font-weight-bold text-white">
+                <h3 class="ms-2 font-weight-bold text-white">
                     @role('Provider') {{session('store_name')}} |  @endrole {{ config('app_settings.app_name.value') ?? config('app.name')}}
-                </span>  
+                </h3>  
                 @endif              
             </a>
     </div>
@@ -59,97 +59,146 @@
                 </a>
             </li>
         @endcan
-        @can('user-management')
-            <li class="nav-item mt-3">
-               <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">USERS</h6>
-            </li>
+            @can('user-management')
+                <li class="nav-item mt-3">
+                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">USERS</h6>
+                </li>
 
-        @can('user-management')
-            <li class="nav-item">
-                <a data-bs-toggle="collapse" href="#users"
-                    class="nav-link text-white {{ strpos(Request::route()->uri(), 'users') === false ? '' : 'active' }}  "
-                    aria-controls="users" role="button" aria-expanded="false">
-                     <span class="material-symbols-outlined">
-                        groups
-                      </span>
-                    <span class="nav-link-text ms-2 ps-1">Users</span>
-                </a>
-                <div class="collapse {{ strpos(Request::route()->uri(), 'users') === false ? '' : 'show' }} "
-                    id="users">
+                @can('user-management')
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#users"
+                            class="nav-link text-white {{ strpos(Request::route()->uri(), 'users') === false ? '' : 'active' }}  "
+                            aria-controls="users" role="button" aria-expanded="false">
+                            <span class="material-symbols-outlined">
+                                groups
+                            </span>
+                            <span class="nav-link-text ms-2 ps-1">Users</span>
+                        </a>
+                        <div class="collapse {{ strpos(Request::route()->uri(), 'users') === false ? '' : 'show' }} "
+                        id="users">
 
-                    <ul class="nav nav-sm flex-column ms-2">
-                        <li class="nav-item">
-                            <a class="nav-link text-white  {{ in_array(Route::currentRouteName(), ['user-management', 'add-user', 'edit-user']) && Route::current()->parameter('role') == '' ? 'active' : '' }}"
-                                href="{{ route('user-management') }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal ms-3 ps-1"> All </span>
-                            </a>
-                        </li>
-                   
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
-                                href="{{  route('user-management', ['role' => 'customer']) }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal ms-3 ps-1"> Customers </span>
-                            </a>
-                        </li>
-                   
-                       
-                    </ul>
-                    @endcan
-               
-                    @can('ticket-management')
-                        <li class="nav-item ">
-                            <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'tickets') === false ? '' : 'active' }}   "
-                                data-bs-toggle="collapse" aria-expanded="false" href="#ticketsExample">
-                                <span class="material-symbols-outlined">
-                                manage_accounts
-                                </span>
-                                <span class="sidenav-normal  ms-2 ps-1"> Requests <b class="caret"></b></span>
-                            </a>
-                            <div class="collapse {{ strpos(Request::route()->uri(), 'tickets') === false ? '' : 'show' }} "
-                                id="ticketsExample">
-                                <ul class="nav nav-sm flex-column ms-2">
-                                    <li class="nav-item">
-                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' && Route::current()->parameter('status') == ''  ? 'active' : '' }} "
-                                            href="{{ route('ticket-management') }}">
-                                            <span class="material-symbols-outlined">
-                                                list
-                                            </span>
-                                            <span class="sidenav-normal  ms-3  ps-1">All </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' && Route::current()->parameter('status') == 'open'  ? 'active' : '' }}"
-                                            href="{{ route('ticket-management', ['status' => 'open']) }}">
-                                            <span class="material-symbols-outlined">
-                                             pending_actions
-                                            </span>
-                                            <span class="sidenav-normal ms-3 ps-1">Pending Requests </span>
-                                        </a>
-                                    </li>
-                                    <!-- @can('ticket-category-management')
-                                        <li class="nav-item">
-                                            <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-category-management' ? 'active' : '' }}"
-                                                href="{{ route('ticket-category-management') }}">
-                                                <span class="material-symbols-outlined">
-                                                category
-                                                </span>
-                                                <span class="sidenav-normal ms-3 ps-1"> Categories </span>
-                                            </a>
-                                        </li>
-                                   @endcan -->                                    
-                                </ul>
-                            </div>
-                        </li>
-                    @endcan   
+                        <ul class="nav nav-sm flex-column ms-2">
+                            <li class="nav-item">
+                                <a class="nav-link text-white  {{ in_array(Route::currentRouteName(), ['user-management', 'add-user', 'edit-user']) && Route::current()->parameter('role') == '' ? 'active' : '' }}"
+                                    href="{{ route('user-management') }}">
+                                    <span class="material-symbols-outlined">
+                                        person
+                                    </span>
+                                    <span class="sidenav-normal ms-3 ps-1"> All </span>
+                                </a>
+                            </li>
+                    
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
+                                    href="{{  route('user-management', ['role' => 'customer']) }}">
+                                    <span class="material-symbols-outlined">
+                                        person
+                                    </span>
+                                    <span class="sidenav-normal ms-3 ps-1"> Customers </span>
+                                </a>
+                            </li>                  
+                        </ul>
+                        </div>
+                    </li>
                 @endcan
+
+             
+                    <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#user-application"
+                            class="nav-link text-white {{ strpos(Request::route()->uri(), 'user-application') === false ? '' : 'active' }}  "
+                            aria-controls="user-application" role="button" aria-expanded="false">
+                            <span class="material-symbols-outlined">
+                                manage_accounts
+                            </span>
+                            <span class="nav-link-text ms-2 ps-1">Requests</span>
+                        </a>
+                        <div class="collapse {{ strpos(Request::route()->uri(), 'user-application') === false ? '' : 'show' }} "
+                        id="user-application">
+
+                        <ul class="nav nav-sm flex-column ms-2">
+                            <li class="nav-item">
+                                <a class="nav-link text-white  {{ in_array(Route::currentRouteName(), ['user-application-management', 'add-user', 'edit-user']) && Route::current()->parameter('status') == 'all' ? 'active' : '' }}"
+                                    href="{{ route('user-application-management', ['status' => 'all']) }}">
+                                    <span class="material-symbols-outlined">
+                                        group
+                                    </span>
+                                    <span class="sidenav-normal ms-3 ps-1">All</span>
+                                </a>
+                            </li>
+                    
+                            <li class="nav-item">
+                                <a class="nav-link text-white  {{ in_array(Route::currentRouteName(), ['user-application-management', 'add-user', 'edit-user']) && Route::current()->parameter('status') == 'pending' ? 'active' : '' }}"
+                                    href="{{ route('user-application-management', ['status' => 'pending']) }}">
+                                    <span class="material-symbols-outlined">
+                                        group
+                                    </span>
+                                    <span class="sidenav-normal ms-3 ps-1">Pending</span>
+                                </a>
+                            </li>
+                    
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white {{ Route::currentRouteName() == 'user-application-management'  && Route::current()->parameter('status') == 'declined' ? 'active' : '' }}"
+                                    href="{{  route('user-application-management', ['status' => 'declined']) }}">
+                                    <span class="material-symbols-outlined">
+                                        group_remove
+                                    </span>
+                                    <span class="sidenav-normal ms-3 ps-1">Declined</span>
+                                </a>
+                            </li>                  
+                        </ul>
+                        </div>
+                    </li>
+               
+               
+                @can('ticket-management')
+                    <li class="nav-item ">
+                        <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'tickets') === false ? '' : 'active' }}   "
+                            data-bs-toggle="collapse" aria-expanded="false" href="#ticketsExample">
+                            <span class="material-symbols-outlined">
+                            manage_accounts
+                            </span>
+                            <span class="sidenav-normal  ms-2 ps-1"> Requests <b class="caret"></b></span>
+                        </a>
+                        <div class="collapse {{ strpos(Request::route()->uri(), 'tickets') === false ? '' : 'show' }} "
+                            id="ticketsExample">
+                            <ul class="nav nav-sm flex-column ms-2">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' && Route::current()->parameter('status') == ''  ? 'active' : '' }} "
+                                        href="{{ route('ticket-management') }}">
+                                        <span class="material-symbols-outlined">
+                                            list
+                                        </span>
+                                        <span class="sidenav-normal  ms-3  ps-1">All </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-management' && Route::current()->parameter('status') == 'open'  ? 'active' : '' }}"
+                                        href="{{ route('ticket-management', ['status' => 'open']) }}">
+                                        <span class="material-symbols-outlined">
+                                            pending_actions
+                                        </span>
+                                        <span class="sidenav-normal ms-3 ps-1">Pending Requests </span>
+                                    </a>
+                                </li>
+                                <!-- @can('ticket-category-management')
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white {{ Route::currentRouteName() == 'ticket-category-management' ? 'active' : '' }}"
+                                            href="{{ route('ticket-category-management') }}">
+                                            <span class="material-symbols-outlined">
+                                            category
+                                            </span>
+                                            <span class="sidenav-normal ms-3 ps-1"> Categories </span>
+                                        </a>
+                                    </li>
+                                @endcan -->                                    
+                            </ul>
+                        </div>
+                    </li>
+                @endcan   
+            @endcan
             
-                @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
+        @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
                     <li class="nav-item mt-3">
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MARKETPLACE</h6>
                     </li>

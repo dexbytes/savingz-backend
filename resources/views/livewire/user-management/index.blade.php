@@ -24,25 +24,7 @@
                         </div>
                     </div>
                 </div>
-                @if (Session::has('status'))
-                <div class="alert alert-success alert-dismissible text-white mx-4" role="alert">
-                    <span class="text-sm">{{ Session::get('status') }}</span>
-                    <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                @elseif (Session::has('error'))
-                <div class="alert alert-danger alert-dismissible text-white mx-4" role="alert">
-                    <span class="text-sm">{{ Session::get('error') }}</span>
-                    <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                @endif
-               
-               
+   
                 <div class="d-flex flex-row justify-content-between mx-4">
                     <div class="d-flex mt-3">
                         <p class="text-secondary pt-2">Show&nbsp;&nbsp;</p>
@@ -84,22 +66,17 @@
                         <x-table.heading sortable wire:click="sortBy('id')"
                             :direction="$sortField === 'id' ? $sortDirection : null"> ID
                         </x-table.heading>
-                        <x-table.heading> Photo
+                        <x-table.heading>Photo
                         </x-table.heading>
                         <x-table.heading sortable wire:click="sortBy('name')"
                             :direction="$sortField === 'name' ? $sortDirection : null"> Name
                         </x-table.heading>
-                        <!-- <x-table.heading>Email
-                        </x-table.heading> -->
+                        <x-table.heading>PAN Number
+                        </x-table.heading>
                         <x-table.heading>Phone
                         </x-table.heading>
                         <x-table.heading>Status
                         </x-table.heading>
-                        @if(!empty(Route::current()->parameter('role')) && Route::current()->parameter('role') == 'driver')
-                            <x-table.heading>Status
-                            </x-table.heading>
-                        @endif
-                       
                         @if(empty($this->filter['role']))
                             <x-table.heading>Role
                             </x-table.heading>
@@ -126,8 +103,9 @@
                                     class="avatar avatar-sm me-3">
                                 @endif
                             </x-table.cell>
-                            <x-table.cell><a href="{{ route('view-user', $user) }}">{{ $user->name }}</a></x-table.cell>                          
-                            <x-table.cell>+{{$user->country_code}} {{ substr($user->phone , +(strlen($user->country_code)))  }}</x-table.cell>
+                            <x-table.cell><a href="{{ route('view-user', $user) }}">{{ $user->name }}</a></x-table.cell>   
+                            <x-table.cell><a href="{{ route('view-user', $user) }}">{{ $user->pan_card_number }}</a></x-table.cell>                          
+                            <x-table.cell> @if($user->phone) +{{$user->country_code}} {{ substr($user->phone , +(strlen($user->country_code)))  }} @endif</x-table.cell>
                             <x-table.cell> 
                             @if ($user->id != auth()->id() || $user->id  != 1)
                                 <div class="form-check form-switch ms-3">
@@ -136,20 +114,7 @@
                                 </div>
                             @endif
                             </x-table.cell>
-                            @if(!empty($this->filter['role']) && $this->filter['role'] == 'driver')
-                            <x-table.cell>
-                                <span class="badge badge-dot me-4">
-                                   @if($user->driver && $user->driver->is_live)
-                                    <i class="bg-success"></i>
-                                    <span class="text-dark text-xs">Online</span>
-                                    @else
-                                    <i class="bg-danger"></i>
-                                    <span class="text-dark text-xs">Offline</span>
-                                    @endif
-                                </span>
-                            </x-table.cell>
-                            @endif
-
+                           
                             @if(empty($this->filter['role']))
                                 <x-table.cell>{{ $user->getRoleNames()->implode(',') }}
                                 </x-table.cell>

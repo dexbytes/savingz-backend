@@ -71,6 +71,26 @@
 
                             <div class="col-6 mb-4">
                                 <div class="input-group input-group-static">
+                                    <label>PAN Number </label>
+                                    <input wire:model.lazy="pan_card_number" type="text" class="form-control" placeholder="Enter a PAN Number">
+                                </div>
+                                @error('pan_card_number')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
+                                    <label>Aadhar Number </label>
+                                    <input wire:model.lazy="aadhar_card_number" type="text" class="form-control" placeholder="Enter a Aadhar Number">
+                                </div>
+                                @error('aadhar_card_number')
+                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                @enderror
+                            </div>
+
+                            <div class="col-6 mb-4">
+                                <div class="input-group input-group-static">
                                     <label>Password *</label>
                                     <input wire:model.lazy="password" type="password" class="form-control" placeholder="Enter a Password">
                                 </div>
