@@ -485,6 +485,18 @@
                                 <span class="nav-link-text ms-2 ps-1">Pages</span>
                             </a>
                         </li>
+ 
+
+                        <li class="nav-item">
+                            <a data-bs-toggle="" href="{{ route('insurence-category-management') }}"
+                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'insurenceCategories') === false ? '' : 'active' }}"
+                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                                <span class="material-symbols-outlined">
+                                    policy
+                                    </span>
+                                <span class="nav-link-text ms-2 ps-1">Insurence</span>
+                             </a>
+                        </li>
                         <li class="nav-item">
                             <a data-bs-toggle="" href="{{ route('service-category-management') }}"
                                 class="nav-link text-white {{ strpos(Request::route()->uri(), 'serviceCategories') === false ? '' : 'active' }}"
@@ -493,6 +505,7 @@
                                     settings_suggest
                                     </span>
                                 <span class="nav-link-text ms-2 ps-1">Services</span>
+ 
                             </a>
                         </li>
                     @endcan
