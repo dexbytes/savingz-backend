@@ -23,7 +23,7 @@
                 <div class="card-body pt-0">
                     <form wire:submit.prevent="store">
                                 <div class="row mt-3">
-                                    <div class="col-12 col-sm-6">
+                                    <div class="col-12 ">
                                         <div class="input-group input-group-static">
                                             <label>Name *</label>
                                             <input wire:model.lazy="name" class="multisteps-form__input form-control" type="text" placeholder="Enter a Service Category name" />
@@ -67,7 +67,7 @@
                         <x-table>
                             <x-slot name="head">
                                 <x-table.heading>
-                                    Name
+                                    Keyword Name
                                 </x-table.heading>
                                 
                             </x-slot>
@@ -85,18 +85,7 @@
                                                  @enderror
                                         </div>
                                     </x-table.cell>
-                                    {{-- <x-table.cell style="border:none">
-                                        <div class="col-12 mb-4">
-                                            <div class="input-group input-group-static">
-                                                <label>Price @if($addonType == 'add') * @endif</label>
-                                                <input wire:model.lazy="optionValues.{{$key}}.price" type="text" class="form-control"
-                                                    placeholder="Enter a Price"  @if($addonType == 'remove') disabled @endif>
-                                            </div>
-                                            @error('optionValues.'.$key.'.price')
-                                            <p class='text-danger inputerror'>{{ $message }} </p>
-                                            @enderror
-                                        </div>
-                                    </x-table.cell> --}}
+                                  
                                     @if($key > 0)
                                     <x-table.cell style="border:none">
                                         <a href="#" wire:click.prevent="removeInput({{$key}})"><span class="material-symbols-outlined">
