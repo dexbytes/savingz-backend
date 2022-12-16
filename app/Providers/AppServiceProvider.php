@@ -244,6 +244,15 @@ class AppServiceProvider extends ServiceProvider
                 return $this;
             }
         });
+        Builder::macro('searchMultipleServiceCategory', function ($string) {
+            if($string) {
+                return $this->where('id', '=', intval($string))
+                             ->orWhere(DB::raw('lower(name)'), 'like', '%'.$string.'%')
+                             ->orWhere('created_at', 'like', '%'.$string.'%');
+            } else {
+                return $this;
+            }
+        });
 
         Builder::macro('searchMultipleinsurenceCtegory', function ($string) {
             if($string) {
