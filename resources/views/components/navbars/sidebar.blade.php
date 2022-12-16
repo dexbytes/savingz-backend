@@ -8,11 +8,11 @@
               
                 @if(config('app_settings.app_logo.value'))
                     <img src="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_logo.value')) }} " class="navbar-brand-img h-100" alt="main_logo">
-                @endif
-
+                @else
                 <span class="ms-2 font-weight-bold text-white">
                     @role('Provider') {{session('store_name')}} |  @endrole {{ config('app_settings.app_name.value') ?? config('app.name')}}
-                </span>                
+                </span>  
+                @endif              
             </a>
     </div>
     <hr class="horizontal light mt-0 mb-2">

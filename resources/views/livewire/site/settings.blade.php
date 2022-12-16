@@ -72,7 +72,7 @@
                                     </div>
                                 </div>
                                 @error('app_logo_dark')
-                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                <p class='text-danger inputerror mb-1'>{{ $message }} </p>
                                 @enderror
                                 <p class="text-sm">Recommended file size 120x120</p>
                             </div>
@@ -103,7 +103,7 @@
                                     </div>
                                </div>
                                @error('app_favicon_logo_dark')
-                                <p class='text-danger inputerror'>{{ $message }} </p>
+                                <p class='text-danger inputerror mb-1'>{{ $message }} </p>
                                 @enderror
                                <p  class="text-sm">Recommended file size 76x76</p>
                             </div>
