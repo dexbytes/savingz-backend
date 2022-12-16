@@ -8,8 +8,6 @@
               
                 @if(config('app_settings.app_logo.value'))
                     <img src="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_logo.value')) }} " class="navbar-brand-img h-100" alt="main_logo">
-                @else
-                    <img src="{{ asset('assets') }}/img/logo-ct.png  " class="navbar-brand-img h-100" alt="main_logo">
                 @endif
 
                 <span class="ms-2 font-weight-bold text-white">
