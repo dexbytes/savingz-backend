@@ -87,17 +87,7 @@
                                 <span class="sidenav-normal ms-3 ps-1"> All </span>
                             </a>
                         </li>
-                    
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ (Route::currentRouteName() == 'user-management' && Route::current()->parameter('role') == 'provider') ? 'active' : '' }}"
-                                href="{{  route('user-management', ['role' => 'provider']) }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal ms-3 ps-1"> Providers </span>
-                            </a>
-                        </li>
-                    
+                   
                         <li class="nav-item">
                             <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'customer' ? 'active' : '' }}"
                                 href="{{  route('user-management', ['role' => 'customer']) }}">
@@ -108,15 +98,7 @@
                             </a>
                         </li>
                    
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'user-management'  && Route::current()->parameter('role') == 'driver' ? 'active' : '' }}"
-                                href="{{  route('user-management', ['role' => 'driver']) }}">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span class="sidenav-normal  ms-3 ps-1"> Drivers </span>
-                            </a>
-                        </li>
+                       
                     </ul>
                     @endcan
                

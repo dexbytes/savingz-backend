@@ -19,7 +19,7 @@ class CreateProviderPermissionsSeeder extends Seeder
         Role::where('name', 'Provider')->update(['guard_name' => 'web']);
         $role = Role::where('name', 'Provider')->first();
         $permissions = Permission::whereIn('name', $this->getPermissions())->where('guard_name', 'web')->pluck('id','id')->all();
-        if($permissions){
+        if($role && $permissions){
             $role->syncPermissions($permissions); 
         }
                 
