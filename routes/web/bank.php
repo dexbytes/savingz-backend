@@ -13,6 +13,8 @@ use App\Http\Livewire\Bank\Services\Category\Create as ServiceCategoryCreate;
 use App\Http\Livewire\Bank\Services\Category\Edit as ServiceCategoryEdit;
 use App\Http\Livewire\Bank\Services\Category\Index as ServiceCategoryIndex;
 
+use App\Http\Livewire\Bank\Transaction\Index as TransactionIndex;
+
 use Illuminate\Support\Facades\Route;  
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +42,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('service/category/edit/{id}', ServiceCategoryEdit::class)->name('edit-service-category');
     Route::get('service/category/create', ServiceCategoryCreate::class)->name('add-service-category');
 
+    Route::get('transaction-hisotry/index', TransactionIndex::class)->name('card-transaction-management');
 });

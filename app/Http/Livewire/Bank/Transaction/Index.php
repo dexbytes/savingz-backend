@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Livewire\Cards;
+namespace App\Http\Livewire\Bank\Transaction;
 
-use App\Models\Cards\Card;
+use App\Models\Bank\CardTransaction;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,7 +17,7 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $perPage = '' ;
     public $deleteId;
-    public $cardId = '';
+    public $transactionId = '';
     protected $listeners = ['remove', 'confirm'];
     protected $queryString = ['sortField' , 'sortDirection'];
     protected $paginationTheme = 'bootstrap';
@@ -51,7 +51,7 @@ class Index extends Component
                 'confirmButtonText' => 'Yes, delete it!',
                 'cancelButtonText' => 'No, cancel!',
                 'message' => 'Are you sure?', 
-                'text' => 'If deleted, you will not be able to recover this Card!'
+                'text' => 'If deleted, you will not be able to recover this transaction!'
             ]);
     }
 
@@ -62,9 +62,9 @@ class Index extends Component
      */
     public function remove()
     {
-        Card::find($this->deleteId)->delete();        
+        CardTransaction::find($this->deleteId)->delete();        
         $this->dispatchBrowserEvent('alert', 
-        ['type' => 'success',  'message' => 'Card Delete Successfully!']);
+        ['type' => 'success',  'message' => 'Transaction Delete Successfully!']);
     }
 
      /**
@@ -75,13 +75,13 @@ class Index extends Component
     public function statusUpdate($cardId, $status)
     {        
         $status = ( $status == 1 ) ? 0 : 1;
-        Card::where('id', '=' ,  $cardId)->update(['status' => $status]);      
+        CardTransaction::where('id', '=' ,  $cardId)->update(['status' => $status]);      
    }
 
     public function render()
     {
-        return view('livewire.cards.index', [
-            'cards' => Card::searchCard(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+        return view('livewire.bank.transaction.index', [
+            'transactions' => CardTransaction::searchTransactions(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

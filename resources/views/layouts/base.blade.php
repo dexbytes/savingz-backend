@@ -4,20 +4,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  @if(config('app_settings.app_favicon_logo.value'))
-    <link rel="apple-touch-icon" sizes="76x76" href="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_favicon_logo.value')) }}">
-  @else
-   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets') }}/img/apple-icon.png">
-  @endif
-
-  @if(config('app_settings.app_favicon_logo.value'))
-    <link rel="icon" type="image/png" href="{{  Storage::disk(config('app_settings.filesystem_disk.value'))->url(config('app_settings.app_favicon_logo.value')) }}">
-  @else
-    <link rel="icon" type="image/png" href="{{ asset('assets') }}/img/favicon.png">
-  @endif
-  <title>
-  {{ config('app_settings.app_name.value') ?? config('app.name')}} 
-  </title>
+  <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets') }}/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="{{ asset('assets') }}/img/favicon.png">
+ 
+  <title>{{ config('app_settings.app_name.value') ?? config('app.name')}}</title>
 
   <!--  Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />

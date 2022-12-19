@@ -215,6 +215,17 @@
         </li>
 
         <li class="nav-item">
+            <a data-bs-toggle="" href="{{ route('card-transaction-management') }}"
+                class="nav-link text-white  {{ strpos(Request::route()->uri(), 'transaction-hisotry') === false ? '' : 'active' }}   "
+                aria-controls="history" role="button" aria-expanded="false">
+                <span class="material-symbols-outlined">
+                history
+                </span>
+                <span class="nav-link-text ms-2 ps-1">Transactions</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
             <a data-bs-toggle="" href="{{ route('service-category-management') }}"
                 class="nav-link text-white {{   strpos(Request::route()->uri(), 'service') === false ? '' : 'active' }}"
                 aria-controls="serviceCategories" role="button" aria-expanded="false">

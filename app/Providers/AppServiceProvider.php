@@ -573,8 +573,6 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-
-        
         Builder::macro('searchCard', function ($string) {
             if($string) {
                 return $this->Where('card_number', 'like', '%'.$string.'%')
@@ -584,6 +582,17 @@ class AppServiceProvider extends ServiceProvider
                 return $this;
             }
         });
+
+        Builder::macro('searchTransactions', function ($string) {
+            if($string) {
+                return $this->Where('card_number', 'like', '%'.$string.'%')
+                             ->orWhere('txn_type', 'like', '%'.$string.'%');
+            } else {
+                return $this;
+            }
+        });
+
+        
 
     }
 }
