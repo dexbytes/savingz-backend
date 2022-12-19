@@ -255,6 +255,17 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        Builder::macro('searchMultipleBanks', function ($string) {
+            if($string) {
+                return $this->where('id', '=', intval($string))
+                             ->orWhere(DB::raw('lower(name)'), 'like', '%'.$string.'%')
+                             ->orWhere(DB::raw('lower(bank_code)'), 'like', '%'.$string.'%')
+                             ->orWhere('created_at', 'like', '%'.$string.'%');
+            } else {
+                return $this;
+            }
+        });
+
         Builder::macro('searchMultipleinsurenceCtegory', function ($string) {
             if($string) {
                 return $this->where('id', '=', intval($string))
