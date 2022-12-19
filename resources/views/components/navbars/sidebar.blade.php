@@ -197,7 +197,63 @@
                     </li>
                 @endcan   
             @endcan
-            
+
+
+        <li class="nav-item mt-3">
+            <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE CARDS</h6>
+        </li> 
+     
+        <li class="nav-item">
+            <a data-bs-toggle="" href=""
+                class="nav-link text-white"
+                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                <span class="material-symbols-outlined">
+                    store
+                    </span>
+                <span class="nav-link-text ms-2 ps-1">Bank Cards</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a data-bs-toggle="" href="{{ route('service-category-management') }}"
+                class="nav-link text-white {{ strpos(Request::route()->uri(), 'serviceCategories') === false ? '' : 'active' }}"
+                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                <span class="material-symbols-outlined">
+                    settings_suggest
+                    </span>
+                <span class="nav-link-text ms-2 ps-1">Services</span>
+            </a>
+        </li>
+ 
+
+        <li class="nav-item mt-3">
+            <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">INSURENCES</h6>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'products') === false ? '' : 'active' }}  "
+                data-bs-toggle="collapse" aria-expanded="false" href="#projectsExample">
+                <span class="material-symbols-outlined">
+                    inventory_2
+                </span>
+                <span class="sidenav-normal  ms-2 ps-1"> Insurence <b class="caret"></b></span>
+            </a>
+            <div class="collapse {{ strpos(Request::route()->uri(), 'products') === false ? '' : 'show' }}   "
+                id="projectsExample">
+                <ul class="nav nav-sm flex-column ms-2">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'product-management' ? 'active' : '' }} "
+                                href="{{ route('insurence-category-management') }}">
+                                <span class="material-symbols-outlined">
+                                policy
+                                </span>
+                                <span class="sidenav-normal ms-2 ps-1"> Category </span>
+                            </a>
+                        </li>
+                    </ul>
+            </div>
+        </li>
+    
         @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
                     <li class="nav-item mt-3">
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MARKETPLACE</h6>
@@ -534,30 +590,7 @@
                                 <span class="nav-link-text ms-2 ps-1">Pages</span>
                             </a>
                         </li>
- 
-
-                        <li class="nav-item">
-                            <a data-bs-toggle="" href="{{ route('insurence-category-management') }}"
-                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'insurenceCategories') === false ? '' : 'active' }}"
-                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                                <span class="material-symbols-outlined">
-                                    policy
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">Insurence</span>
-                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a data-bs-toggle="" href="{{ route('service-category-management') }}"
-                                class="nav-link text-white {{ strpos(Request::route()->uri(), 'serviceCategories') === false ? '' : 'active' }}"
-                                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
-                                <span class="material-symbols-outlined">
-                                    settings_suggest
-                                    </span>
-                                <span class="nav-link-text ms-2 ps-1">Services</span>
- 
-                            </a>
-                        </li>
-                    @endcan
+                @endcan
                 
                 @can('site-cache', 'site-settings', 'country-management', 'state-management', 'city-management', 'role-management')
                     <li class="nav-item ">
