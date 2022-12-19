@@ -71,7 +71,8 @@
                         :direction="$sortField === 'card_holder_name' ? $sortDirection : null">Card Holder Name
                         </x-table.heading>
                         
-
+                        <x-table.heading> Assigned
+                        </x-table.heading>   
                         <x-table.heading> Status
                         </x-table.heading>                      
                        
@@ -91,7 +92,8 @@
                             <x-table.cell>{{ $card->id }}</x-table.cell>
                             <x-table.cell>{{ $card->card_number }}</x-table.cell>   
                             <x-table.cell>{{ $card->expiration_month }} / {{ $card->expiration_year }}</x-table.cell>     
-                            <x-table.cell>{{ $card->card_holder_name }}</x-table.cell>  
+                            <x-table.cell>{{ $card->card_holder_name }}</x-table.cell> 
+                            <x-table.cell>-</x-table.cell> 
                             <x-table.cell><div class="form-check form-switch ms-3">
                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{ $card->id }},{{ $card->status}})"
                                     @if($card->status) checked="" @endif>
