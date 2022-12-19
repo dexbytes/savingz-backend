@@ -204,13 +204,13 @@
         </li> 
      
         <li class="nav-item">
-            <a data-bs-toggle="" href=""
-                class="nav-link text-white "
+            <a data-bs-toggle="" href="{{ route('cards-management') }}"
+                class="nav-link text-white  {{ strpos(Request::route()->uri(), 'cards') === false ? '' : 'active' }}   "
                 aria-controls="store" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     store
-                    </span>
-                <span class="nav-link-text ms-2 ps-1">Bank Cards</span>
+                </span>
+                <span class="nav-link-text ms-2 ps-1">Cards</span>
             </a>
         </li>
 

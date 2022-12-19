@@ -562,6 +562,18 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+
+        
+        Builder::macro('searchCard', function ($string) {
+            if($string) {
+                return $this->Where('card_number', 'like', '%'.$string.'%')
+                             ->orWhere('card_holder_name', 'like', '%'.$string.'%')
+                             ->orWhere('expiration_year', 'like', '%'.$string.'%');
+            } else {
+                return $this;
+            }
+        });
+
     }
 }
 
