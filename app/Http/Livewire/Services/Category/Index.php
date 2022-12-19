@@ -19,21 +19,14 @@ use Livewire\WithPagination;
         public $perPage = 10;
         public $addOnOption = '';
         public $filter = [];
-        public $deleteId = '';
-       
-        public $categoyId = '';
-     
-        protected $listeners = ['remove', 'confirm'];
-    
+        public $deleteId = '';       
+        public $categoyId = '';     
+        protected $listeners = ['remove', 'confirm'];    
         protected $queryString = ['sortField', 'sortDirection'];
         protected $paginationTheme = 'bootstrap';
     
         public function mount() { 
             $this->perPage = config('commerce.pagination_per_page');
-            // if(auth()->user()->hasRole('Provider')){
-            //     $this->filter['is_provider'] = true;
-            //     $this->filter['store_id'] = $this->getStoreId();
-            // }
         }
     
         public function sortBy($field){
@@ -88,7 +81,7 @@ use Livewire\WithPagination;
     public function statusUpdate($serviceCategoryId, $status)
     {        
         $status = ( $status == 1 ) ? 0 : 1;
-        serviceCategory::where('id', '=' ,$serviceCategoryId )->update(['status' => $status]);      
+        serviceCategory::where('id', '=' , $serviceCategoryId )->update(['status' => $status]);      
 
    }
 

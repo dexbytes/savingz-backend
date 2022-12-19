@@ -6,17 +6,18 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-6">
-                            <h5 class="mb-0">Insurence Categories</h5>
+                            <h5 class="mb-0">Insurences Categories</h5>
                         </div>
                         <div class="col-6 text-end">
-                        {{-- @can('add-insurence-category') --}}
+                    
                             <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('add-insurence-category') }}"><i
                                     class="material-icons text-sm">add</i>&nbsp;&nbsp;Add Insurence Category</a>
-                        {{-- @endcan --}}
+                       
                         </div>
                     </div>
                 </div>
-                @if (Session::has('status'))
+            
+            @if (Session::has('status'))
                 <div class="alert alert-success alert-dismissible text-white mx-4" role="alert">
                     <span class="text-sm">{{ Session::get('status') }}</span>
                     <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert"

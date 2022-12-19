@@ -61,7 +61,7 @@
         @endcan
             @can('user-management')
                 <li class="nav-item mt-3">
-                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">USERS</h6>
+                <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE USERS</h6>
                 </li>
 
                 @can('user-management')
@@ -205,8 +205,8 @@
      
         <li class="nav-item">
             <a data-bs-toggle="" href=""
-                class="nav-link text-white"
-                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                class="nav-link text-white "
+                aria-controls="store" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     store
                     </span>
@@ -216,33 +216,44 @@
 
         <li class="nav-item">
             <a data-bs-toggle="" href="{{ route('service-category-management') }}"
-                class="nav-link text-white {{ strpos(Request::route()->uri(), 'serviceCategories') === false ? '' : 'active' }}"
-                aria-controls="dashboardsExamples" role="button" aria-expanded="false">
+                class="nav-link text-white {{ (Route::currentRouteName() == 'service-category-management') === false ? '' : 'active' }}"
+                aria-controls="serviceCategories" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     settings_suggest
                     </span>
-                <span class="nav-link-text ms-2 ps-1">Services</span>
+                <span class="nav-link-text ms-2 ps-1">Service Category</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a data-bs-toggle="" href=""
+                class="nav-link text-white"
+                aria-controls="banks" role="button" aria-expanded="false">
+                <span class="material-symbols-outlined">
+                    account_balance
+                </span>
+                <span class="nav-link-text ms-2 ps-1">Banks</span>
             </a>
         </li>
  
 
         <li class="nav-item mt-3">
-            <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">INSURENCES</h6>
+            <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE INSURENCES</h6>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'products') === false ? '' : 'active' }}  "
-                data-bs-toggle="collapse" aria-expanded="false" href="#projectsExample">
+            <a class="nav-link text-white {{ strpos(Request::route()->uri(), 'insurences') === false ? '' : 'active' }}  "
+                data-bs-toggle="collapse" aria-expanded="false" href="#insurenceExample">
                 <span class="material-symbols-outlined">
                     inventory_2
                 </span>
-                <span class="sidenav-normal  ms-2 ps-1"> Insurence <b class="caret"></b></span>
+                <span class="sidenav-normal  ms-2 ps-1"> Insurences <b class="caret"></b></span>
             </a>
-            <div class="collapse {{ strpos(Request::route()->uri(), 'products') === false ? '' : 'show' }}   "
-                id="projectsExample">
+            <div class="collapse {{ strpos(Request::route()->uri(), 'insurences') === false ? '' : 'show' }}   "
+                id="insurenceExample">
                 <ul class="nav nav-sm flex-column ms-2">
                     
                         <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'product-management' ? 'active' : '' }} "
+                            <a class="nav-link text-white {{ Route::currentRouteName() == 'insurence-category-management' ? 'active' : '' }} "
                                 href="{{ route('insurence-category-management') }}">
                                 <span class="material-symbols-outlined">
                                 policy

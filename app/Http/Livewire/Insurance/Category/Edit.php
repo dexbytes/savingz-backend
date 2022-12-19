@@ -16,7 +16,7 @@ class Edit extends Component
     protected function rules(){
 
         return [
-            'insurenceCategory.name' => 'required',
+            'insurenceCategory.name' => 'required|App\Models\Insurance\insuranceCategory,name,'.$this->insurenceCategory->id,
             'insurenceCategory.status' => 'nullable|between:0,1',
         ];
     }

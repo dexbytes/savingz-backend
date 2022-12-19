@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth']], function () {
 
-      Route::get('insurence/category/index', InsurenceCategoryIndex::class)->name('insurence-category-management');
-      Route::get('insurence/category/edit/{id}',InsurenceCategoryEdit::class)->name('edit-insurence-category');
-      Route::get('insurence/category/create', InsurenceCategoryCreate::class)->name('add-insurence-category');
+      Route::get('insurences/category/index', InsurenceCategoryIndex::class)->name('insurence-category-management');
+      Route::get('insurences/category/edit/{id}',InsurenceCategoryEdit::class)->name('edit-insurence-category');
+      Route::get('insurences/category/create', InsurenceCategoryCreate::class)->name('add-insurence-category');
 });

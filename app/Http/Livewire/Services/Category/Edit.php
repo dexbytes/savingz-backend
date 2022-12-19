@@ -20,7 +20,7 @@ class Edit extends Component
 
     protected function rules(){
         return [
-            'serviceCategory.name' => 'required|max:255|unique:service_categories,name,'.$this->serviceCategory->id,
+            'serviceCategory.name' => 'required|max:255|unique:App\Models\Services\serviceCategory,name,'.$this->serviceCategory->id,
             'serviceCategory.status' => 'nullable|between:0,1',
             'keywords.*.name' => 'required',
             
@@ -35,6 +35,7 @@ class Edit extends Component
     public function mount($id) {
         $this->serviceCategory = serviceCategory::find($id);
         $serviceCategoryKeyword = serviceCategoryKeyword::where('service_category_id' , $id)->get();
+       
         foreach($serviceCategoryKeyword as $key => $value){
             $this->keywords[] = ['name' => $value->name];
         }
@@ -69,12 +70,13 @@ class Edit extends Component
 
         $this->validate();
         $this->serviceCategory->update();
-         serviceCategoryKeyword::whereServiceCategoryId($this->serviceCategory->id)->delete();
+       
+        serviceCategoryKeyword::whereServiceCategoryId($this->serviceCategory->id)->delete();
         foreach($this->keywords as $key => $value){
             $keywords[] = ['service_category_id'=> $this->serviceCategory->id, 'name' => $value['name'], 'created_at' => Carbon::now(), 'updated_at'=> Carbon::now()]; 
-        }
-        
+        }        
         !empty($keywords) ? serviceCategoryKeyword::insert($keywords) : "";
+
         return redirect(route('service-category-management'))->with('status', 'service Category successfully updated.');
     }
 

@@ -14,7 +14,7 @@ class Create extends Component
     public $status= '';
    
     protected $rules=[
-        'name' => 'required|string|unique:insurance_categories,name',
+        'name' => 'required|string|unique:App\Models\Insurance\insuranceCategory,name',
         'status' => 'nullable|between:0,1',
             
     ];
@@ -33,9 +33,7 @@ class Create extends Component
         $faq = insuranceCategory::create([
             'name'  => $this->name,  
             'status' => $this->status ? 1:0,
-    
-        ]);
-
+       ]);
  
         return redirect(route('insurence-category-management'))->with('status','Insurence Category successfully created.');
     }
