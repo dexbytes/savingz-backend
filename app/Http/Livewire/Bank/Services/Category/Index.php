@@ -21,6 +21,7 @@ class Index extends Component
         public $filter = [];
         public $deleteId = '';       
         public $categoyId = '';     
+        public $defaults = ['Others']; 
         protected $listeners = ['remove', 'confirm'];    
         protected $queryString = ['sortField', 'sortDirection'];
         protected $paginationTheme = 'bootstrap';

@@ -70,34 +70,31 @@
                         <x-table.heading>Actions</x-table.heading>                         
                     </x-slot>
                     <x-slot name="body">
-                        {{-- @dd($serviceCategories) --}}
                         @foreach ($serviceCategories as $serviceCategorie)
-                        {{-- @dd( $serviceCategorie) --}}
-                        <x-table.row wire:key="row-{{ $serviceCategorie->id }}">
+                            <x-table.row wire:key="row-{{ $serviceCategorie->id }}">
                             <x-table.cell>{{$serviceCategorie->id }}</x-table.cell>
-                           
                             <x-table.cell>{{ $serviceCategorie->name }}</x-table.cell> 
-                             
-                                                              
                             <x-table.cell>{{  $serviceCategorie->created_at }}</x-table.cell>
-                            <x-table.cell> <div class="form-check form-switch ms-3">
-                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{  $serviceCategorie->id }},{{$serviceCategorie->status}})"
-                                    @if( $serviceCategorie->status) checked="" @endif>
-                              </div></x-table.cell>   
+                            <x-table.cell> 
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{  $serviceCategorie->id }},{{$serviceCategorie->status}})"
+                                    @if( $serviceCategorie->status) checked="" @endif  @if(in_array($serviceCategorie->name, $defaults)) disabled @endif>
+                                </div>
+                            </x-table.cell>   
                             <x-table.cell>
-                                <div class="dropdown dropup dropleft">
-                                    <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="material-icons">
-                                            more_vert
-                                        </span>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        {{-- @can('edit-service-category') --}}
+                                @if(!in_array($serviceCategorie->name, $defaults))
+                                    <div class="dropdown dropup dropleft">
+                                        <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="material-icons">
+                                                more_vert
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-service-category', $serviceCategorie) }}">Edit</a></li>
-                                        {{-- @endcan --}}
-                                        <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{  $serviceCategorie->id }})">Delete</a></li>                                        
-                                    </ul>
-                                </div>                           
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{  $serviceCategorie->id }})">Delete</a></li>                                        
+                                        </ul>
+                                    </div> 
+                                @endif                          
                             </x-table.cell>
                         </x-table.row>
                         @endforeach
