@@ -226,8 +226,8 @@
         </li>
 
         <li class="nav-item">
-            <a data-bs-toggle="" href=""
-                class="nav-link text-white"
+            <a data-bs-toggle="" href="{{ route('bank-management') }}"
+                class="nav-link text-white {{ (Route::currentRouteName() == 'bank-management') === false ? '' : 'active' }}"
                 aria-controls="banks" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     account_balance
