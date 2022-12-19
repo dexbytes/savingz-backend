@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('services/category/index', ServiceCategoryIndex::class)->name('service-category-management');
-     Route::get('services/category/edit/{id}', ServiceCategoryEdit::class)->name('edit-service-category');
-     Route::get('services/category/create', ServiceCategoryCreate::class)->name('add-service-category');
+    Route::get('service/category/index', ServiceCategoryIndex::class)->name('service-category-management');
+     Route::get('service/category/edit/{id}', ServiceCategoryEdit::class)->name('edit-service-category');
+     Route::get('service/category/create', ServiceCategoryCreate::class)->name('add-service-category');
 });

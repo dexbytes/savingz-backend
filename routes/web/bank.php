@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('bank', BankIndex::class)->name('bank-management');
+    Route::get('bank/list', BankIndex::class)->name('bank-management');
     Route::get('bank/edit/{id}', BankEdit::class)->name('edit-bank');
      Route::get('bank/create', BankCreate::class)->name('add-bank');
 });

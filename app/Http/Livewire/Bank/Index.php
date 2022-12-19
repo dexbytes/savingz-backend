@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Bank;
 
-use App\Models\Bank\bank;
+use App\Models\Bank\Bank;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -62,7 +62,7 @@ class Index extends Component
      */
     public function remove()
     {
-        bank::find($this->deleteId)->delete();
+        Bank::find($this->deleteId)->delete();
         
         $this->dispatchBrowserEvent('alert', 
         ['type' => 'success',  'message' => 'Bank Delete Successfully!']);
@@ -76,14 +76,14 @@ class Index extends Component
     public function statusUpdate($bankId, $status)
     {        
         $status = ( $status == 1 ) ? 0 : 1;
-        bank::where('id', '=' , $bankId )->update(['status' => $status]);      
+        Bank::where('id', '=' , $bankId )->update(['status' => $status]);      
 
    }
 
     public function render()
     {
         return view('livewire.bank.index', [
-            'banks' => bank::searchMultipleBanks(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'banks' => Bank::searchMultipleBanks(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

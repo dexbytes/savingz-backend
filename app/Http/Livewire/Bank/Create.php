@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Bank;
 
-use App\Models\Bank\bank;
+use App\Models\Bank\Bank;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
@@ -18,8 +18,8 @@ class Create extends Component
    
 
     protected $rules=[
-        'name' => 'required|string|unique:App\Models\bank\bank,name',
-        'bank_code' => 'required|string',
+        'name' => 'required|string|unique:App\Models\Bank\Bank,name',
+        'bank_code' => 'required|string|unique:App\Models\Bank\Bank,bank_code',
         'status' => 'nullable|between:0,1',
        
     ];
@@ -34,11 +34,10 @@ class Create extends Component
 
         $this->validate();
 
-         bank::create([
-            'name'         => $this->name,
+        Bank::create([
+            'name'       => $this->name,
             'bank_code'  => $this->bank_code,
-            'status'        => $this->status ? 1:0,
-           
+            'status'     => $this->status ? 1:0,
         ]);
 
         return redirect(route('bank-management'))->with('status','Bank successfully created.');

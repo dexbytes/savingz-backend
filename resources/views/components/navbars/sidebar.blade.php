@@ -205,7 +205,7 @@
      
         <li class="nav-item">
             <a data-bs-toggle="" href="{{ route('cards-management') }}"
-                class="nav-link text-white  {{ strpos(Request::route()->uri(), 'cards') === false ? '' : 'active' }}   "
+                class="nav-link text-white  {{ strpos(Request::route()->uri(), 'card') === false ? '' : 'active' }}   "
                 aria-controls="store" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     store
@@ -216,7 +216,7 @@
 
         <li class="nav-item">
             <a data-bs-toggle="" href="{{ route('service-category-management') }}"
-                class="nav-link text-white {{ (Route::currentRouteName() == 'service-category-management') === false ? '' : 'active' }}"
+                class="nav-link text-white {{   strpos(Request::route()->uri(), 'service') === false ? '' : 'active' }}"
                 aria-controls="serviceCategories" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     settings_suggest
@@ -227,7 +227,7 @@
 
         <li class="nav-item">
             <a data-bs-toggle="" href="{{ route('bank-management') }}"
-                class="nav-link text-white {{ (Route::currentRouteName() == 'bank-management') === false ? '' : 'active' }}"
+                class="nav-link text-white {{  strpos(Request::route()->uri(), 'bank') === false ? '' : 'active' }}"
                 aria-controls="banks" role="button" aria-expanded="false">
                 <span class="material-symbols-outlined">
                     account_balance

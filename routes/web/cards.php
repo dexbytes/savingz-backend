@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('cards/index', CardIndex::class)->name('cards-management');
-     Route::get('cards/edit/{id}', CardEdit::class)->name('edit-card');
-     Route::get('cards/create', CardCreate::class)->name('add-card');
+    Route::get('card/index', CardIndex::class)->name('cards-management');
+     Route::get('card/edit/{id}', CardEdit::class)->name('edit-card');
+     Route::get('card/create', CardCreate::class)->name('add-card');
 });
