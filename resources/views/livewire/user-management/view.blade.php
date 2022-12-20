@@ -33,7 +33,15 @@
                             <span class="text-sm">Change Password</span>
                         </a>
                     </li>
-                   
+                  
+                    @if($this->user->hasRole('Customer'))
+                        <li class="nav-item pt-2">
+                            <a class="nav-link text-dark d-flex" data-scroll="" href="#cards">
+                                <i class="material-icons text-lg me-2">add_card</i>
+                                <span class="text-sm">Cards</span>
+                            </a>
+                        </li>
+                    @endif
                     <li class="nav-item pt-2">
                         <a class="nav-link text-dark d-flex" data-scroll="" href="#other-info">
                             <i class="material-icons text-lg me-2">info</i>
@@ -109,19 +117,19 @@
                 </div>
             </div>
 
-            @if (session('status'))
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="alert alert-success alert-dismissible text-white mt-3" role="alert">
-                            <span class="text-sm">{{ Session::get('status') }}</span>
-                            <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert"
-                                aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+        @if (session('status'))
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-success alert-dismissible text-white mt-3" role="alert">
+                        <span class="text-sm">{{ Session::get('status') }}</span>
+                        <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 </div>
-            @endif
+            </div>
+        @endif
       
         @if (session('status'))
         <div class="row">
@@ -280,6 +288,86 @@
            
         </form>   
 
+        <!-- Card Info -->
+        @if($this->user->hasRole('Customer'))
+            <div class="card mt-4" id="cards">
+                <div class="card-header">
+                   <div class="row">
+                        <div class="col col-6">
+                            <h5>Cards</h5>
+                        </div>
+                        <div class="col col-6 text-end">
+                            <button type="button" class="btn bg-gradient-dark mb-0 me-4" data-bs-toggle="modal" data-bs-target="#addModalCard">
+                                Assign a Card
+                            </button>                    
+                        </div>
+                   </div>  
+                </div>
+               
+                <div class="pt-0">
+                    <x-table>
+                        <x-slot name="head">
+                            <x-table.heading > ID
+                        </x-table.heading>
+                     
+                        <x-table.heading>Card Number
+                        </x-table.heading>
+                        
+                        <x-table.heading>Expiry On
+                        </x-table.heading>
+
+                        <x-table.heading>Status
+                        </x-table.heading>                      
+                       
+                        <x-table.heading >
+                            Creation Date
+                        </x-table.heading>                        
+                        
+                        <x-table.heading>Actions</x-table.heading>
+                        </x-slot>
+                        <x-slot name="body">
+                            @foreach ($card as $key => $value)
+                            <x-table.row>
+                                <x-table.cell>{{$value->id }}</x-table.cell>
+                                <x-table.cell >
+                                {{$value->card_number}}
+                                </x-table.cell>
+                                <x-table.cell> 
+                                    {{$value->expiration_month}} / {{$value->expiration_year}}
+                                </x-table.cell>
+                                <x-table.cell> 
+                                    {{$value->status == 1 ? 'Active' : 'Inactive'}}
+                                </x-table.cell>  
+                                <x-table.cell> 
+                                    {{$value->created_at->format(config('app_settings.date_format.value'))}}
+                                </x-table.cell> 
+                                <x-table.cell>                                 
+                                    <div class="dropdown dropup dropleft">
+                                         <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                             <span class="material-icons">
+                                                 more_vert
+                                             </span>
+                                         </button>
+                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                 <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-card', $value) }}">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $value->id }})">Delete</a></li>
+                                         </ul>
+                                     </div>                           
+                                 </x-table.cell>                               
+                            </x-table.row>
+                            @endforeach
+                        </x-slot>
+                    </x-table>   
+                    @if($card->count() == 0)
+                    <div>
+                        <p class="text-center">No card assigned by customer!</p>
+                    </div> 
+                @endif                 
+                </div>
+            </div>   
+        @endif   
+
+
         <!-- Card Address Info -->
         @if($this->user->hasRole('Customer'))
             <div class="card mt-4" id="address-info">
@@ -317,7 +405,7 @@
                     </x-table>   
                     @if($address->count() == 0)
                     <div>
-                        <p class="text-center">No address added by customer!</p>
+                        <p class="text-center">No address added to customer!</p>
                     </div> 
                 @endif                 
                 </div>
@@ -409,7 +497,7 @@
         </div> 
     @endif
     
-    <!-- Card Other Info -->
+        <!-- Card Other Info -->
         <div class="card mt-4" id="other-info">
             <div class="card-header">
                 <h5>Other Info</h5>
@@ -457,52 +545,53 @@
                     </div> 
                 @endif              
             </div>
-        </div>
-                            
+        </div>                           
             
-            <!-- Card Other Info -->
-            <div class="card mt-4" id="device-info">
-                <div class="card-header">
-                    <h5>Device Info</h5>
-                </div>
-                <div class="card-body pt-0">
-                    <x-table>                    
-                        <x-slot name="head">
-                            <x-table.heading>S No
-                            </x-table.heading>
-                            <x-table.heading>Device Info
-                            </x-table.heading>
-                            <x-table.heading>App Info
-                            </x-table.heading>
-                            <x-table.heading>Date
-                            </x-table.heading>  
-                        </x-slot>
-                        <x-slot name="body">                        
-                            @foreach($user->device as $dkey => $device)
-                            <x-table.row>                            
-                                <x-table.cell>{{$loop->iteration }}</x-table.cell>
-                                <x-table.cell >
-                                    {{ ucfirst($device->device_type) }}({{$device->device_version}}), {{ ucfirst($device->device_name) }} @if($device->device_model) ({{$device->device_model}}) @endif
-                                </x-table.cell>
-                                <x-table.cell>
-                                    {{ucfirst($device->app_name .' App' )}} @if($device->app_version) ({{$device->app_version}}) @endif        
-                                </x-table.cell>
-                                <x-table.cell>
-                                    {{$device->updated_at->format(config('app_settings.date_format.value')) }}       
-                                </x-table.cell>
-                            </x-table.row>
-                            @endforeach
-                        </x-slot>
-                    </x-table>  
-                
-                    @if($user->device->count() == 0)
-                        <div>
-                            <p class="text-center">No records found!</p>
-                        </div> 
-                    @endif              
-                </div>
+        <!-- Card Other Info -->
+        <div class="card mt-4" id="device-info">
+            <div class="card-header">
+                <h5>Device Info</h5>
             </div>
-            @if($this->user->hasRole('Driver') && $user->driver)
+            <div class="card-body pt-0">
+                <x-table>                    
+                    <x-slot name="head">
+                        <x-table.heading>S No
+                        </x-table.heading>
+                        <x-table.heading>Device Info
+                        </x-table.heading>
+                        <x-table.heading>App Info
+                        </x-table.heading>
+                        <x-table.heading>Date
+                        </x-table.heading>  
+                    </x-slot>
+                    <x-slot name="body">                        
+                        @foreach($user->device as $dkey => $device)
+                        <x-table.row>                            
+                            <x-table.cell>{{$loop->iteration }}</x-table.cell>
+                            <x-table.cell >
+                                {{ ucfirst($device->device_type) }}({{$device->device_version}}), {{ ucfirst($device->device_name) }} @if($device->device_model) ({{$device->device_model}}) @endif
+                            </x-table.cell>
+                            <x-table.cell>
+                                {{ucfirst($device->app_name .' App' )}} @if($device->app_version) ({{$device->app_version}}) @endif        
+                            </x-table.cell>
+                            <x-table.cell>
+                                {{$device->updated_at->format(config('app_settings.date_format.value')) }}       
+                            </x-table.cell>\
+                            
+                        </x-table.row>
+                        @endforeach
+                    </x-slot>
+                </x-table>  
+            
+                @if($user->device->count() == 0)
+                    <div>
+                        <p class="text-center">No records found!</p>
+                    </div> 
+                @endif              
+            </div>
+        </div>
+
+        @if($this->user->hasRole('Driver') && $user->driver)
             <!-- CardAccount -->
             <div class="card mt-4" id="suspend">
                 <div class="card-body">
@@ -517,10 +606,88 @@
                     </div>
                 </div>
             </div>
-            @endif
+        @endif
 
-        </div>
     </div>
+       
+        <!-- Modal -->
+        <div wire:ignore.self class="modal fade" id="addModalCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalSignTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-m" role="document">
+                <div  class="modal-content">
+                    <div class="modal-body p-0">
+                        <div class="card card-plain">
+                            <div class="card-header pb-0 text-left">
+                                <h5 class="">Add Card</h5>
+                                <p class="mb-0">Find a Card are not associated with user.</p>
+                            </div>
+                            <div class="card-body pb-3">    
+                                
+                                <div class="col-12 mb-4">
+                                    <div class="input-group input-group-static">
+                                        <label>Search Card *</label>
+                                        <input wire:model.lazy="search_card" type="text" class="form-control"  placeholder="Search by 16 digit Card Number eg. 4242424242424242">
+                                    </div>
+                                    @error('search_card')
+                                    <p class='text-danger inputerror'>{{ $message }} </p>
+                                    @enderror
+                                </div>                                
+                           
+                                    @if($search_card!= '')
+                                        @if(!empty($searchResultCards))
+                                            @if ($is_card_available)   
+                                                <div class="col-12 mt-4">                                        
+                                                    <ul class="list-group list-group-flush list my--3">
+                                                        <li style="cursor: pointer;" class="list-group-item px-0 border-0" wire:click="selectCard({{$searchResultCards->id}})">
+                                                            <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                @if($selected_card_id)
+                                                                    <span class="material-symbols-outlined text-success">
+                                                                        check_circle
+                                                                    </span>
+                                                                @else
+                                                                    <span class="material-symbols-outlined">
+                                                                        radio_button_unchecked
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                            <div class="col">
+                                                                    <p class="text-xs font-weight-bold mb-0">Card:</p>
+                                                                    <h6 class="text-sm font-weight-normal mb-0">{{$searchResultCards->card_number}}</h6>
+                                                                </div>
+                                                                <div class="col text-center">
+                                                                    <p class="text-xs font-weight-bold mb-0">Expiry:</p>
+                                                                    <h6 class="text-sm font-weight-normal mb-0">{{$searchResultCards->expiration_month}} / {{$searchResultCards->expiration_year}}</h6>
+                                                                </div>
+                                                                <div class="col text-center">
+                                                                    <p class="text-xs font-weight-bold mb-0">Status:</p>
+                                                                    <h6 class="text-sm font-weight-normal mb-0">{{$searchResultCards->status == 1 ? 'Active' : 'Inactive'}}</h6>
+                                                                </div>
+                                                            </div>
+                                                            <hr class="horizontal dark mt-3 mb-1">
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            @else
+                                                <p class="text-sm text-center">
+                                                    Card already assigned!
+                                                </p>                                        
+                                            @endif
+                                        @endif
+                                    @endif 
+
+                                </div>            
+                              
+                                <div class="modal-footer mt-6">
+                                    <button type="button" wire:click.prevent="cancel()" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn bg-gradient-dark submit" @if(!$selected_card_id) disabled @endif id="submitCard" wire:click="$emit('cardSubmit')">Assign</button>
+                                 </div>
+                          </div>           
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
 </div>
 @push('js')
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
@@ -548,4 +715,5 @@
 
     });
 </script>
+ 
 @endpush
