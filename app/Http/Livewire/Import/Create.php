@@ -8,6 +8,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Storage;
 use App\Constants\ExcelImport\ExcelStatus;
+use App\Jobs\ExtractExcel;
+use Carbon\Carbon;
 
 class Create extends Component
 {
@@ -42,6 +44,8 @@ class Create extends Component
             'status' => ExcelStatus::PENDING
         ]);
  
+        ExtractExcel::dispatch($excelImport)->delay(Carbon::now()->addSeconds(config('excelimport.extract_dealy_time')));
+      
         return redirect(route('import-files-management'))->with('status','File successfully uploaded.');
     }
 
