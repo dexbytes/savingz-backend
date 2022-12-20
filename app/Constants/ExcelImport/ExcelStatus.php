@@ -9,7 +9,7 @@ class ExcelStatus
    const ACCEPTED = 'accepted';
    const CANCELLED = 'cancelled';
    const IN_PROGRESS = 'in_progress';
-   const WAITING_APPROVEL = 'waiting_approvel';
+   const WAITING_APPROVAL = 'waiting_approval';
    const IMPORTING = "importing";
    const FAILED = 'failed';
    const COMPLETED = 'completed';

@@ -74,7 +74,7 @@
                             <x-table.cell>{{ $files->id }}</x-table.cell>
                             <x-table.cell>{{ $files->file_name }}</x-table.cell>    
                             <x-table.cell>{{ $files->category_type }}</x-table.cell>     
-                            <x-table.cell> {{ ucfirst($files->status) }} </x-table.cell>                            
+                            <x-table.cell> {{ ucfirst(str_replace('_', ' ', $files->status)) }} </x-table.cell>                            
                             <x-table.cell>{{ $files->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell>
                                <div class="dropdown dropup dropleft">

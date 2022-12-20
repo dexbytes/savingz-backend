@@ -65,7 +65,7 @@ class CardImport implements ToModel,SkipsEmptyRows, WithHeadingRow, WithValidati
     public static function afterImport(AfterImport $event)
     {
         static::$array['afterImport'] = [
-            'status' => ExcelStatus::WAITING_APPROVEL,
+            'status' => ExcelStatus::WAITING_APPROVAL,
             'extract_end_date' => Carbon::now(),
         ];
     }
