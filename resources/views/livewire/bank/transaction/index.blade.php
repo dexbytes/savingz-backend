@@ -9,7 +9,7 @@
                             <h5 class="mb-0">Card Transactions</h5>
                         </div>
                         <div class="col-6 text-end">
-                            <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('import-files-upload') }}"><i
+                            <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('import-file') }}"><i
                                     class="material-icons text-sm">upload</i>&nbsp;&nbsp;Import Transaction</a> 
                         </div>
                     </div>
