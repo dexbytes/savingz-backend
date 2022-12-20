@@ -198,11 +198,11 @@
                 @endcan   
             @endcan
 
-
+        <hr class="horizontal light mt-0">
         <li class="nav-item mt-3">
             <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE CARDS</h6>
         </li> 
-     
+   
         <li class="nav-item">
             <a data-bs-toggle="" href="{{ route('cards-management') }}"
                 class="nav-link text-white  {{ strpos(Request::route()->uri(), 'card') === false ? '' : 'active' }}   "
@@ -247,7 +247,7 @@
             </a>
         </li>
  
-
+        <hr class="horizontal light mt-0">
         <li class="nav-item mt-3">
             <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE INSURENCES</h6>
         </li>
@@ -275,7 +275,22 @@
                     </ul>
             </div>
         </li>
-    
+
+        <hr class="horizontal light mt-0">
+        <li class="nav-item mt-3">
+            <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE IMPORTS</h6>
+        </li>
+        <li class="nav-item  {{ Route::currentRouteName() == 'import-files-management' ? 'active' : '' }} ">
+            <a data-bs-toggle="" href="{{ route('import-files-management') }}"
+                class="nav-link text-white {{ Route::currentRouteName() == 'import-files-management' ? 'active' : '' }} "
+                aria-controls="ImportExamples" role="button" aria-expanded="false">
+                <span class="material-symbols-outlined">
+                    home_storage
+                </span>
+                <span class="nav-link-text ms-2 ps-1">Import Files</span>
+            </a>
+        </li>
+
         @can('store-management', 'unverified-stores', 'unverified-driver', 'store-type-management')
                     <li class="nav-item mt-3">
                         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MARKETPLACE</h6>

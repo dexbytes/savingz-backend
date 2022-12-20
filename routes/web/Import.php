@@ -2,7 +2,7 @@
 
 use  App\Http\Livewire\Import\Create as ImportCreate;
 use App\Http\Livewire\Faq\Edit as FaqEdit;
-use App\Http\Livewire\Faq\Index as FaqIndex;
+use App\Http\Livewire\Import\Index as ImportIndex;
 use Illuminate\Support\Facades\Route;  
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::get('import/files', ImportCreate::class)->name('import-files-management');
+    Route::get('import/files', ImportIndex::class)->name('import-files-management');
     Route::get('import/view/{id}', FaqEdit::class)->name('import-files-view');
     Route::get('import/file/create', ImportCreate::class)->name('import-file');
 

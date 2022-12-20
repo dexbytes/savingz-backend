@@ -6,6 +6,8 @@ use App\Models\Import\ExcelImport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Storage;
+use App\Constants\ExcelImport\ExcelStatus;
 
 class Create extends Component
 {
@@ -28,8 +30,18 @@ class Create extends Component
 
         $this->validate();
       
-        $profile_photo = $this->import_file->store('CardSummaryReport', config('excelimport.filesystem'));
-
+        $import_file = $this->import_file->store('CardSummaryReport', config('excelimport.filesystem'));
+        $excelImport = ExcelImport::create([
+            'user_id'       => auth()->user()->id,
+            'category_type' => 'CardSummaryReport',
+            'size'          =>  $this->import_file->getSize() ,
+            'file_name'    => $this->import_file->getClientOriginalName(),
+            'path'     => $import_file,
+            'url'  => Storage::disk('public')->path($import_file),
+            'type' => $this->import_file->clientExtension(),
+            'status' => ExcelStatus::PENDING
+        ]);
+ 
         return redirect(route('import-files-management'))->with('status','File successfully uploaded.');
     }
 
