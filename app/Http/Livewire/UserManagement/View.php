@@ -17,6 +17,8 @@ use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use DB;
+use Str;
+
 class View extends Component
 {
 
@@ -38,16 +40,15 @@ class View extends Component
     public $orderReviewType = [];  
     public $driver_commission_value;
     public $is_global_commission;
-    public $search ;
+    public $search_card ;
     public $searchResultCards; 
     public $card;
     public $card_id = '';
     public $user_id = '';
     public $deleteId = '';
-    public $joined_id;
-   
-
- 
+    public $selected_card_id = '';
+    public $is_card_available;
+    
     protected $listeners = [
         'remove',
         'cardSubmit',
@@ -72,7 +73,8 @@ class View extends Component
     public function mount($id) {
 
         $this->user = User::find($id);
-
+        $this->is_card_available = false;
+        $this->selected_card_id = '';
 
         $this->card = Card::whereHas('UserCard',function ($query) use($id){
             $query->where('user_id',$id);
@@ -85,7 +87,7 @@ class View extends Component
         $this->address = Address::where('user_id' , $this->user->id)->get();
         $this->stores = StoreOwners::where('user_id', $this->user->id)->get();
         $this->userMeta = UserMetaData::where('user_id' , $this->user->id)->get();
-        $this->searchResultCards = collect();
+       
         $orderReviewType = new OrderReviewTypes;
         $this->orderReviewType = $orderReviewType->getConstants();
        
@@ -101,18 +103,32 @@ class View extends Component
     } 
 
 
-    public function cardSubmit($id){
-        $this->validate([ 
-            'card_id'   => 'nullable',
-            'user_id'    => 'nullable', 
-         ]);
-           UserCard::create([
-             'card_id'=> $id,
-              'user_id' => $this->user->id ,
-         ]);
+    public function selectCard($cardId){
+        
+        if($this->selected_card_id){
+            $this->selected_card_id = '';
+        }else{
+            $this->selected_card_id = $cardId;
+        }
+       
+    }
+
+    public function cardSubmit(){
+       
+        if(!$this->selected_card_id) {
+            $this->dispatchBrowserEvent('alert', 
+            ['type' => 'error',  'message' => 'Please select a Card!']);
+            return false;
+        }
+
+        UserCard::create([
+            'card_id' => $this->selected_card_id,
+            'user_id' => $this->user->id ,
+        ]);
          
          $this->dispatchBrowserEvent('alert', 
-         ['type' => 'success',  'message' => 'Card add Successfully!']);
+         ['type' => 'success',  'message' => 'Card Assigned Successfully!']);
+
          $this->resetField();  
  
          return redirect(request()->header('Referer'));
@@ -155,9 +171,11 @@ class View extends Component
 
     public function resetField(){
         $this->user->phone = substr($this->user->phone , (strlen($this->user->country_code)));
-        $this->search = '';    
+        $this->search_card = ''; 
+        $this->selected_card_id = '';   
         $this->emit('refreshComponent');       
     }
+
     public function cancel()
     {
         $this->resetField();
@@ -285,19 +303,24 @@ class View extends Component
 
 
 
-    public function updatedSearch($id)
-   {  
-       if($this->search) {
-            
-            $this->searchResultCards = Card::select('cards.*','user_cards.card_id as joined_card_id','user_cards.id as joined_id')->leftjoin('user_cards', function ($query) {
-                $query->on('user_cards.card_id','cards.id');
-              
-            } )->where('card_number', $this->search)->first();
-     
-       } else {
-            $this->searchResultCards = collect();
-       }
-   }
+    public function updatedSearchCard()
+   {    $this->searchResultCards = '';
+        $this->is_card_available = false;
+        $this->selected_card_id = '';
+
+        $validator = $this->validate([ 
+            'search_card' => 'required|numeric|digits:16|exists:App\Models\Bank\Card,card_number',
+        ]);
+        $this->searchResultCards = Card::select('cards.*','user_cards.card_id as joined_card_id','user_cards.id as joined_id')->leftjoin('user_cards', function ($query) {
+            $query->on('user_cards.card_id','cards.id');              
+        })->where('card_number', $this->search_card)->first(); 
+       
+        if($this->searchResultCards && empty($this->searchResultCards->joined_card_id)){
+            $this->is_card_available = true;
+        }else{
+            $this->is_card_available = false;
+        }
+    }
 
     
      /**
