@@ -33,6 +33,12 @@
                             <span class="text-sm">Change Password</span>
                         </a>
                     </li>
+                    <li class="nav-item pt-2">
+                        <a class="nav-link text-dark d-flex" data-scroll="" href="#cards">
+                            <i class="material-icons text-lg me-2">add_card</i>
+                            <span class="text-sm">Cards</span>
+                        </a>
+                    </li>
                    
                     <li class="nav-item pt-2">
                         <a class="nav-link text-dark d-flex" data-scroll="" href="#other-info">
@@ -280,6 +286,86 @@
            
         </form>   
 
+        <!-- Card Info -->
+        @if($this->user->hasRole('Customer'))
+            <div class="card mt-4" id="cards">
+                <div class="card-header">
+                   <div class="row">
+                        <div class="col col-6">
+                            <h5>Cards</h5>
+                        </div>
+                        <div class="col col-6 text-end">
+                            <button type="button" class="btn bg-gradient-dark mb-0 me-4" data-bs-toggle="modal" data-bs-target="#addModalCard">
+                                Add Card
+                            </button>                    
+                        </div>
+                   </div>  
+                </div>
+               
+                <div class="pt-0">
+                    <x-table>
+                        <x-slot name="head">
+                            <x-table.heading > ID
+                        </x-table.heading>
+                     
+                        <x-table.heading>Card Number
+                        </x-table.heading>
+                        
+                        <x-table.heading > Expiry On
+                        </x-table.heading>
+
+                        <x-table.heading> Status
+                        </x-table.heading>                      
+                       
+                        <x-table.heading >
+                            Creation Date
+                        </x-table.heading>                        
+                        
+                        <x-table.heading>Actions</x-table.heading>
+                        </x-slot>
+                        <x-slot name="body">
+                            @foreach ($card as $key => $value)
+                            <x-table.row>
+                                <x-table.cell>{{$value->id }}</x-table.cell>
+                                <x-table.cell >
+                                {{$value->card_number}}
+                                </x-table.cell>
+                                <x-table.cell> 
+                                {{$value->expiration_month}}
+                                </x-table.cell>
+                                <x-table.cell> 
+                                    {{$value->status}}
+                                </x-table.cell>  
+                                <x-table.cell> 
+                                    {{$value->created_at->format(config('app_settings.date_format.value'))}}
+                                </x-table.cell> 
+                                <x-table.cell>                                 
+                                    <div class="dropdown dropup dropleft">
+                                         <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                             <span class="material-icons">
+                                                 more_vert
+                                             </span>
+                                         </button>
+                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                 <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-card', $value) }}">Edit</a></li>
+                                            <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $value->id }})">Delete</a></li>
+                                         </ul>
+                                     </div>                           
+                                 </x-table.cell>                               
+                            </x-table.row>
+                            @endforeach
+                        </x-slot>
+                    </x-table>   
+                    @if($card->count() == 0)
+                    <div>
+                        <p class="text-center">No card assigned by customer!</p>
+                    </div> 
+                @endif                 
+                </div>
+            </div>   
+        @endif   
+
+
         <!-- Card Address Info -->
         @if($this->user->hasRole('Customer'))
             <div class="card mt-4" id="address-info">
@@ -489,7 +575,8 @@
                                 </x-table.cell>
                                 <x-table.cell>
                                     {{$device->updated_at->format(config('app_settings.date_format.value')) }}       
-                                </x-table.cell>
+                                </x-table.cell>\
+                              
                             </x-table.row>
                             @endforeach
                         </x-slot>
@@ -520,6 +607,55 @@
             @endif
 
         </div>
+                <!-- Modal -->
+<div wire:ignore.self class="modal fade" id="addModalCard" tabindex="-1" role="dialog" aria-labelledby="exampleModalSignTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-m" role="document">
+    <div  class="modal-content">
+        <div class="modal-body p-0">
+        <div class="card card-plain">
+            <div class="card-header pb-0 text-left">
+                <h5 class="">Add Card</h5>
+                <p class="mb-0">Find a Card are not associated with user.</p>
+            </div>
+            <div class="card-body pb-3">     
+
+                <div class="input-group input-group-outline is-filled my-3">
+                    <label class="form-label">Search Card</label>
+                    <input type="text" wire:model="search"  id ="search" placeholder="Search by Name, Mobile Number"  class="form-control">
+                </div>  
+                @if($search != '')
+                    @if(!empty($searchResultCards))
+                    @if (empty($searchResultCards->joined_card_id))                        
+                        <div class="list-group searchResult">
+                            <a href="javascript:void(0)" data-id="{{ $searchResultCards->id }}" class="list-group-item list-group-item-action searchCards">{{$searchResultCards->card_number}}</a>
+                        </div>
+                        @else
+                            <p class="text-sm text-center">
+                                Card already assigned!
+                            </p>
+                        
+                        @endif
+                        @else
+                        <p class="text-sm text-center">
+                            No record matched!
+                        </p>
+                    @endif
+
+                @endif              
+          
+                <div class="modal-footer">
+                    <button type="button" wire:click.prevent="cancel()" class="btn btn-light  " data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-gradient-dark submit d-sm-none " id="submitCard" wire:click="$emit('cardSubmit')">Submit</button>
+                 
+                </div>
+                
+            </div>           
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+
     </div>
 </div>
 @push('js')
@@ -546,6 +682,20 @@
             initSelectRole();
         });
 
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', ".searchResult", function(){
+            _this = $(this)
+            let $id = _this.find(".searchCards").data('id');
+            $(".searchCards").removeClass('bg-success text-light');
+            _this.find(".searchCards").addClass('bg-success text-light');
+            $('#submitCard').attr('wire:click',"$emit('cardSubmit', "+$id+")");
+            $("#submitCard").removeClass('d-sm-none');
+           
+        });
+       
     });
 </script>
 @endpush

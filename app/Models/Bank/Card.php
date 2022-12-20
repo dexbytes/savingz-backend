@@ -23,6 +23,14 @@ class Card extends Model
         'updated_at',
         'deleted_at',
     ];
-  
-    
+
+    /**
+     * Get the UserCard that owns the Card
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function UserCard(): BelongsTo
+    {
+        return $this->belongsTo(UserCard::class, 'id', 'card_id');
+    }
 }

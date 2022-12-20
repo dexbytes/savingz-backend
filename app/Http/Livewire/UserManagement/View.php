@@ -4,6 +4,8 @@ namespace App\Http\Livewire\UserManagement;
 
 use App\Constants\OrderReviewTypes;
 use App\Models\Address;
+use App\Models\Bank\Card;
+use App\Models\Bank\UserCard;
 use App\Models\Driver\UserDriver;
 use App\Models\Stores\StoreOwners;
 use App\Models\User;
@@ -14,7 +16,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-
+use DB;
 class View extends Component
 {
 
@@ -36,13 +38,22 @@ class View extends Component
     public $orderReviewType = [];  
     public $driver_commission_value;
     public $is_global_commission;
-    
+    public $search ;
+    public $searchResultCards; 
+    public $card;
+    public $card_id = '';
+    public $user_id = '';
+    public $deleteId = '';
+    public $joined_id;
+   
 
  
     protected $listeners = [
         'remove',
+        'cardSubmit',
         'ownerRemove',
-        'getRoleIdForInput'
+        'getRoleIdForInput',
+        'refreshComponent' => '$refresh'
     ];
 
     
@@ -61,7 +72,12 @@ class View extends Component
     public function mount($id) {
 
         $this->user = User::find($id);
-      
+
+
+        $this->card = Card::whereHas('UserCard',function ($query) use($id){
+            $query->where('user_id',$id);
+        })->get();
+        
         $this->user->phone = substr($this->user->phone , +(strlen($this->user->country_code)));
         $this->roles = Role::where('guard_name', 'web')->where('status', 1)->get(['id','name']);
         $this->role_id  = $this->user->getRoleNames();
@@ -69,7 +85,7 @@ class View extends Component
         $this->address = Address::where('user_id' , $this->user->id)->get();
         $this->stores = StoreOwners::where('user_id', $this->user->id)->get();
         $this->userMeta = UserMetaData::where('user_id' , $this->user->id)->get();
- 
+        $this->searchResultCards = collect();
         $orderReviewType = new OrderReviewTypes;
         $this->orderReviewType = $orderReviewType->getConstants();
        
@@ -84,10 +100,68 @@ class View extends Component
 
     } 
 
+
+    public function cardSubmit($id){
+        $this->validate([ 
+            'card_id'   => 'nullable',
+            'user_id'    => 'nullable', 
+         ]);
+           UserCard::create([
+             'card_id'=> $id,
+              'user_id' => $this->user->id ,
+         ]);
+         
+         $this->dispatchBrowserEvent('alert', 
+         ['type' => 'success',  'message' => 'Card add Successfully!']);
+         $this->resetField();  
+ 
+         return redirect(request()->header('Referer'));
+        
+     }
+
+     /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function destroyConfirm($cart_id)
+    {
+        $this->deleteId  = $cart_id;
+        $this->dispatchBrowserEvent('swal:confirm', [
+                'action' => 'remove',
+                'type' => 'warning',  
+                'confirmButtonText' => 'Yes, delete it!',
+                'cancelButtonText' => 'No, cancel!',
+                'message' => 'Are you sure?', 
+                'text' => 'If deleted, you will not be able to recover this card'
+            ]);
+    }
+
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function remove()
+    {
+        UserCard::where('card_id',$this->deleteId)->delete();
+
+        $this->dispatchBrowserEvent('alert', 
+            ['type' => 'success',  'message' => 'Card Delete Successfully!']);
+            return redirect(request()->header('Referer'));     
+    }
+
+    
+
     public function resetField(){
         $this->user->phone = substr($this->user->phone , (strlen($this->user->country_code)));
+        $this->search = '';    
+        $this->emit('refreshComponent');       
     }
-    
+    public function cancel()
+    {
+        $this->resetField();
+    }
     public function update(){
         
         $this->validate();
@@ -209,6 +283,21 @@ class View extends Component
             return redirect(request()->header('Referer'));     
     } 
 
+
+
+    public function updatedSearch($id)
+   {  
+       if($this->search) {
+            
+            $this->searchResultCards = Card::select('cards.*','user_cards.card_id as joined_card_id','user_cards.id as joined_id')->leftjoin('user_cards', function ($query) {
+                $query->on('user_cards.card_id','cards.id');
+              
+            } )->where('card_number', $this->search)->first();
+     
+       } else {
+            $this->searchResultCards = collect();
+       }
+   }
 
     
      /**
