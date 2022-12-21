@@ -17,72 +17,77 @@ class ExcelExport extends Model
     public static function ExcelExtract($file)
     {
        try{
-           $array = array();
-           $path = Storage::disk(config('excelimport.filesystem'))->path($file->path);
-          
+           $payload = array();          
            if (empty(Storage::disk(config('excelimport.filesystem'))->exists($file->path))) {
-               $array['error_log'] = 'no file found';
-               $array['status'] = ExcelStatus::FAILED;
-               ExcelImport::where('id',$request->id)->update($array);
+               $payload['error_log'] = 'no file found';
+               $payload['status'] = ExcelStatus::FAILED;
+               ExcelImport::where('id',$request->id)->update($payload);
                return true;
            }
 
-           $array['status'] = ExcelStatus::IN_PROGRESS;
+            $payload['status'] = ExcelStatus::IN_PROGRESS;
+            $path = Storage::disk(config('excelimport.filesystem'))->path($file->path);
+            $import = new CardImport();
+            $import->import($path);
 
-           $import = new CardImport();
-               $import->import($path);
-               $error = array();
-               foreach ($import->failures() as $failure) {
-                   $error[] = [
-                       'row' => $failure->row(),
-                       'attribute' => $failure->attribute(),
-                       'errors' => $failure->errors(),
-                       'values' => $failure->values(),
-                   ];
-               }
+            $error = array();
+            foreach ($import->failures() as $failure) {
+                $error[] = [
+                    'row' => $failure->row(),
+                    'attribute' => $failure->attribute(),
+                    'errors' => $failure->errors(),
+                    'values' => $failure->values(),
+                ];
+            }
+ 
             //Store Json error data 
-           $error_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/error.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/error.json')) : [];
-           $error_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/error.json';
-          
-           Storage::disk(config('excelimport.filesystem'))->put($error_file_path, json_encode($error,JSON_PRETTY_PRINT));
+            $error_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/error.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/error.json')) : [];
+            $error_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/error.json';
+            Storage::disk(config('excelimport.filesystem'))->put($error_file_path, json_encode($error,JSON_PRETTY_PRINT));
 
             //Store Json success data
-           $success_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/success.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/success.json')) : [];
-           $success_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/success.json';
-           Storage::disk(config('excelimport.filesystem'))->put($success_file_path, json_encode($import->get(),JSON_PRETTY_PRINT));
-           /*----------------------------------------*/
+            $successData = $import->get();
+            $success_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/success.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/success.json')) : [];
+            $success_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/success.json';
+            Storage::disk(config('excelimport.filesystem'))->put($success_file_path, json_encode($successData,JSON_PRETTY_PRINT));
+            /*----------------------------------------*/
 
-           $process = $import->process(); 
+            \Log::info($file->id.' - Success data count - '.count($successData));
+            \Log::info($file->id.' - Error data count - '.count($error));
 
-           $array['extract_start_date'] = $process['beforeImport']['extract_start_date'];
-           $array['extract_end_date'] = $process['afterImport']['extract_end_date'];
-           $array['status'] = isset($process['afterImport']['status']) ? $process['afterImport']['status'] : $process['beforeImport']['status'];
-           $array['error_log'] = @json_encode($import->errors());
-           $array['failed_path'] = $error_file_path;
-           $array['success_path'] = $success_file_path;
-           
-           ExcelImport::where('id', $file->id)->update($array);
+            $process = $import->process(); 
+            
+            $payload['error_log'] = @json_encode($import->errors());
+            $payload['status'] = isset($process['afterImport']['status']) ? $process['afterImport']['status'] : $process['beforeImport']['status'];
+            if(count($successData) == 0){
+                $payload['status'] = ExcelStatus::FAILED;
+                $payload['error_log'] = 'Zero success records';
+            }
 
-           return $array;
+            $payload['extract_start_date'] = $process['beforeImport']['extract_start_date'];
+            $payload['extract_end_date'] = $process['afterImport']['extract_end_date'];
+            $payload['failed_path'] = $error_file_path;
+            $payload['success_path'] = $success_file_path;
+            $payload['error_count'] = count($error);
+            $payload['success_count'] = count($successData);
+            
+            ExcelImport::where('id', $file->id)->update($payload);
+
+           return $payload;
 
        } catch ( ValidationException $e) {
-           return $e;
+                \Log::Error($e);
        }    
-       return $array;
-
-       return true;
+       
+       return $payload;
+       
     }   
 
     public static function CardSummaryUpload($request)
     {
         $time_start = microtime(true);
         $file = ExcelImport::where('id',$request)->first();
-       
         $record =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file->success_path),true);
-       
-        \Log::info($record);
-        \Log::info('start - '. $time_start);
-        \Log::info('end  - '. microtime(true));
         return true;
     }
 

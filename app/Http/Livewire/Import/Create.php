@@ -46,7 +46,7 @@ class Create extends Component
  
         ExtractExcel::dispatch($excelImport)->delay(Carbon::now()->addSeconds(config('excelimport.extract_dealy_time')));
       
-        return redirect(route('import-files-management'))->with('status','File successfully uploaded.');
+       // return redirect(route('import-files-management'))->with('status','File successfully uploaded.');
     }
 
 

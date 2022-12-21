@@ -31,12 +31,20 @@ class ExtractExcel implements ShouldQueue
      */
     public function handle()
     {  
-       \Log::info( $this->request);
-       $data =  ExcelExportModel::ExcelExtract((object) $this->request);
+        \Log::info($this->request);
+        $data =  ExcelExportModel::ExcelExtract((object) $this->request);
         $this->delete();
     }
+    
+    /**
+     * Failed the job.
+     *
+     * @return void
+     */
     public function failed(\Exception $e = null)
     {
+        \Log::Error($this->request);
         $this->delete();
     }
+
 }
