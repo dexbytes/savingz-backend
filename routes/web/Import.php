@@ -20,6 +20,6 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('import/files', ImportIndex::class)->name('import-files-management');
     Route::get('import/view/{id}/{status?}', ImportView::class)->name('import-files-view');
-    Route::get('import/file/create', ImportCreate::class)->name('import-file');
+    Route::get('import/file/create/{module?}', ImportCreate::class)->name('import-file');
 
 });
