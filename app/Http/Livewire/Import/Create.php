@@ -19,7 +19,7 @@ class Create extends Component
     public $import_file = '';
    
     protected $rules=[
-        'import_file' => 'required|mimes:csv,txt,xls,xlsx',    
+        'import_file' => 'required|mimes:xls,xlsx',    
     ];
 
     public function updated($propertyName){

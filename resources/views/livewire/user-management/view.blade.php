@@ -656,7 +656,12 @@
                                                                 </div>
                                                                 <div class="col text-center">
                                                                     <p class="text-xs font-weight-bold mb-0">Expiry:</p>
-                                                                    <h6 class="text-sm font-weight-normal mb-0">{{$searchResultCards->expiration_month}} / {{$searchResultCards->expiration_year}}</h6>
+                                                                    <h6 class="text-sm font-weight-normal mb-0">
+                                                                        @if(!$searchResultCards->expiration_year && !$searchResultCards->expiration_month) 
+                                                                            -
+                                                                        @endif
+                                                                        {{$searchResultCards->expiration_month}} @if($searchResultCards->expiration_year)/@endif {{$searchResultCards->expiration_year}}
+                                                                    </h6>
                                                                 </div>
                                                                 <div class="col text-center">
                                                                     <p class="text-xs font-weight-bold mb-0">Status:</p>
@@ -666,6 +671,16 @@
                                                             <hr class="horizontal dark mt-3 mb-1">
                                                         </li>
                                                     </ul>
+                                                </div>
+
+                                                <div class="col-12 mt-4">
+                                                    <div class="input-group input-group-static">
+                                                        <label>Aadhar Number </label>
+                                                        <input wire:model.lazy="user.aadhar_card_number" type="text" class="form-control" placeholder="Enter a Aadhar Number">
+                                                    </div>
+                                                    @error('user.aadhar_card_number')
+                                                    <p class='text-danger inputerror'>{{ $message }} </p>
+                                                    @enderror
                                                 </div>
                                             @else
                                                 <p class="text-sm text-center">

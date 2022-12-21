@@ -91,7 +91,7 @@
                         <x-table.row wire:key="row-{{$card->id }}">
                             <x-table.cell>{{ $card->id }}</x-table.cell>
                             <x-table.cell>{{ $card->card_number }}</x-table.cell>   
-                            <x-table.cell>{{ $card->expiration_month }} / {{ $card->expiration_year }}</x-table.cell>     
+                            <x-table.cell>{{ $card->expiration_month }} @if($card->expiration_year) / @endif {{ $card->expiration_year }}</x-table.cell>     
                             <x-table.cell>{{ $card->card_holder_name }}</x-table.cell> 
                             <x-table.cell>-</x-table.cell> 
                             <x-table.cell><div class="form-check form-switch ms-3">

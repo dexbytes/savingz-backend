@@ -76,9 +76,15 @@
                             <x-table.cell>{{ $files->id }}</x-table.cell>
                             <x-table.cell><a href="{{ route('import-files-view', $files->id ) }}">{{ $files->file_name }}</a></x-table.cell>    
                             <x-table.cell>{{ $files->category_type }}</x-table.cell>     
-                            <x-table.cell> {{ ucfirst(str_replace('_', ' ', $files->status)) }} </x-table.cell>  
+                            <x-table.cell> {{ ucfirst(str_replace('_', ' ', $files->status)) }} 
+                                @if($files->status == 'failed')
+                                    <span class="material-symbols-outlined"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{$files->error_log}}" data-container="body" data-animation="true">
+                                        report
+                                    </span>
+                                @endif
+                            </x-table.cell>  
                             <x-table.cell>
-                                <a href="{{ route('import-files-view', $files->id, 'valid' ) }}">
+                                <a href="{{ route('import-files-view', $files->id  ) }}">
                                     <span data-original-title="Success" title="Success" >{{ $files->success_count  }}</span> / <span data-original-title="Total" title="Total">{{ ($files->success_count+$files->error_count) }}</span>
                                 </a>
                             </x-table.cell>                              
@@ -93,7 +99,7 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li><a class="dropdown-item"  data-original-title="View" title="View" href="{{ route('import-files-view', $files->id ) }}">View</a></li>
                                         @if(in_array( $files->status, ['pending', 'waiting_approval', 'in_progress', 'importing', 'accepted'] ))
-                                            <li><a class="dropdown-item"  data-original-title="View" title="View" wire:click="cancel({{ $files->id }})">Cancel</a></li> 
+                                            <li><a class="dropdown-item"  data-original-title="View" title="View" wire:click="cancelConfirm({{ $files->id }})">Cancel</a></li> 
                                         @endif   
                                         <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $files->id }})">Delete</a></li>
                                     </ul>

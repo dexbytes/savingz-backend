@@ -18,8 +18,9 @@ class Index extends Component
     public $sortDirection = 'desc';
     public $perPage = '' ;
     public $deleteId;
+    public $cancelId;
     public $insuranceCategoryId = '';
-    protected $listeners = ['remove', 'confirm'];
+    protected $listeners = ['remove', 'confirm', 'cancel'];
     protected $queryString = ['sortField' , 'sortDirection'];
     protected $paginationTheme = 'bootstrap';
 
@@ -80,18 +81,42 @@ class Index extends Component
         ExcelImport::where('id', '=' ,  $insuranceCategoryId )->update(['status' => $status]);      
 
    }
-
-
-        /**
-     * update store status
+  
+    /**
+     * Write code on Method
      *
      * @return response()
      */
-    public function cancel($id)
-    {        
-       ExcelImport::where('id', '=' ,  $id )->update(['status' => ExcelStatus::CANCELLED]);      
+    public function cancelConfirm($id)
+    {
+        $this->cancelId  = $id;
+        $this->dispatchBrowserEvent('swal:confirm', [
+                'action' => 'cancel',
+                'type' => 'warning',  
+                'confirmButtonText' => 'Yes, cancel it!',
+                'cancelButtonText' => 'No!',
+                'message' => 'Are you sure?', 
+                'text' => 'If cancelled, you will not be able to upload this file data!'
+            ]);
     }
 
+    /**
+     * cancel file status
+     *
+     * @return response()
+     */
+    public function cancel()
+    {        
+       ExcelImport::where('id', '=' ,  $this->cancelId )->update(['status' => ExcelStatus::CANCELLED]); 
+       $this->dispatchBrowserEvent('alert', 
+       ['type' => 'success',  'message' => 'Import File cancelled Successfully!']);     
+    }
+
+    /**
+     * view html
+     *
+     * @return html()
+     */
     public function render()
     {
         return view('livewire.import.index', [

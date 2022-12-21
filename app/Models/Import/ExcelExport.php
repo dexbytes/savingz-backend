@@ -23,23 +23,31 @@ class ExcelExport extends Model
            if (empty(Storage::disk(config('excelimport.filesystem'))->exists($file->path))) {
                $payload['error_log'] = 'no file found';
                $payload['status'] = ExcelStatus::FAILED;
-               ExcelImport::where('id',$request->id)->update($payload);
+               ExcelImport::where('id',$file->id)->update($payload);
                return true;
            }
 
             $payload['status'] = ExcelStatus::IN_PROGRESS;
             $path = Storage::disk(config('excelimport.filesystem'))->path($file->path);
-            $import = new CardImport();
-            $import->import($path);
 
+            $import = self::_moduleMethod($file->category_type); //Get Import class
+            if(empty($import)){
+                $payload['error_log'] = 'No module found';
+                $payload['status'] = ExcelStatus::FAILED;
+                ExcelImport::where('id', $file->id)->update($payload);
+                return true;
+            }
+
+            $import->import($path);
             $error = array();
             foreach ($import->failures() as $failure) {
-                $error[] = [
-                    'row' => $failure->row(),
-                    'attribute' => $failure->attribute(),
-                    'errors' => $failure->errors(),
-                    'values' => $failure->values(),
-                ];
+                $value =  $failure->values();                
+                if (array_key_exists($failure->row(), $error) && array_key_exists("error", $error[$failure->row()])){
+                    $value['error'] = $error[$failure->row()]['error']. ','. implode(", ", $failure->errors());
+                }else{
+                    $value['error'] = implode(", ", $failure->errors());
+                 }                   
+                 $error[$failure->row()] = $value;                 
             }
  
             //Store Json error data 
@@ -84,6 +92,22 @@ class ExcelExport extends Model
        return $payload;
        
     }   
+
+
+
+    public static function _moduleMethod($fileModule){
+        \Log::info($fileModule);
+        $import = '';       
+        switch ($fileModule) {
+            case "CardSummaryReport":
+                $import = new CardImport();
+              break;           
+            default:
+                $import = '';
+        }
+
+        return $import;
+    }
 
     public static function CardSummaryUpload($requestId)
     {  

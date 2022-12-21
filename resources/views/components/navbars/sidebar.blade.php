@@ -224,28 +224,6 @@
                 <span class="nav-link-text ms-2 ps-1">Transactions</span>
             </a>
         </li>
-
-        <li class="nav-item">
-            <a data-bs-toggle="" href="{{ route('service-category-management') }}"
-                class="nav-link text-white {{   strpos(Request::route()->uri(), 'service') === false ? '' : 'active' }}"
-                aria-controls="serviceCategories" role="button" aria-expanded="false">
-                <span class="material-symbols-outlined">
-                    settings_suggest
-                    </span>
-                <span class="nav-link-text ms-2 ps-1">Service Category</span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a data-bs-toggle="" href="{{ route('bank-management') }}"
-                class="nav-link text-white {{  strpos(Request::route()->uri(), 'bank') === false ? '' : 'active' }}"
-                aria-controls="banks" role="button" aria-expanded="false">
-                <span class="material-symbols-outlined">
-                    account_balance
-                </span>
-                <span class="nav-link-text ms-2 ps-1">Banks</span>
-            </a>
-        </li>
  
         <hr class="horizontal light mt-0">
         <li class="nav-item mt-3">
@@ -656,8 +634,32 @@
                                     </li>
                                 @endcan
 
+                                                                
+                                        <li class="nav-item">
+                                            <a data-bs-toggle="" href="{{ route('service-category-management') }}"
+                                                class="nav-link text-white {{   strpos(Request::route()->uri(), 'service') === false ? '' : 'active' }}"
+                                                aria-controls="serviceCategories" role="button" aria-expanded="false">
+                                                <span class="material-symbols-outlined">
+                                                    settings_suggest
+                                                    </span>
+                                                <span class="nav-link-text ms-2 ps-1">Service Category</span>
+                                            </a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a data-bs-toggle="" href="{{ route('bank-management') }}"
+                                                class="nav-link text-white {{  strpos(Request::route()->uri(), 'bank') === false ? '' : 'active' }}"
+                                                aria-controls="banks" role="button" aria-expanded="false">
+                                                <span class="material-symbols-outlined">
+                                                    account_balance
+                                                </span>
+                                                <span class="nav-link-text ms-2 ps-1">Banks</span>
+                                            </a>
+                                        </li>
+
                              
                                 @can('country-management', 'state-management', 'city-management')
+                                
                                     <li class="nav-item ">
                                         <a class="nav-link text-white  {{ strpos(Request::route()->uri(), 'location')=== false ? '' : 'active' }}"
                                             data-bs-toggle="collapse" aria-expanded="false" href="#LocationExample">

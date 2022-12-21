@@ -13,7 +13,7 @@
                             <a href="{{ route('import-files-management') }}" class="btn bg-gradient-default mb-0 me-4">
                                 <i class="material-icons text-sm">arrow_back_ios</i>&nbsp;&nbsp;Back</a>
                            
-                            @if($file->success_count > 0 && $file->status == 'waiting_approval')
+                            @if($file->success_count > 0 && count($successData) > 0 && $file->status == 'waiting_approval')
                                 <a wire:click="uploadNow()" class="btn bg-gradient-success mb-0 me-4"><i
                                         class="material-icons text-sm">sync</i>&nbsp;&nbsp;Proceed Now</a>
                             @endif 
@@ -24,14 +24,15 @@
                         <div class="col-4">
                             <div class="nav-wrapper position-relative end-0">
                                 <ul class="nav nav-pills nav-fill p-1"  >
-                                    <li class="nav-item">
-                                        <a  class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+                                    <li class="nav-item" wire:click="tabChange('valid')">
+                                        <a class="nav-link active">
                                             Valid
                                             <span class="badge badge-success">{{$file->success_count}}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                  
+                                    <li class="nav-item"  wire:click="tabChange('invalid')">
+                                        <a  class="nav-link">
                                            Invalid
                                            <span class="badge badge-primary">{{$file->error_count}}</span>
                                         </a>
@@ -51,33 +52,49 @@
                                 @foreach ($header as $head =>  $headValue)
                                     <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">{{ str_replace('_', ' ',$head) }}</th>
                                 @endforeach
+                                @if($status == 'invalid')
+                                 <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">Error</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody class="h-100">
                             @foreach ($displayData as $displayKey =>  $displayValue)
                                 <tr>
                                      @foreach ($displayValue as $dkey =>  $dValue)
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="text-secondary text-xs font-weight-normal"> 
-                                                {{$dValue}}
-                                            </span>
-                                        </td>
+                                        @if(!in_array($dkey, ['error']))
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-secondary text-xs font-weight-normal"> 
+                                                    {{$dValue}}
+                                                </span>
+                                            </td>
+                                        @endif
+
+                                        @if(in_array($dkey, ['error']))
+                                            <td class="align-middle text-center text-sm">            
+                                                <span class="material-symbols-outlined"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{$dValue}}" data-container="body" data-animation="true">
+                                                    report
+                                                </span>
+                                                Row {{$displayKey}}                                                
+                                            </td>
+                                        @endif
+
+
                                     @endforeach
                                 </tr> 
                             @endforeach
 
-                            @if(empty($displayData))
+                            @if(count($displayData) == 0 || count($header))
                                 <tr>
                                     <td colspan="{{ count($header) }}">
                                            <p class="text-center">No records found!</p>
                                     </td>
                                 </tr>
                             @endif
+    
+                            
                         </tbody>
                     </table>
                 </div>
- 
-
             </div>
         </div>
     </div>

@@ -19,32 +19,56 @@ class View extends Component
     public $successData;
     public $failedData;
     public $displayData;
+    public $status;
    
     public function mount($id){
-        
+   
         $this->file = ExcelImport::where('id', $id)->first();
-     
+        $this->displayData =  collect();
+        $this->successData =  collect();
+        $this->failedData =  collect();
+        $this->header =  collect();
+
         if($this->file->category_type == 'CardSummaryReport'){
             $this->header = \App\Constants\ExcelImport\CardSummaryHeader::HEADER;
         }
        
-        $this->successData =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($this->file->success_path),true);
-        $this->failedData =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($this->file->success_path),true);
-        $this->displayData =  $this->successData;
-      
-   }
+        if(!empty($this->file->success_path) && Storage::disk(config('excelimport.filesystem'))->exists($this->file->success_path)){
+            $this->successData =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($this->file->success_path),true);
+            $this->displayData =  $this->successData;
+        }
+        if(!empty($this->file->failed_path) && Storage::disk(config('excelimport.filesystem'))->exists($this->file->failed_path)){
+            $this->failedData =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($this->file->failed_path),true);
+        } 
+    }
 
     public function render()
     {
         return view('livewire.import.view');
     }
+
+    public function tabChange($type)
+    {
+        $this->status = $type;
+        if($type == 'invalid'){
+            $this->displayData =  $this->failedData;
+           
+        }
+        if($type == 'valid'){
+            $this->displayData =  $this->successData;
+        }
+     
+    }
+
  
     public function uploadNow()
     {
         $file = ExcelImport::where('id', $this->file->id)->update(['status' => ExcelStatus::ACCEPTED]);
-        
-        CardSummaryExcel::dispatch($this->file->id)->delay(Carbon::now()->addSeconds(config('excelsettings.import_dealy_time')));
-      
+       
+        if($this->file->category_type == 'CardSummaryReport'){
+            CardSummaryExcel::dispatch($this->file->id)->delay(Carbon::now()->addSeconds(config('excelsettings.import_dealy_time')));
+        }
+
         return redirect(route('import-files-management'))->with('status','Data uploading start successfully.');
     }
 }
