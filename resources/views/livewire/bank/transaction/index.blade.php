@@ -83,8 +83,8 @@
                             <x-table.cell>{{ \Utils::ConvertPrice($transaction->txn_available_balance) }}</x-table.cell> 
                             <x-table.cell>-</x-table.cell> 
                             <x-table.cell>{{ $transaction->status }}</x-table.cell> 
-                             <x-table.cell>{{ $transaction->txn_date->format(config('app_settings.date_format.value')) }}</x-table.cell>
-                            <x-table.cell>{{ $transaction->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
+                             <x-table.cell>{{ Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $transaction->txn_date)->format(config('app_settings.date_format.value') .' '.config('app_settings.time_format.value')) }}</x-table.cell>
+                            <x-table.cell>{{ $transaction->created_at->format(config('app_settings.date_format.value').' '.config('app_settings.time_format.value')) }}</x-table.cell>
                             <x-table.cell>                                 
                                <div class="dropdown dropup dropleft">
                                     <button class="btn bg-gradient-default" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">

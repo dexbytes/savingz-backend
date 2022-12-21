@@ -101,7 +101,7 @@ class ExcelExport extends Model
                                 'card_number'=> (int) $value['card_number'], 
                                 'txn_amount' => (double) str_replace( ',', '',  $value['txn_amt']),
                                 'txn_type' => (string) $value['txn_type'],
-                                'txn_available_balance' =>(double) str_replace( ',', '',  $value['available_balance']), 
+                                'txn_available_balance' => (double) str_replace( ',', '',  $value['available_balance']), 
                                 'txn_ledger_balance' =>  (double)  str_replace( ',', '',  $value['ledger_balance']),
                                 'status' => (string) $value['status'],
                                 'txn_date' => $value['txn_date'], 

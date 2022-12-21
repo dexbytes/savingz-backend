@@ -77,7 +77,11 @@
                             <x-table.cell><a href="{{ route('import-files-view', $files->id ) }}">{{ $files->file_name }}</a></x-table.cell>    
                             <x-table.cell>{{ $files->category_type }}</x-table.cell>     
                             <x-table.cell> {{ ucfirst(str_replace('_', ' ', $files->status)) }} </x-table.cell>  
-                            <x-table.cell><span data-original-title="Success" title="Success" >{{ $files->success_count  }}</span> / <span data-original-title="Total" title="Total">{{ ($files->success_count+$files->error_count) }}</span></x-table.cell>                              
+                            <x-table.cell>
+                                <a href="{{ route('import-files-view', $files->id, 'valid' ) }}">
+                                    <span data-original-title="Success" title="Success" >{{ $files->success_count  }}</span> / <span data-original-title="Total" title="Total">{{ ($files->success_count+$files->error_count) }}</span>
+                                </a>
+                            </x-table.cell>                              
                             <x-table.cell>{{ $files->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell>
                                <div class="dropdown dropup dropleft">
