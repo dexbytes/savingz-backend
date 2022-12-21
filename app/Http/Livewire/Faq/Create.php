@@ -42,6 +42,8 @@ class Create extends Component
         $this->faq_category = FaqCategory::all();
         $this->role = Role::all();
     }
+
+    
     public function saveForm()
     {
         $descriptions =$this->descriptions;

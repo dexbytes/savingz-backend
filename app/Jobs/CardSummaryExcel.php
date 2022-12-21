@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\ExcelImport\ExcelExport;
+use App\Models\Import\ExcelExport;
 
 class CardSummaryExcel implements ShouldQueue
 {

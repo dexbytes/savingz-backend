@@ -10,7 +10,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CardImport;
 use App\Constants\ExcelImport\ExcelStatus;
 use App\Models\Import\ExcelImport;
+use App\Models\Bank\CardTransaction;
 use Storage;
+use Carbon\Carbon;
 
 class ExcelExport extends Model
 {
@@ -83,11 +85,40 @@ class ExcelExport extends Model
        
     }   
 
-    public static function CardSummaryUpload($request)
-    {
-        $time_start = microtime(true);
-        $file = ExcelImport::where('id',$request)->first();
-        $record =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file->success_path),true);
+    public static function CardSummaryUpload($requestId)
+    {  
+        try{
+            ExcelImport::where('id', $requestId)->update(['status' => ExcelStatus::IMPORTING, 'upload_start_date' => Carbon::now() ]);         
+            $file = ExcelImport::where('id', $requestId)->first(); 
+            $records =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file->success_path),true);
+            
+            $successData = [];
+
+            //Import in database
+            foreach($records as $key => $value){
+               
+                $successData[] = [
+                                'card_number'=> (int) $value['card_number'], 
+                                'txn_amount' => (double) str_replace( ',', '',  $value['txn_amt']),
+                                'txn_type' => (string) $value['txn_type'],
+                                'txn_available_balance' =>(double) str_replace( ',', '',  $value['available_balance']), 
+                                'txn_ledger_balance' =>  (double)  str_replace( ',', '',  $value['ledger_balance']),
+                                'status' => (string) $value['status'],
+                                'txn_date' => $value['txn_date'], 
+                                'created_at' => Carbon::now(), 
+                                'updated_at'=> Carbon::now()
+                            ]; 
+            }
+            CardTransaction::insert($successData);
+            //End insert
+
+            ExcelImport::where('id', $requestId)->update(['status' => ExcelStatus::COMPLETED, 'upload_end_date' =>  Carbon::now()]);
+
+        }catch(Exception $e) {
+        
+            return false;
+        }  
+
         return true;
     }
 

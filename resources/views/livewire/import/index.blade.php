@@ -59,6 +59,8 @@
                         <x-table.heading>Type
                         </x-table.heading>                       
                         <x-table.heading>Status
+                        </x-table.heading> 
+                        <x-table.heading>Records
                         </x-table.heading>                      
                         <x-table.heading sortable wire:click="sortBy('created_at')"
                             :direction="$sortField === 'created_at' ? $sortDirection : null">
@@ -72,9 +74,10 @@
                         @foreach ($import_files as  $files)
                         <x-table.row wire:key="row-{{$files->id }}">
                             <x-table.cell>{{ $files->id }}</x-table.cell>
-                            <x-table.cell>{{ $files->file_name }}</x-table.cell>    
+                            <x-table.cell><a href="{{ route('import-files-view', $files->id ) }}">{{ $files->file_name }}</a></x-table.cell>    
                             <x-table.cell>{{ $files->category_type }}</x-table.cell>     
-                            <x-table.cell> {{ ucfirst(str_replace('_', ' ', $files->status)) }} </x-table.cell>                            
+                            <x-table.cell> {{ ucfirst(str_replace('_', ' ', $files->status)) }} </x-table.cell>  
+                            <x-table.cell><span data-original-title="Success" title="Success" >{{ $files->success_count  }}</span> / <span data-original-title="Total" title="Total">{{ ($files->success_count+$files->error_count) }}</span></x-table.cell>                              
                             <x-table.cell>{{ $files->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell>
                                <div class="dropdown dropup dropleft">
@@ -84,6 +87,7 @@
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><a class="dropdown-item"  data-original-title="View" title="View" href="{{ route('import-files-view', $files->id ) }}">View</a></li>
                                        <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $files->id }})">Delete</a></li>
                                     </ul>
                                 </div>
