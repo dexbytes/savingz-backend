@@ -6,6 +6,7 @@ use App\Models\Import\ExcelImport;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Constants\ExcelImport\ExcelStatus;
 
 class Index extends Component
 {
@@ -79,6 +80,17 @@ class Index extends Component
         ExcelImport::where('id', '=' ,  $insuranceCategoryId )->update(['status' => $status]);      
 
    }
+
+
+        /**
+     * update store status
+     *
+     * @return response()
+     */
+    public function cancel($id)
+    {        
+       ExcelImport::where('id', '=' ,  $id )->update(['status' => ExcelStatus::CANCELLED]);      
+    }
 
     public function render()
     {

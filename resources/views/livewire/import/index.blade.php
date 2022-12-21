@@ -88,7 +88,10 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li><a class="dropdown-item"  data-original-title="View" title="View" href="{{ route('import-files-view', $files->id ) }}">View</a></li>
-                                       <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $files->id }})">Delete</a></li>
+                                        @if(in_array( $files->status, ['pending', 'waiting_approval', 'in_progress', 'importing', 'accepted'] ))
+                                            <li><a class="dropdown-item"  data-original-title="View" title="View" wire:click="cancel({{ $files->id }})">Cancel</a></li> 
+                                        @endif   
+                                        <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $files->id }})">Delete</a></li>
                                     </ul>
                                 </div>
                            
