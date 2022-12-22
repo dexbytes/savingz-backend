@@ -250,7 +250,7 @@
                             <span class="sidenav-normal ms-2 ps-1"> Fixed Deposits</span>
                         </a>
                     </li>
-
+<!-- 
                     <li class="nav-item">
                         <a class="nav-link text-white {{ Route::currentRouteName() == 'insurence-category-management' ? 'active' : '' }} "
                             href="{{ route('insurence-category-management') }}">
@@ -259,7 +259,7 @@
                             </span>
                             <span class="sidenav-normal ms-2 ps-1"> Category </span>
                         </a>
-                    </li>
+                    </li> -->
 
                    
                 </ul>
