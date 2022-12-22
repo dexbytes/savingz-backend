@@ -39,9 +39,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="d-flex justify-content-end mt-4">
-                                    <a  href="{{ route('faq-management') }}" class="btn btn-light m-0">Cancel</a>
-                                    <button type="submit" name="submit" class="btn bg-gradient-dark m-0 ms-2">Import
-                                        File</button>
+                                    <a  href="{{ route('import-files-management') }}" class="btn btn-light m-0">Cancel</a>
+                                    <button type="submit" name="submit" class="btn bg-gradient-dark m-0 ms-2" wire:loading.attr="disabled">
+                                        <span wire:loading>
+                                            </span>Import
+                                            File</button>
                                 </div>
                             </div>
                         </div>
