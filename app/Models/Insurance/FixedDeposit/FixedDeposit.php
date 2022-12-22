@@ -5,6 +5,7 @@ namespace App\Models\Insurance\FixedDeposit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Constants\ExcelImport\ExcelStatus;
 use App\Models\Import\ExcelImport;
 use Storage;
@@ -13,7 +14,7 @@ use Carbon\Carbon;
 
 class FixedDeposit extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     /**
     * The attributes that are mass assignable.
     *
@@ -85,6 +86,10 @@ class FixedDeposit extends Model
                             ]; 
             }
             
+            if(!empty($successData)){
+               self::query()->delete();
+            }            
+
             self::insert($successData); //End insert
 
             //Update status
