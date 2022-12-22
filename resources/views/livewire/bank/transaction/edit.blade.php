@@ -102,12 +102,12 @@
                                   
                                 </div>
                                 
-                               </div>
+                               
                              </div>
                                 @error('cardTransaction.status')
                                 <p class='text-danger inputerror'>{{ $message }} </p>
                                 @enderror
-                            
+                            </div>
 
                         
         

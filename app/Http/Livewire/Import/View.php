@@ -20,7 +20,7 @@ class View extends Component
     public $failedData;
     public $displayData;
     public $status;
-    protected $listeners = ['uploadNow'];
+    protected $listeners = ['uploadNow','tabChange'];
    
     public function mount($id){
    

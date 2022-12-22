@@ -23,16 +23,16 @@
                     <div class="row mt-4">
                         <div class="col-4">
                             <div class="nav-wrapper position-relative end-0">
-                                <ul class="nav nav-pills nav-fill p-1"  >
-                                    <li class="nav-item" wire:click="tabChange('valid')">
-                                        <a class="nav-link active">
+                                <ul class="nav nav-pills nav-fill p-1" id="myTab "  >
+                                    <li class="nav-item" data-toggle="tab"  data-type ='valid' wire:click.prevent="tabChange('valid')">
+                                        <a class="nav-link  active" >
                                             Valid
                                             <span class="badge badge-success">{{$file->success_count}}</span>
                                         </a>
                                     </li>
                                   
-                                    <li class="nav-item"  wire:click="tabChange('invalid')">
-                                        <a  class="nav-link">
+                                    <li class="nav-item"  data-toggle="tab" data-type ='invalid' wire:click.prevent="tabChange('invalid')">
+                                        <a  class="nav-link ">
                                            Invalid
                                            <span class="badge badge-primary">{{$file->error_count}}</span>
                                         </a>
@@ -101,4 +101,19 @@
 </div>
 @push('js')
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
+<script>
+//     $(".nav-item a").on("click", function(){
+//      let $id  = $(this).parent('.nav-item').data('type');
+//     //   alert($id)
+//    $(".nav-item").find(".active").removeClass("active");
+//    $(this).parent().addClass("active");
+   //$('.nav-item').attr('wire:click',"$emit('tabChange("+$id+")')");
+  // $('.nav-item').attr('wire:click',"$emit('tabChange("+$id+")')");
+// });
+
+$('#myTab a').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+    </script>
 @endpush
