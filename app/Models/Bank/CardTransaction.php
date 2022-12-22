@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class CardTransaction extends Model
 {
-    use HasFactory ;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'id',

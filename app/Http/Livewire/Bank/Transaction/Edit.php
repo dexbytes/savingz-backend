@@ -21,7 +21,7 @@ class Edit extends Component
 
         return [
             'cardTransaction.txn_date' => 'required',
-            'cardTransaction.card_number' => 'required|numeric|digits:16|unique:App\Models\Bank\Card,card_number,'.$this->cardTransaction->id,
+            'cardTransaction.card_number' => 'required|numeric|digits:16|exists:App\Models\Bank\Card,card_number',
             'cardTransaction.txn_amount' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
             'cardTransaction.txn_type' => 'required|string',
             'cardTransaction.txn_available_balance' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
@@ -32,7 +32,8 @@ class Edit extends Component
 
     public function mount($id){
 
-         $this->cardTransaction = CardTransaction::find($id);
+        $this->cardTransaction = CardTransaction::find($id);
+       
         $cardTransactionStatus = new CardTransactionStatus();
         $this->allStatus = $cardTransactionStatus->getConstants(); 
     }
@@ -45,10 +46,11 @@ class Edit extends Component
     
 
     public function edit(){
+       
         $this->validate();
         $this->cardTransaction->update();
 
-        return redirect(route('card-transaction-management'))->with('status','Card successfully updated.');
+        return redirect(route('card-transaction-management'))->with('status','Transaction successfully updated.');
     }
 
 

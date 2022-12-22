@@ -1,3 +1,3 @@
-<td {{ $attributes }} class="text-sm font-weight-normal align-middle text-wrap text-break">
+<td {{ $attributes }} class="text-sm font-weight-normal align-middle">
     {{ $slot }}
 </td>

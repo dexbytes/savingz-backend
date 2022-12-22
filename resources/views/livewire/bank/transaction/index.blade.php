@@ -78,7 +78,7 @@
                         <x-table.row wire:key="row-{{$transaction->id }}">
                             <x-table.cell>{{ $transaction->id }}</x-table.cell>
                             <x-table.cell>{{ $transaction->card_number }}</x-table.cell>   
-                            <x-table.cell>{{ $transaction->txn_type }}</x-table.cell>     
+                            <x-table.cell style="white-space: normal;">{{ $transaction->txn_type }}</x-table.cell>     
                             <x-table.cell>{{ \Utils::ConvertPrice($transaction->txn_amount) }}</x-table.cell> 
                             <x-table.cell>{{ \Utils::ConvertPrice($transaction->txn_available_balance) }}</x-table.cell> 
                             <x-table.cell>-</x-table.cell> 
