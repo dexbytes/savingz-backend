@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Import\ExcelExport;
+use App\Models\Bank\CardTransaction;
 
 class CardSummaryExcel implements ShouldQueue
 {
@@ -31,7 +31,7 @@ class CardSummaryExcel implements ShouldQueue
      */
     public function handle()
     {
-        $data =  ExcelExport::CardSummaryUpload($this->request);
+        $data =  CardTransaction::CardSummaryUpload($this->request);
         $this->delete();
     }
     public function failed(\Exception $e = null)

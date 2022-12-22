@@ -40,6 +40,8 @@ class ExcelExport extends Model
             }
 
             $import->import($path);
+
+            //Errro data prepare
             $error = array();
             foreach ($import->failures() as $failure) {
                 $value =  $failure->values();                
@@ -50,8 +52,8 @@ class ExcelExport extends Model
                  }                   
                  $error[$failure->row()] = $value;                 
             }
-
            
+            //Success data prepare
             $successData = self::_getSuccessData($file->category_type, $import);
       
             //Store Json error data 
@@ -65,7 +67,10 @@ class ExcelExport extends Model
             Storage::disk(config('excelimport.filesystem'))->put($success_file_path, json_encode($successData,JSON_PRETTY_PRINT));
             /*----------------------------------------*/
       
-            $process = $import->process();             
+            //Procceed now
+            $process = $import->process(); 
+            
+            //Prepare database insert data
             $payload['error_log'] = @json_encode($import->errors());
             $payload['status'] = isset($process['afterImport']['status']) ? $process['afterImport']['status'] : $process['beforeImport']['status'];
             if(count($successData) == 0){
@@ -84,8 +89,8 @@ class ExcelExport extends Model
 
            return $payload;
 
-       } catch ( ValidationException $e) {
-                \Log::Error($e);
+       } catch (Exception $e) {
+            \Log::Error($e);
        }    
        
        return $payload;
@@ -145,43 +150,6 @@ class ExcelExport extends Model
 
         return $import;
     }
-
-    public static function CardSummaryUpload($requestId)
-    {  
-        try{
-            ExcelImport::where('id', $requestId)->update(['status' => ExcelStatus::IMPORTING, 'upload_start_date' => Carbon::now() ]);         
-            $file = ExcelImport::where('id', $requestId)->first(); 
-            $records =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file->success_path),true);
-            
-            $successData = [];
-
-            //Import in database
-            foreach($records as $key => $value){
-               
-                $successData[] = [
-                                'card_number'=> (int) $value['card_number'], 
-                                'card_id' => (int) $value['card_id'], 
-                                'txn_amount' => (double) str_replace( ',', '',  $value['txn_amt']),
-                                'txn_type' => (string) $value['txn_type'],
-                                'txn_available_balance' => (double) str_replace( ',', '',  $value['available_balance']), 
-                                'txn_ledger_balance' =>  (double)  str_replace( ',', '',  $value['ledger_balance']),
-                                'status' => (string) $value['status'],
-                                'txn_date' => $value['txn_date'], 
-                                'created_at' => Carbon::now(), 
-                                'updated_at'=> Carbon::now()
-                            ]; 
-            }
-            CardTransaction::insert($successData);
-            //End insert
-
-            ExcelImport::where('id', $requestId)->update(['status' => ExcelStatus::COMPLETED, 'upload_end_date' =>  Carbon::now()]);
-
-        }catch(Exception $e) {
-        
-            return false;
-        }  
-
-        return true;
-    }
+ 
 
 }
