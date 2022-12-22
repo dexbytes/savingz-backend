@@ -59,8 +59,10 @@
                         </x-table.heading>
                         <x-table.heading sortable wire:click="sortBy('investor')"
                         :direction="$sortField === 'investor' ? $sortDirection : null">Investor Name
-                        </x-table.heading> 
+                        </x-table.heading>
                         <x-table.heading>Reference Number
+                        </x-table.heading> 
+                        <x-table.heading>Allotment Date
                         </x-table.heading> 
                         <x-table.heading>Amount
                         </x-table.heading> 
@@ -80,8 +82,9 @@
                         @foreach ($fixed_deposits as  $fd)
                         <x-table.row wire:key="row-{{$fd->id }}">
                             <x-table.cell>{{ $fd->id }}</x-table.cell>
-                            <x-table.cell>{{ $fd->investor }}</x-table.cell>     
+                            <x-table.cell>{{ $fd->investor }}</x-table.cell>
                             <x-table.cell>{{ $fd->reference_number }}</x-table.cell>
+                            <x-table.cell>{{ $fd->allotment_date }}</x-table.cell>
                             <x-table.cell>{{ \Utils::ConvertPrice($fd->amount) }}</x-table.cell>
                             <x-table.cell>{{ $fd->interest_rate }}</x-table.cell>
                             <x-table.cell>{{ $fd->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>

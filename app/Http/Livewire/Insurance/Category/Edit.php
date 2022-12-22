@@ -2,13 +2,13 @@
 
 namespace App\Http\Livewire\Insurance\Category;
 
-use App\Models\Insurance\insuranceCategory;
+use App\Models\Insurance\InsuranceCategory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class Edit extends Component
 {
-    public insuranceCategory $insurenceCategory;
+    public InsuranceCategory $insurenceCategory;
   
     use AuthorizesRequests;
 
@@ -16,14 +16,14 @@ class Edit extends Component
     protected function rules(){
 
         return [
-            'insurenceCategory.name' => 'required|unique:App\Models\Insurance\insuranceCategory,name,'.$this->insurenceCategory->id,
+            'insurenceCategory.name' => 'required|unique:App\Models\Insurance\InsuranceCategory,name,'.$this->insurenceCategory->id,
             'insurenceCategory.status' => 'nullable|between:0,1',
         ];
     }
 
     public function mount($id){
 
-         $this->insurenceCategory = insuranceCategory::find($id);
+         $this->insurenceCategory = InsuranceCategory::find($id);
        
     }
 

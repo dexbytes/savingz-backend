@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Insurance\Category;
 
-use App\Models\Insurance\insuranceCategory;
+use App\Models\Insurance\InsuranceCategory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -62,7 +62,7 @@ class Index extends Component
      */
     public function remove()
     {
-        insuranceCategory::find($this->deleteId)->delete();
+        InsuranceCategory::find($this->deleteId)->delete();
         
         $this->dispatchBrowserEvent('alert', 
         ['type' => 'success',  'message' => 'Insurence Category Delete Successfully!']);
@@ -76,14 +76,14 @@ class Index extends Component
     public function statusUpdate($insuranceCategoryId, $status)
     {        
         $status = ( $status == 1 ) ? 0 : 1;
-        insuranceCategory::where('id', '=' ,  $insuranceCategoryId )->update(['status' => $status]);      
+        InsuranceCategory::where('id', '=' ,  $insuranceCategoryId )->update(['status' => $status]);      
 
    }
 
     public function render()
     {
         return view('livewire.insurance.category.index', [
-            'insurenceCategories' => insuranceCategory::searchMultipleinsurenceCtegory(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'insurenceCategories' => InsuranceCategory::searchMultipleinsurenceCtegory(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

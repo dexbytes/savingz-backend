@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Insurance\Category;
 
-use App\Models\Insurance\insuranceCategory;
+use App\Models\Insurance\InsuranceCategory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
@@ -14,7 +14,7 @@ class Create extends Component
     public $status= '';
    
     protected $rules=[
-        'name' => 'required|string|unique:App\Models\Insurance\insuranceCategory,name',
+        'name' => 'required|string|unique:App\Models\Insurance\InsuranceCategory,name',
         'status' => 'nullable|between:0,1',
             
     ];
@@ -30,7 +30,7 @@ class Create extends Component
 
         $this->validate();
 
-        $faq = insuranceCategory::create([
+        $faq = InsuranceCategory::create([
             'name'  => $this->name,  
             'status' => $this->status ? 1:0,
        ]);
