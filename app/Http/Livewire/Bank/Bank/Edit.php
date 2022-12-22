@@ -24,9 +24,8 @@ class Edit extends Component
     }
 
     public function mount($id){
-
-         $this->bank = Bank::find($id);
-       
+        $this->bank = Bank::find($id);
+        if(empty($this->bank)) return redirect(route('bank-management'))->with('error','Record not found.');
     }
 
     public function updated($propertyName){

@@ -33,7 +33,8 @@ class Edit extends Component
     public function mount($id){
 
         $this->cardTransaction = CardTransaction::find($id);
-       
+        if(empty($this->cardTransaction)) return redirect(route('card-transaction-management'))->with('error','Record not found.');
+
         $cardTransactionStatus = new CardTransactionStatus();
         $this->allStatus = $cardTransactionStatus->getConstants(); 
     }

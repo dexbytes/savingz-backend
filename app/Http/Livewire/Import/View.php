@@ -25,10 +25,13 @@ class View extends Component
     public function mount($id){
    
         $this->file = ExcelImport::where('id', $id)->first();
+        if(empty($this->file)) return redirect(route('import-files-management'))->with('error','Record not found.');
+ 
         $this->displayData =  collect();
         $this->successData =  collect();
         $this->failedData =  collect();
         $this->header =  collect();
+        $this->status = 'valid';
 
         if($this->file->category_type == 'CardSummaryReport'){
             $this->header = \App\Constants\ExcelImport\CardSummaryHeader::HEADER;

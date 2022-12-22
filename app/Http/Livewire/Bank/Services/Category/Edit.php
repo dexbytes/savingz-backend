@@ -34,6 +34,8 @@ class Edit extends Component
     
     public function mount($id) {
         $this->serviceCategory = ServiceCategory::find($id);
+        if(empty($this->serviceCategory)) return redirect(route('service-category-management'))->with('error','Record not found.');
+
         $serviceCategoryKeyword = ServiceCategoryKeyword::where('service_category_id' , $id)->get();
        
         foreach($serviceCategoryKeyword as $key => $value){

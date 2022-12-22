@@ -27,7 +27,7 @@ class Edit extends Component
     public function mount($id){
 
          $this->card = Card::find($id);
-       
+         if(empty($this->card)) return redirect(route('cards-management'))->with('error','Record not found.');
     }
 
     public function updated($propertyName){
