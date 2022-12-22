@@ -7,14 +7,14 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-6">
-                            <h5 class="mb-0">Records</h5>
+                            <h5 class="mb-0">Records #{{$file->id}}</h5>
                         </div>
                         <div class="col-6 text-end">
                             <a href="{{ route('import-files-management') }}" class="btn bg-gradient-default mb-0 me-4">
                                 <i class="material-icons text-sm">arrow_back_ios</i>&nbsp;&nbsp;Back</a>
                            
                             @if($file->success_count > 0 && count($successData) > 0 && $file->status == 'waiting_approval')
-                                <a wire:click="uploadNow()" class="btn bg-gradient-success mb-0 me-4"><i
+                                <a wire:click="destroyUpload()" class="btn bg-gradient-success mb-0 me-4"><i
                                         class="material-icons text-sm">sync</i>&nbsp;&nbsp;Proceed Now</a>
                             @endif 
                         </div>

@@ -20,6 +20,7 @@ class View extends Component
     public $failedData;
     public $displayData;
     public $status;
+    protected $listeners = ['uploadNow'];
    
     public function mount($id){
    
@@ -60,15 +61,31 @@ class View extends Component
      
     }
 
+
+   /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function destroyUpload()
+    {
+        $this->dispatchBrowserEvent('swal:confirm', [
+                'action' => 'uploadNow',
+                'type' => 'warning',  
+                'confirmButtonText' => 'Yes, upload it!',
+                'cancelButtonText' => 'No, cancel!',
+                'message' => 'Are you sure?', 
+                'text' => 'If upload, you will not be able to revert this data!'
+            ]);
+    }
+
  
     public function uploadNow()
     {
         $file = ExcelImport::where('id', $this->file->id)->update(['status' => ExcelStatus::ACCEPTED]);
-       
         if($this->file->category_type == 'CardSummaryReport'){
             CardSummaryExcel::dispatch($this->file->id)->delay(Carbon::now()->addSeconds(config('excelsettings.import_dealy_time')));
         }
-
         return redirect(route('import-files-management'))->with('status','Data uploading start successfully.');
     }
 }
