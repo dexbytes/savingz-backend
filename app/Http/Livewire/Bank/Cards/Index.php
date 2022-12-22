@@ -80,8 +80,16 @@ class Index extends Component
 
     public function render()
     {
+        $card = Card::with(['UserCard' => function ($query)
+        {
+            $query->select('user_cards.*','users.name');
+            $query->join('users',function ($query)
+            {
+                $query->on('users.id','user_cards.user_id');
+            });
+        }]);
         return view('livewire.bank.cards.index', [
-            'cards' => Card::searchCard(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'cards' => $card->searchCard(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

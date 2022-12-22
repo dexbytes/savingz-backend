@@ -77,11 +77,18 @@
                     @foreach ($transactions as  $transaction)
                         <x-table.row wire:key="row-{{$transaction->id }}">
                             <x-table.cell>{{ $transaction->id }}</x-table.cell>
-                            <x-table.cell>{{ $transaction->card_number }}</x-table.cell>   
+                            <x-table.cell> {{ $transaction->card_number }}</x-table.cell>   
                             <x-table.cell style="white-space: normal;">{{ $transaction->txn_type }}</x-table.cell>     
                             <x-table.cell>{{ \Utils::ConvertPrice($transaction->txn_amount) }}</x-table.cell> 
                             <x-table.cell>{{ \Utils::ConvertPrice($transaction->txn_available_balance) }}</x-table.cell> 
-                            <x-table.cell>-</x-table.cell> 
+                            <x-table.cell> 
+                                @if (isset($transaction->card->name))
+                                  <a href="{{ route('view-user', $transaction->card->user_id) }}">  {{ $transaction->card->name }} </a>
+                                @else
+                                -
+                                @endif
+                                 
+                                </x-table.cell> 
                             <x-table.cell>{{ $transaction->status }}</x-table.cell> 
                              <x-table.cell>{{ Carbon\Carbon::createFromFormat('d/m/Y H:i:s', $transaction->txn_date)->format(config('app_settings.date_format.value') .' '.config('app_settings.time_format.value')) }}</x-table.cell>
                             <x-table.cell>{{ $transaction->created_at->format(config('app_settings.date_format.value').' '.config('app_settings.time_format.value')) }}</x-table.cell>

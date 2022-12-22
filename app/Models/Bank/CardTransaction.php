@@ -31,6 +31,15 @@ class CardTransaction extends Model
         'deleted_at',
     ];
 
+     /**
+     * BelongsTo relation with Card
+     *
+     * @return BelongsTo
+     */
+    public function card(): BelongsTo
+    {
+        return $this->belongsTo(Card::class, 'card_id', 'id');
+    }
 
     public static function CardSummaryUpload($requestId)
     {  
