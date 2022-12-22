@@ -13,6 +13,7 @@ use App\Models\Import\ExcelImport;
 use App\Models\Bank\CardTransaction;
 use Storage;
 use Carbon\Carbon;
+use App\Models\Bank\Card;
 
 class ExcelExport extends Model
 {
@@ -49,24 +50,22 @@ class ExcelExport extends Model
                  }                   
                  $error[$failure->row()] = $value;                 
             }
- 
+
+           
+            $successData = self::_getSuccessData($file->category_type, $import);
+      
             //Store Json error data 
             $error_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/error.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/error.json')) : [];
             $error_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/error.json';
             Storage::disk(config('excelimport.filesystem'))->put($error_file_path, json_encode($error,JSON_PRETTY_PRINT));
 
-            //Store Json success data
-            $successData = $import->get();
+            //Store Json success data          
             $success_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/success.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/success.json')) : [];
             $success_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/success.json';
             Storage::disk(config('excelimport.filesystem'))->put($success_file_path, json_encode($successData,JSON_PRETTY_PRINT));
             /*----------------------------------------*/
-
-            \Log::info($file->id.' - Success data count - '.count($successData));
-            \Log::info($file->id.' - Error data count - '.count($error));
-
-            $process = $import->process(); 
-            
+      
+            $process = $import->process();             
             $payload['error_log'] = @json_encode($import->errors());
             $payload['status'] = isset($process['afterImport']['status']) ? $process['afterImport']['status'] : $process['beforeImport']['status'];
             if(count($successData) == 0){
@@ -90,13 +89,51 @@ class ExcelExport extends Model
        }    
        
        return $payload;
-       
     }   
 
 
+    public static function _getSuccessData($fileModule, $import){
+        $successData = [];
+       
+        switch ($fileModule) {
+            case "CardSummaryReport":
+                $successData = self::_getCardSuccessData($import);
+              break;           
+            default:
+        }
+
+       return  $successData;
+    }
+
+
+    public static function _getCardSuccessData($import){
+        $successData = [];
+        $cardsInImportsData = [];      
+
+        foreach ($import->get() as $sdKey => $successValue) {  
+            $successValue['card_number'] = (int) $successValue['card_number'];             
+            $cardNumber =  $successValue['card_number'];
+            if (false == $key = array_search($cardNumber, $cardsInImportsData)) {             
+                $card = Card::where('card_number', $cardNumber)->first();
+                if ($card) {
+                    $cardsInImportsData[$cardNumber]  = $card->id;
+                }else{
+                    $cardsInImportsData[$cardNumber]  = '';
+                }
+            }  
+
+            if(!array_key_exists($cardNumber, $cardsInImportsData) || empty($cardsInImportsData[$cardNumber])){
+                $successValue['error'] = 'Card Not Exist';
+            }  
+            $successValue['card_id'] = (int) array_key_exists($cardNumber, $cardsInImportsData) ?  $cardsInImportsData[$cardNumber] : '';           
+            $successData[] = $successValue;
+        }
+
+        return  $successData;
+    }
 
     public static function _moduleMethod($fileModule){
-        \Log::info($fileModule);
+        
         $import = '';       
         switch ($fileModule) {
             case "CardSummaryReport":
@@ -123,6 +160,7 @@ class ExcelExport extends Model
                
                 $successData[] = [
                                 'card_number'=> (int) $value['card_number'], 
+                                'card_id' => (int) $value['card_id'], 
                                 'txn_amount' => (double) str_replace( ',', '',  $value['txn_amt']),
                                 'txn_type' => (string) $value['txn_type'],
                                 'txn_available_balance' => (double) str_replace( ',', '',  $value['available_balance']), 

@@ -9,6 +9,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Import\ExcelExport as ExcelExportModel;
+use App\Models\Import\ExcelImport;
+use App\Constants\ExcelImport\ExcelStatus;
 
 class ExtractExcel implements ShouldQueue
 {
@@ -31,7 +33,7 @@ class ExtractExcel implements ShouldQueue
      */
     public function handle()
     {  
-        \Log::info($this->request);
+         \Log::info($this->request);
         $data =  ExcelExportModel::ExcelExtract((object) $this->request);
         $this->delete();
     }
@@ -41,9 +43,9 @@ class ExtractExcel implements ShouldQueue
      *
      * @return void
      */
-    public function failed(\Exception $e = null)
+    public function failed(\Exception $exception = null)
     {
-        \Log::Error($this->request);
+        ExcelImport::where('id', $this->request->id)->update(['status' => ExcelStatus::FAILED, 'error_log' => $exception->getMessage() ]);         
         $this->delete();
     }
 

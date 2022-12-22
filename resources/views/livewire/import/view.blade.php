@@ -1,5 +1,4 @@
-<div class="container-fluid py-4">
- 
+<div class="container-fluid py-4"> 
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
@@ -52,16 +51,15 @@
                                 @foreach ($header as $head =>  $headValue)
                                     <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">{{ str_replace('_', ' ',$head) }}</th>
                                 @endforeach
-                                @if($status == 'invalid')
-                                 <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">Error</th>
-                                @endif
+                               <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">{{$status == 'invalid' ? "Error" : 'Warning'}}</th>
                             </tr>
                         </thead>
                         <tbody class="h-100">
                             @foreach ($displayData as $displayKey =>  $displayValue)
                                 <tr>
                                      @foreach ($displayValue as $dkey =>  $dValue)
-                                        @if(!in_array($dkey, ['error']))
+                                      
+                                       @if(array_key_exists($dkey, $header))
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-secondary text-xs font-weight-normal"> 
                                                     {{$dValue}}
@@ -72,18 +70,16 @@
                                         @if(in_array($dkey, ['error']))
                                             <td class="align-middle text-center text-sm">            
                                                 <span class="material-symbols-outlined"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{$dValue}}" data-container="body" data-animation="true">
-                                                    report
+                                                    @if($status == 'valid') warning @else report @endif
                                                 </span>
-                                                Row {{$displayKey}}                                                
                                             </td>
                                         @endif
-
-
                                     @endforeach
+
                                 </tr> 
                             @endforeach
 
-                            @if(count($displayData) == 0 || count($header))
+                            @if(count($displayData) == 0 || count($header) == 0)
                                 <tr>
                                     <td colspan="{{ count($header) }}">
                                            <p class="text-center">No records found!</p>
