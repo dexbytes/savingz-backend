@@ -4,6 +4,7 @@ use App\Http\Livewire\Insurance\Category\Create as InsurenceCategoryCreate;
 use App\Http\Livewire\Insurance\Category\Edit as InsurenceCategoryEdit;
 use App\Http\Livewire\Insurance\Category\Index as InsurenceCategoryIndex;
 use App\Http\Livewire\Insurance\FixedDeposit\Index as FixedDepositIndex;
+use App\Http\Livewire\Insurance\FixedDeposit\Edit as FixedDepositeEdit;
 
 use Illuminate\Support\Facades\Route;  
 /*
@@ -26,4 +27,5 @@ Route::group(['middleware' => ['auth']], function () {
 
 
       Route::get('insurences/fixed-deposits', FixedDepositIndex::class)->name('fixed-deposit-management');
+      Route::get('insurences/fixed-deposits/edit/{id}',FixedDepositeEdit::class)->name('edit-fixed-deposit');
 });
