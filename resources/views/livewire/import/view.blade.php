@@ -51,7 +51,9 @@
                                 @foreach ($header as $head =>  $headValue)
                                     <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">{{ str_replace('_', ' ',$head) }}</th>
                                 @endforeach
-                               <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">{{$status == 'invalid' ? "Error" : 'Warning'}}</th>
+                                @if(count($header) > 0)
+                                    <th class="text-uppercase  text-center text-secondary text-xs font-weight-bolder opacity-7">{{$status == 'invalid' ? "Error" : 'Warning'}}</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody class="h-100">
@@ -98,3 +100,8 @@
 @push('js')
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
 @endpush
+<style>
+    .table-responsive {
+        overflow-x: auto !important; 
+    }
+</style>

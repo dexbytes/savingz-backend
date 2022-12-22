@@ -8,22 +8,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Bank\CardTransaction;
 use App\Models\Import\ExcelImport;
 use App\Constants\ExcelImport\ExcelStatus;
+use App\Models\Insurance\FixedDeposit\FixedDeposit;
 
-class CardSummaryExcel implements ShouldQueue
+class FixedDepositExcel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     protected $request;
-  
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-   public function __construct($request)
+    public function __construct($request)
     {
         $this->request  = $request;
     }
@@ -35,11 +35,12 @@ class CardSummaryExcel implements ShouldQueue
      */
     public function handle()
     {
-        $data =  CardTransaction::CardSummaryUpload($this->request);
+        $data = FixedDeposit::fixedDepositUpload($this->request);
         $this->delete();
     }
 
 
+    
     public function failed(\Exception $e = null)
     {
         ExcelImport::where('id', $this->request)->update(['status' => ExcelStatus::FAILED]);

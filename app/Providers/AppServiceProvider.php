@@ -592,6 +592,19 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        Builder::macro('searchFixedDeposit', function ($string) {
+            if($string) {
+                return $this->Where('investor', 'like', '%'.$string.'%')
+                            ->orWhere('remarks', 'like', '%'.$string.'%')
+                            ->orWhere('cheque_number', 'like', '%'.$string.'%')
+                            ->orWhere('reference_number', 'like', '%'.$string.'%');
+            } else {
+                return $this;
+            }
+        });
+
+        
+
         
 
     }

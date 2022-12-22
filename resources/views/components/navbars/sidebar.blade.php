@@ -240,17 +240,29 @@
             <div class="collapse {{ strpos(Request::route()->uri(), 'insurences') === false ? '' : 'show' }}   "
                 id="insurenceExample">
                 <ul class="nav nav-sm flex-column ms-2">
-                    
-                        <li class="nav-item">
-                            <a class="nav-link text-white {{ Route::currentRouteName() == 'insurence-category-management' ? 'active' : '' }} "
-                                href="{{ route('insurence-category-management') }}">
-                                <span class="material-symbols-outlined">
-                                policy
-                                </span>
-                                <span class="sidenav-normal ms-2 ps-1"> Category </span>
-                            </a>
-                        </li>
-                    </ul>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ Route::currentRouteName() == 'fixed-deposit-management' ? 'active' : '' }} "
+                            href="{{ route('fixed-deposit-management') }}">
+                            <span class="material-symbols-outlined">
+                                 account_balance_wallet
+                            </span>
+                            <span class="sidenav-normal ms-2 ps-1"> Fixed Deposits</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ Route::currentRouteName() == 'insurence-category-management' ? 'active' : '' }} "
+                            href="{{ route('insurence-category-management') }}">
+                            <span class="material-symbols-outlined">
+                            policy
+                            </span>
+                            <span class="sidenav-normal ms-2 ps-1"> Category </span>
+                        </a>
+                    </li>
+
+                   
+                </ul>
             </div>
         </li>
 

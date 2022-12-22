@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Constants\ExcelImport\ExcelStatus;
 use App\Models\Import\ExcelImport;
 use App\Jobs\CardSummaryExcel;
+use App\Jobs\FixedDepositExcel;
 
 class View extends Component
 {
@@ -33,9 +34,7 @@ class View extends Component
         $this->header =  collect();
         $this->status = 'valid';
 
-        if($this->file->category_type == 'CardSummaryReport'){
-            $this->header = \App\Constants\ExcelImport\CardSummaryHeader::HEADER;
-        }
+        $this->header = self::_getHeader($this->file->category_type);
        
         if(!empty($this->file->success_path) && Storage::disk(config('excelimport.filesystem'))->exists($this->file->success_path)){
             $this->successData =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($this->file->success_path),true);
@@ -44,6 +43,22 @@ class View extends Component
         if(!empty($this->file->failed_path) && Storage::disk(config('excelimport.filesystem'))->exists($this->file->failed_path)){
             $this->failedData =  @json_decode(Storage::disk(config('excelimport.filesystem'))->get($this->file->failed_path),true);
         } 
+    }
+
+
+    public function _getHeader($fileModule){
+     
+        switch ($fileModule) {
+            case "CardSummaryReport":
+                $this->header = \App\Constants\ExcelImport\CardSummaryHeader::HEADER;
+            break; 
+            case "fixed-deposit":
+                $this->header = \App\Constants\ExcelImport\FixedDepositHeader::HEADER;
+            break;          
+            default:
+        }
+
+        return $this->header;
     }
 
     public function render()
@@ -85,10 +100,28 @@ class View extends Component
  
     public function uploadNow()
     {
-        $file = ExcelImport::where('id', $this->file->id)->update(['status' => ExcelStatus::ACCEPTED]);
-        if($this->file->category_type == 'CardSummaryReport'){
-            CardSummaryExcel::dispatch($this->file->id)->delay(Carbon::now()->addSeconds(config('excelsettings.import_dealy_time')));
-        }
+        ExcelImport::where('id', $this->file->id)->update(['status' => ExcelStatus::ACCEPTED]);
+       
+        self::_uploadDispatch($this->file);
+       
         return redirect(route('import-files-management'))->with('status','Data uploading start successfully.');
     }
+
+
+    public function _uploadDispatch($file){
+
+        switch ($file->category_type) {
+            case "CardSummaryReport":
+                CardSummaryExcel::dispatch($file->id)->delay(Carbon::now()->addSeconds(config('excelsettings.import_dealy_time')));
+            break; 
+            case "fixed-deposit":
+                FixedDepositExcel::dispatch($file->id)->delay(Carbon::now()->addSeconds(config('excelsettings.import_dealy_time')));
+            break; 
+            ExcelImport::where('id', $this->file->id)->update(['status' => ExcelStatus::FAILED]);
+            default:
+        }
+
+    }
+
+
 }

@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Http\Requests\ImportExcel;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\CardImport;
 use App\Constants\ExcelImport\ExcelStatus;
 use App\Models\Import\ExcelImport;
-use App\Models\Bank\CardTransaction;
+use App\Imports\CardImport;
+use App\Imports\FixedDepositImport;
 use Storage;
 use Carbon\Carbon;
 use App\Models\Bank\Card;
+use App\Models\Bank\CardTransaction;
 
 class ExcelExport extends Model
 {
@@ -32,6 +33,7 @@ class ExcelExport extends Model
             $path = Storage::disk(config('excelimport.filesystem'))->path($file->path);
 
             $import = self::_moduleMethod($file->category_type); //Get Import class
+
             if(empty($import)){
                 $payload['error_log'] = 'No module found';
                 $payload['status'] = ExcelStatus::FAILED;
@@ -103,11 +105,25 @@ class ExcelExport extends Model
         switch ($fileModule) {
             case "CardSummaryReport":
                 $successData = self::_getCardSuccessData($import);
-              break;           
+            break; 
+            case "fixed-deposit":
+                $successData = self::_getFixedDepositSuccessData($import);
+            break;          
             default:
         }
 
        return  $successData;
+    }
+
+
+    public static function _getFixedDepositSuccessData($import){
+        $successData = [];
+        
+        foreach ($import->get() as $sdKey => $successValue) {  
+           $successData[] = $successValue;
+        }
+
+        return $successData;
     }
 
 
@@ -143,7 +159,10 @@ class ExcelExport extends Model
         switch ($fileModule) {
             case "CardSummaryReport":
                 $import = new CardImport();
-              break;           
+            break; 
+            case "fixed-deposit":
+                $import = new FixedDepositImport();
+            break;           
             default:
                 $import = '';
         }
