@@ -309,21 +309,17 @@
                         <x-slot name="head">
                             <x-table.heading > ID
                         </x-table.heading>
-                     
                         <x-table.heading>Card Number
                         </x-table.heading>
-                        
+                        <x-table.heading>Holder Name
+                        </x-table.heading>
                         <x-table.heading>Expiry On
                         </x-table.heading>
-
                         <x-table.heading>Status
-                        </x-table.heading>                      
-                       
-                        <x-table.heading >
-                            Creation Date
+                        </x-table.heading>                     
+                        <x-table.heading> Creation Date
                         </x-table.heading>                        
-                        
-                        <x-table.heading>Actions</x-table.heading>
+                       <x-table.heading>Actions</x-table.heading>
                         </x-slot>
                         <x-slot name="body">
                             @foreach ($card as $key => $value)
@@ -332,8 +328,11 @@
                                 <x-table.cell >
                                 {{$value->card_number}}
                                 </x-table.cell>
+                                <x-table.cell >
+                                {{$value->card_holder_name}}
+                                </x-table.cell>
                                 <x-table.cell> 
-                                    {{$value->expiration_month}} / {{$value->expiration_year}}
+                                    {{$value->expiration_month}} @if(!empty($value->expiration_year)) / @endif {{$value->expiration_year}}
                                 </x-table.cell>
                                 <x-table.cell> 
                                     {{$value->status == 1 ? 'Active' : 'Inactive'}}
@@ -675,10 +674,10 @@
 
                                                 <div class="col-12 mt-4">
                                                     <div class="input-group input-group-static">
-                                                        <label>Aadhar Number </label>
-                                                        <input wire:model.lazy="user.aadhar_card_number" type="text" class="form-control" placeholder="Enter a Aadhar Number">
+                                                        <label>Card Holder Name</label>
+                                                        <input wire:model.lazy="card_holder_name" type="text" class="form-control" placeholder="Enter a Card Holder Name">
                                                     </div>
-                                                    @error('user.aadhar_card_number')
+                                                    @error('card_holder_name')
                                                     <p class='text-danger inputerror'>{{ $message }} </p>
                                                     @enderror
                                                 </div>

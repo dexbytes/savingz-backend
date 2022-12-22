@@ -48,6 +48,7 @@ class View extends Component
     public $deleteId = '';
     public $selected_card_id = '';
     public $is_card_available;
+    public $card_holder_name;
     
     protected $listeners = [
         'remove',
@@ -75,7 +76,7 @@ class View extends Component
         $this->user = User::find($id);
         $this->is_card_available = false;
         $this->selected_card_id = '';
-
+        $this->card_holder_name =  $this->user->name;
         $this->card = Card::whereHas('UserCard',function ($query) use($id){
             $query->where('user_id',$id);
         })->get();
@@ -113,27 +114,6 @@ class View extends Component
        
     }
 
-    public function cardSubmit(){
-       
-        if(!$this->selected_card_id) {
-            $this->dispatchBrowserEvent('alert', 
-            ['type' => 'error',  'message' => 'Please select a Card!']);
-            return false;
-        }
-
-        UserCard::create([
-            'card_id' => $this->selected_card_id,
-            'user_id' => $this->user->id ,
-        ]);
-         
-         $this->dispatchBrowserEvent('alert', 
-         ['type' => 'success',  'message' => 'Card Assigned Successfully!']);
-
-         $this->resetField();  
- 
-         return redirect(request()->header('Referer'));
-        
-     }
 
      /**
      * Write code on Method
@@ -180,6 +160,8 @@ class View extends Component
     {
         $this->resetField();
     }
+
+
     public function update(){
         
         $this->validate();
@@ -304,7 +286,9 @@ class View extends Component
 
 
     public function updatedSearchCard()
-   {    $this->searchResultCards = '';
+   {   
+    
+        $this->searchResultCards = '';
         $this->is_card_available = false;
         $this->selected_card_id = '';
 
@@ -317,11 +301,43 @@ class View extends Component
        
         if($this->searchResultCards && empty($this->searchResultCards->joined_card_id)){
             $this->is_card_available = true;
+
+            if(!empty($this->searchResultCards->card_holder_name)){
+                $this->card_holder_name = $this->searchResultCards->card_holder_name;
+            }           
         }else{
             $this->is_card_available = false;
         }
     }
 
+    
+    public function cardSubmit(){
+       
+        if(!$this->selected_card_id) {
+            $this->dispatchBrowserEvent('alert', 
+            ['type' => 'error',  'message' => 'Please select a Card!']);
+            return false;
+        }
+        if(empty($this->card_holder_name)) {
+            $this->dispatchBrowserEvent('alert', 
+            ['type' => 'error',  'message' => 'Please enter a Card Holder Name!']);
+            return false;
+        }
+ 
+        UserCard::create([
+            'card_id' => $this->selected_card_id,
+            'user_id' => $this->user->id ,
+        ]);
+
+        Card::where('id', $this->selected_card_id)->update(['card_holder_name' => $this->card_holder_name]);
+
+        $this->dispatchBrowserEvent('alert', 
+         ['type' => 'success',  'message' => 'Card Assigned Successfully!']);
+
+       
+        return redirect(request()->header('Referer'));
+        
+     }
     
      /**
      * update application status

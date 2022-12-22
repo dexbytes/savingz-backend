@@ -59,9 +59,10 @@
                             :direction="$sortField === 'id' ? $sortDirection : null"> ID
                         </x-table.heading>
                         <x-table.heading sortable wire:click="sortBy('name')"
-                        :direction="$sortField === 'title' ? $sortDirection : null">  Name
+                        :direction="$sortField === 'name' ? $sortDirection : null">  Name
                         </x-table.heading> 
-                      
+                        <x-table.heading>Code
+                        </x-table.heading> 
                         <x-table.heading>Status
                         </x-table.heading>                      
                         <x-table.heading sortable wire:click="sortBy('created_at')"
@@ -79,8 +80,7 @@
                         <x-table.row wire:key="row-{{$insurenceCategory->id }}">
                             <x-table.cell>{{ $insurenceCategory->id }}</x-table.cell>
                             <x-table.cell>{{ $insurenceCategory->name }}</x-table.cell>     
-                           
-                             
+                            <x-table.cell>{{ $insurenceCategory->code }}</x-table.cell>
                             <x-table.cell><div class="form-check form-switch ms-3">
                                 <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate({{ $insurenceCategory->id }},{{ $insurenceCategory->status}})"
                                     @if($insurenceCategory->status) checked="" @endif>

@@ -4,6 +4,7 @@ namespace App\Models\Insurance;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class insuranceCategory extends Model
 {
@@ -21,7 +22,7 @@ class insuranceCategory extends Model
         parent::boot();
 
         static::creating(function ($category) {
-            $category->code = $category->createSlug($category->name);          
+            $category->code = $category->createCode($category->name);          
         });
         
     }
