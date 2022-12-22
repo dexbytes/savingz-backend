@@ -20,5 +20,14 @@ class UserCard extends Model
         'deleted_at',
     ];
   
-    
+    /**
+     * BelongsTo relation with store
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
 }

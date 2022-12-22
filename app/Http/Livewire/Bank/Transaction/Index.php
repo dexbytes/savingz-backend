@@ -80,8 +80,20 @@ class Index extends Component
 
     public function render()
     {
+        $transaction = CardTransaction::with(['card' => function ($query)
+        {
+            $query->select('cards.*','users.name','user_cards.user_id');
+            $query->join('user_cards',function ($query)
+            {
+                $query->on('cards.id','user_cards.card_id');
+            });
+            $query->join('users',function ($query)
+            {
+                $query->on('users.id','user_cards.user_id');
+            });
+        }]);
         return view('livewire.bank.transaction.index', [
-            'transactions' => CardTransaction::searchTransactions(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'transactions' => $transaction->searchTransactions(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

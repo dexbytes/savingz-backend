@@ -7,7 +7,10 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Constants\ExcelImport\ExcelStatus;
-
+use App\Models\Import\ExcelExport;
+use Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CardExport;
 class Index extends Component
 {
     use WithPagination;
@@ -112,6 +115,49 @@ class Index extends Component
        ['type' => 'success',  'message' => 'Import File cancelled Successfully!']);     
     }
 
+
+    /**
+     * download original excel 
+     *
+     * @return excel ()
+     */
+    public function Export($file_name,$file)
+    {
+        return Storage::disk(config('excelimport.filesystem'))->download($file);
+    }
+
+    /**
+     * download success excel 
+     *
+     * @return excel ()
+     */
+    public function ExportSuccess($file_name,$file)
+    {
+        $data = @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file),true);
+        if (count($data) == 0) {
+          return  $this->dispatchBrowserEvent('alert', 
+        ['type' => 'warning',  'message' => 'Record not found!']);
+        }
+       $file_name = 'Success - '.pathinfo($file_name,PATHINFO_FILENAME);
+       return Excel::download(new CardExport($data,$file) , $file_name.'.xls');
+    }
+
+    /**
+     * download failed excel 
+     *
+     * @return excel ()
+     */
+    public function ExportFailed($file_name,$file)
+    {
+        $data = @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file),true);
+        if (count($data) == 0) {
+          return  $this->dispatchBrowserEvent('alert', 
+        ['type' => 'warning',  'message' => 'Record not found!']);
+        }
+       $file_name = 'Failed - '.pathinfo($file_name,PATHINFO_FILENAME);
+       return Excel::download(new CardExport($data,$file) , $file_name.'.xls');
+    }
+    
     /**
      * view html
      *
