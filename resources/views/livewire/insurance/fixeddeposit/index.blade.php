@@ -97,7 +97,7 @@
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                         <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="">Edit</a></li>  
+                                         <li><a class="dropdown-item"  data-original-title="Edit" title="Edit" href="{{ route('edit-fixed-deposit', $fd) }}">Edit</a></li>  
                                         <li><a class="dropdown-item text-danger"  data-original-title="Remove" title="Remove" wire:click="destroyConfirm({{ $fd->id }})">Delete</a></li>
                                     </ul>
                                 </div>
