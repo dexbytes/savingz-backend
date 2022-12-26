@@ -21,6 +21,9 @@ class Index extends Component
     protected $listeners = ['remove', 'confirm'];
     protected $queryString = ['sortField' , 'sortDirection'];
     protected $paginationTheme = 'bootstrap';
+    public $filter = [];
+    public $to_date;
+    public $from_date;
 
     public function sortBy($field){
 
@@ -33,8 +36,16 @@ class Index extends Component
         $this->sortField = $field;
     }
     public function mount()
-    {
-         $this->perPage = config("commerce.pagination_per_page");
+    {      
+        $this->perPage = config("commerce.pagination_per_page");
+    }
+
+    public function sortTable() {
+        //dd("h");
+        $this->filter["from_date"] = $this->from_date;
+        $this->filter["to_date"] = $this->to_date;
+        $this->filter["search"] = $this->search;
+      //dd($this->filter);
     }
 
     /**
@@ -79,7 +90,7 @@ class Index extends Component
    }
 
     public function render()
-    {
+    {    
         $transaction = CardTransaction::with(['card' => function ($query)
         {
             $query->select('cards.*','users.name','user_cards.user_id');
@@ -93,7 +104,7 @@ class Index extends Component
             });
         }]);
         return view('livewire.bank.transaction.index', [
-            'transactions' => $transaction->searchTransactions(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'transactions' => $transaction->searchTransactions(trim(strtolower($this->search)),$this->filter)->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

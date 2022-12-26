@@ -38,6 +38,13 @@ class FixedDepositImport implements ToModel,SkipsEmptyRows, WithHeadingRow, With
     */
     public function model(array $row)
     {
+        array_walk_recursive($row ,function (&$item,$key)
+        {
+            if ($key == 'allotment_date') {
+                $item = \Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($item))->format('Y-m-d');
+            }
+            return $item;
+        });
         $this->rows[] = $row;
     }
 

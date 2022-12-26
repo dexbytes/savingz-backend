@@ -38,7 +38,7 @@ class CardTransaction extends Model
      */
     public function card(): BelongsTo
     {
-        return $this->belongsTo(Card::class, 'card_id', 'id');
+        return $this->belongsTo(Card::class, 'card_number', 'card_number');
     }
 
     public static function CardSummaryUpload($requestId)

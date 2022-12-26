@@ -44,9 +44,34 @@
                         </select>
                         <p class="text-secondary pt-2">&nbsp;&nbsp;entries</p>
                     </div>
-                    <div class="mt-3 ">
-                        <input wire:model="search" type="text" class="form-control" placeholder="Search...">
+       
+            <form wire:submit.prevent="sortTable" class="d-flex mt-3 align-items-center justify-content-center">
+                <div class="d-flex mt-3 align-items-center justify-content-center">
+                        <p class="text-secondary pt-2">From Date&nbsp;&nbsp;</p>
+                        <div class="input-group input-group-static  mb-2 me-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
+                        dateFormat:  '{{config('app_settings.date_format.value')}}' });">
+                            <input id="from_date" wire:model="from_date"  x-ref="picker" class="form-control" type="text" placeholder="Any Date" />
+                        </div>
+                </div>
+
+                    <div class="d-flex mt-3 align-items-center justify-content-center">
+                        <p class="text-secondary pt-2">To Date&nbsp;&nbsp;</p>
+                        <div class="input-group input-group-static  mb-2 me-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
+                        dateFormat:  '{{config('app_settings.date_format.value')}}' });">
+                            <input id="to_date" wire:model="to_date"  x-ref="picker" class="form-control" type="text" placeholder="Any Date" />
+                        </div>
                     </div>
+                            
+                    <div class="mt-3 ">
+                        <input  wire:model="search" type="text" class="form-control" placeholder="Search...">
+                    </div>
+
+                    <div class="mt-3 ">
+                        <button type="submit" class="btn bg-gradient-dark mb-0 me-4 btn btn-info">Filter</button>
+                    </div>
+            </form>
+       
+
                 </div>
                 <x-table>
 
@@ -127,4 +152,22 @@
 </div>
 @push('js')
 <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.min.js"></script>
+<script src="{{ asset('assets') }}/js/plugins/flatpickr.min.js"></script>
+
+<script>
+$(document).ready(function(){
+	flatpickr("#from_date",{
+        maxDate : "today",
+		dateFormat: "d-m-Y",
+	    defaultDate: "today",
+	});
+    
+	flatpickr("#to_date",{
+        maxDate : "today",
+		dateFormat: "d-m-Y",
+		defaultDate: "today",
+	});
+    
+});
+  </script>
 @endpush

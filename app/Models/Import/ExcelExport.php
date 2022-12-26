@@ -61,7 +61,7 @@ class ExcelExport extends Model
             //Store Json error data 
             $error_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/error.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/error.json')) : [];
             $error_file_path = config('excelimport.json_upload_path').'/'.$file->id.'/error.json';
-            Storage::disk(config('excelimport.filesystem'))->put($error_file_path, json_encode($error,JSON_PRETTY_PRINT));
+            Storage::disk(config('excelimport.filesystem'))->put($error_file_path, json_encode(self::_TimestampConvert($error,$file->category_type),JSON_PRETTY_PRINT));
 
             //Store Json success data          
             $success_json = Storage::disk(config('excelimport.filesystem'))->exists(config('excelimport.json_upload_path').'/'.$file->id.'/success.json') ? json_decode(Storage::disk(config('excelimport.filesystem'))->get(config('excelimport.json_upload_path').'/'.$file->id.'/success.json')) : [];
@@ -169,6 +169,24 @@ class ExcelExport extends Model
 
         return $import;
     }
- 
+ public static function _TimestampConvert($data,$fileModule)
+ {
+    switch ($fileModule) {
+        case "CardSummaryReport":
+        break; 
+        case "fixed-deposit":
+           array_walk_recursive($data ,function (&$item,$key)
+            {
+                if ($key == 'allotment_date') {
+                    $item = \Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($item))->format('Y-m-d');
+                }
+                return $item;
+            });
+        break;           
+        default:
+        return $data;
+    }
+    return $data;
+ }
 
 }

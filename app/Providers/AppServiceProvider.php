@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Builder;
- 
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -583,7 +583,14 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-        Builder::macro('searchTransactions', function ($string) {
+        Builder::macro('searchTransactions', function ($string,$filter = []) {
+            if (!empty($filter)) {
+                $this->where(function ($query) use($filter)
+                {
+                    $query->whereDate('txn_date','>=', Carbon::create($filter['to_date']));
+                    $query->whereDate('txn_date','<=',  Carbon::create($filter['from_date']));
+                });
+            }
             if($string) {
                 return $this->Where('card_number', 'like', '%'.$string.'%')
                              ->orWhere('txn_type', 'like', '%'.$string.'%');
