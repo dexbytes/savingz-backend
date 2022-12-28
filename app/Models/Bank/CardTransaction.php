@@ -60,7 +60,7 @@ class CardTransaction extends Model
                                 'txn_available_balance' => (double) str_replace( ',', '',  $value['available_balance']), 
                                 'txn_ledger_balance' =>  (double)  str_replace( ',', '',  $value['ledger_balance']),
                                 'status' => (string) $value['status'],
-                                'txn_date' => $value['txn_date'], 
+                                'txn_date' => Carbon::createFromFormat('d/m/Y H:i:s',($value['txn_date'])), 
                                 'created_at' => Carbon::now(), 
                                 'updated_at'=> Carbon::now()
                             ]; 
