@@ -365,52 +365,7 @@
                 </div>
             </div>   
         @endif   
-
-
-        <!-- Card Address Info -->
-        @if($this->user->hasRole('Customer'))
-            <div class="card mt-4" id="address-info">
-                <div class="card-header">
-                    <h5>Address</h5>
-                </div>
-                <div class="pt-0">
-                    <x-table>
-                        <x-slot name="head">
-                            <x-table.heading> SNo
-                            </x-table.heading>
-                            <x-table.heading>Address
-                            </x-table.heading>
-                        <x-table.heading>Zip Post Code
-                            </x-table.heading>  
-                            <x-table.heading>City
-                            </x-table.heading>
-                        </x-slot>
-                        <x-slot name="body">
-                            @foreach ($address as $key => $value)
-                            <x-table.row>
-                                <x-table.cell>{{$value->id }}</x-table.cell>
-                                <x-table.cell >
-                                {{$value->address}}
-                                </x-table.cell>
-                                <x-table.cell> 
-                                {{$value->zip_postcode}}
-                                </x-table.cell>
-                                <x-table.cell> 
-                                    {{$value->city}}
-                                </x-table.cell>                                
-                            </x-table.row>
-                            @endforeach
-                        </x-slot>
-                    </x-table>   
-                    @if($address->count() == 0)
-                    <div>
-                        <p class="text-center">No address added to customer!</p>
-                    </div> 
-                @endif                 
-                </div>
-            </div>   
-        @endif   
-
+ 
         <!-- Card Store -->
         @if ($this->user->hasRole('Provider'))
         <div class="card mt-4" id="stores">
@@ -575,7 +530,7 @@
                             </x-table.cell>
                             <x-table.cell>
                                 {{$device->updated_at->format(config('app_settings.date_format.value')) }}       
-                            </x-table.cell>\
+                            </x-table.cell>
                             
                         </x-table.row>
                         @endforeach
