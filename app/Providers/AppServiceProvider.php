@@ -587,8 +587,8 @@ class AppServiceProvider extends ServiceProvider
             if (!empty($filter)) {
                 $this->where(function ($query) use($filter)
                 {
-                    $query->whereDate('txn_date','>=', Carbon::create($filter['to_date']));
-                    $query->whereDate('txn_date','<=',  Carbon::create($filter['from_date']));
+                    $query->whereDate('txn_date','>=', Carbon::create($filter['from_date']));
+                    $query->whereDate('txn_date','<=',  Carbon::create($filter['to_date']));
                 });
             }
             if($string) {

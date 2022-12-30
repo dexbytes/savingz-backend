@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use App\Constants\ExcelImport\CardSummaryHeader;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class CardExport implements FromArray, WithHeadings
+class FixedDepositExport implements FromArray, WithHeadings
 {
     public function __construct(array $data,string $file)
     {
@@ -23,7 +23,7 @@ class CardExport implements FromArray, WithHeadings
     {
         $data = $this->data;
         $array = array();
-        $header = \App\Constants\ExcelImport\CardSummaryHeader::HEADER;
+        $header = \App\Constants\ExcelImport\FixedDepositHeader::HEADER;
         foreach ($data as $key => $value) {
             $ar = array();
             foreach($header as $key => $val){
@@ -35,7 +35,7 @@ class CardExport implements FromArray, WithHeadings
     }
     public function headings(): array
     {
-        $data = str_replace('_', ' ',array_keys(\App\Constants\ExcelImport\CardSummaryHeader::HEADER));
+        $data = str_replace('_', ' ',array_keys(\App\Constants\ExcelImport\FixedDepositHeader::HEADER));
         for ($i = 0; $i < count($data); $i++) {
             $data[$i] = isset($data[$i]) ? ucwords($data[$i]) : "";
         }

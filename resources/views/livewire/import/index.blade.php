@@ -97,9 +97,9 @@
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><a class="dropdown-item"  data-original-title="Download Original File" title="Download Original File" wire:click="Export('{{$files->file_name}}','{{$files->path}}')">Download Original File</a></li>
-                                        <li><a class="dropdown-item"  data-original-title="Download Success File" title="Download Success File" wire:click="ExportSuccess('{{$files->file_name}}','{{$files->success_path}}')">Download Success File</a></li>
-                                        <li><a class="dropdown-item"  data-original-title="Download Failed File" title="Download Failed File" wire:click="ExportFailed('{{$files->file_name}}','{{$files->failed_path}}')">Download Failed File</a></li>
+                                        <li><a class="dropdown-item"  data-original-title="Download Original File" title="Download Original File" wire:click="Export('{{$files->file_name}}','{{$files->path}}','{{ $files->category_type }}')">Download Original File</a></li>
+                                        <li><a class="dropdown-item"  data-original-title="Download Success File" title="Download Success File" wire:click="ExportSuccess('{{$files->file_name}}','{{$files->success_path}}','{{ $files->category_type }}')">Download Success File</a></li>
+                                        <li><a class="dropdown-item"  data-original-title="Download Failed File" title="Download Failed File" wire:click="ExportFailed('{{$files->file_name}}','{{$files->failed_path}}','{{ $files->category_type }}')">Download Failed File</a></li>
                                         <li><a class="dropdown-item"  data-original-title="View" title="View" href="{{ route('import-files-view', $files->id ) }}">View</a></li>
                                         @if(in_array( $files->status, ['pending', 'waiting_approval', 'in_progress', 'importing', 'accepted'] ))
                                             <li><a class="dropdown-item"  data-original-title="View" title="View" wire:click="cancelConfirm({{ $files->id }})">Cancel</a></li> 

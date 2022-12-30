@@ -11,6 +11,7 @@ use App\Models\Import\ExcelExport;
 use Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CardExport;
+use App\Exports\FixedDepositExport;
 class Index extends Component
 {
     use WithPagination;
@@ -123,6 +124,10 @@ class Index extends Component
      */
     public function Export($file_name,$file)
     {
+        if (!Storage::disk(config('excelimport.filesystem'))->exists($file)) {
+            return  $this->dispatchBrowserEvent('alert', 
+            ['type' => 'warning',  'message' => 'File not found!']);      
+        }
         return Storage::disk(config('excelimport.filesystem'))->download($file);
     }
 
@@ -131,15 +136,19 @@ class Index extends Component
      *
      * @return excel ()
      */
-    public function ExportSuccess($file_name,$file)
-    {
+    public function ExportSuccess($file_name,$file,$category)
+    {     
+        if (!Storage::disk(config('excelimport.filesystem'))->exists($file)) {
+            return  $this->dispatchBrowserEvent('alert', 
+            ['type' => 'warning',  'message' => 'File not found!']);      
+        }
         $data = @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file),true);
         if (count($data) == 0) {
           return  $this->dispatchBrowserEvent('alert', 
         ['type' => 'warning',  'message' => 'Record not found!']);
         }
        $file_name = 'Success - '.pathinfo($file_name,PATHINFO_FILENAME);
-       return Excel::download(new CardExport($data,$file) , $file_name.'.xls');
+       return self::_moduleMethod($category,$data,$file,$file_name);
     }
 
     /**
@@ -147,17 +156,43 @@ class Index extends Component
      *
      * @return excel ()
      */
-    public function ExportFailed($file_name,$file)
+    public function ExportFailed($file_name,$file,$category)
     {
+        if (!Storage::disk(config('excelimport.filesystem'))->exists($file)) {
+            return  $this->dispatchBrowserEvent('alert', 
+            ['type' => 'warning',  'message' => 'File not found!']);      
+        }
         $data = @json_decode(Storage::disk(config('excelimport.filesystem'))->get($file),true);
         if (count($data) == 0) {
           return  $this->dispatchBrowserEvent('alert', 
         ['type' => 'warning',  'message' => 'Record not found!']);
         }
        $file_name = 'Failed - '.pathinfo($file_name,PATHINFO_FILENAME);
-       return Excel::download(new CardExport($data,$file) , $file_name.'.xls');
+       return self::_moduleMethod($category,$data,$file,$file_name);
     }
     
+    /**
+     * return excel download
+     *
+     * @return excel()
+     */
+    public static function _moduleMethod($fileModule,$data,$file,$file_name){
+        
+        $export = '';       
+        switch ($fileModule) {
+            case "CardSummaryReport":
+                $export = Excel::download(new CardExport($data,$file) , $file_name.'.xls');
+            break; 
+            case "fixed-deposit":
+                $export = Excel::download(new FixedDepositExport($data,$file) , $file_name.'.xls');
+                break;           
+            default:
+                $export = '';
+        }
+
+        return $export;
+    }
+
     /**
      * view html
      *
