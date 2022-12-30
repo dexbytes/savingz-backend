@@ -60,6 +60,8 @@
                         <x-table.heading sortable wire:click="sortBy('investor')"
                         :direction="$sortField === 'investor' ? $sortDirection : null">Investor Name
                         </x-table.heading>
+                        <x-table.heading>Customer
+                        </x-table.heading>
                         <x-table.heading>Reference Number
                         </x-table.heading> 
                         <x-table.heading>Allotment Date
@@ -85,6 +87,13 @@
                         <x-table.row wire:key="row-{{$fd->id }}">
                             <x-table.cell>{{ $fd->id }}</x-table.cell>
                             <x-table.cell>{{ $fd->investor }}</x-table.cell>
+                                                        <x-table.cell>
+                              @if (isset($fd->name))
+                                  <a href="{{ route('view-user', $fd->user_id) }}">  {{ $fd->name }} </a>
+                                @else
+                                -
+                                @endif
+                            </x-table.cell> 
                             <x-table.cell>{{ $fd->reference_number }}</x-table.cell>
                             <x-table.cell>{{ $fd->allotment_date }}</x-table.cell>
                             <x-table.cell>{{ \Utils::ConvertPrice($fd->amount) }}</x-table.cell>

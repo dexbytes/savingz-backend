@@ -81,7 +81,10 @@ class Index extends Component
     public function render()
     {
         return view('livewire.insurance.fixeddeposit.index', [
-            'fixed_deposits' => FixedDepositModel::searchFixedDeposit(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
+            'fixed_deposits' => FixedDepositModel::select('fixed_deposits.*','users.name','users.id as user_id')->leftjoin('users',function ($query)
+            {
+                $query->on('users.pan_card_number','fixed_deposits.pan');
+            })->searchFixedDeposit(trim(strtolower($this->search)))->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage)
         ]);
     }
 }

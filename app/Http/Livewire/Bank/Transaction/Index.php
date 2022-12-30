@@ -41,11 +41,9 @@ class Index extends Component
     }
 
     public function sortTable() {
-        //dd("h");
         $this->filter["from_date"] = $this->from_date;
         $this->filter["to_date"] = $this->to_date;
         $this->filter["search"] = $this->search;
-      //dd($this->filter);
     }
 
     /**
