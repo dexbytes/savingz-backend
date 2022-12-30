@@ -68,7 +68,9 @@
                         </x-table.heading> 
                         <x-table.heading>Interest Rate
                         </x-table.heading>  
-                       <x-table.heading sortable wire:click="sortBy('created_at')"
+                        <x-table.heading>Status
+                        </x-table.heading>  
+                         <x-table.heading sortable wire:click="sortBy('created_at')"
                             :direction="$sortField === 'created_at' ? $sortDirection : null">
                             Creation Date
                         </x-table.heading>
@@ -86,8 +88,15 @@
                             <x-table.cell>{{ $fd->reference_number }}</x-table.cell>
                             <x-table.cell>{{ $fd->allotment_date }}</x-table.cell>
                             <x-table.cell>{{ \Utils::ConvertPrice($fd->amount) }}</x-table.cell>
-                            <x-table.cell>{{ $fd->interest_rate }}</x-table.cell>
-                            <x-table.cell>{{ $fd->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
+                            <x-table.cell>{{ $fd->interest_rate }}%</x-table.cell>
+                            
+                            <x-table.cell><div class="form-check form-switch ms-3">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault35"  wire:change="statusUpdate( {{ $fd->id }}, '{{ $fd->status}}' )"
+                                    @if($fd->status == 'active') checked="" @endif>
+                            </div>
+
+                            </x-table.cell>   
+                                <x-table.cell>{{ $fd->created_at->format(config('app_settings.date_format.value')) }}</x-table.cell>
                             <x-table.cell>
                                  
                                <div class="dropdown dropup dropleft">

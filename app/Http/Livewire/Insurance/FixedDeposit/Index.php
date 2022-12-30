@@ -34,7 +34,7 @@ class Index extends Component
     }
     public function mount()
     {
-         $this->perPage = config("commerce.pagination_per_page");
+         $this->perPage = config("commerce.pagination_per_page");  
     }
 
     /**
@@ -73,7 +73,7 @@ class Index extends Component
      * @return response()
      */
     public function statusUpdate($fdId, $status)
-    {        
+    {    
         $status = ( $status == 'active' ) ? 'inactive' : 'active';
         FixedDepositModel::where('id', '=' ,  $fdId)->update(['status' => $status]);      
    }
