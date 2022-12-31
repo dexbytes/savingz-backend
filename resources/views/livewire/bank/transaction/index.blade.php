@@ -45,27 +45,27 @@
                         <p class="text-secondary pt-2">&nbsp;&nbsp;entries</p>
                     </div>
        
-            <form wire:submit.prevent="sortTable" class="d-flex  align-items-center justify-content-center">
-                <div class="d-flex align-items-center justify-content-center">
-                        <p class="text-secondary">From Date&nbsp;&nbsp;</p>
-                        <div class="input-group input-group-static  mb-2 me-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
-                        dateFormat:  '{{config('app_settings.date_format.value')}}' });">
-                            <input id="from_date" wire:model="from_date"  x-ref="picker" class="form-control" type="text" placeholder="Any Date" />
-                        </div>
-                </div>
-
+                <!-- <form wire:submit.prevent="sortTable" class="d-flex  align-items-center justify-content-center">
                     <div class="d-flex align-items-center justify-content-center">
-                        <p class="text-secondary">To Date&nbsp;&nbsp;</p>
-                        <div class="input-group input-group-static  mb-2 me-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
-                        dateFormat:  '{{config('app_settings.date_format.value')}}' });">
-                            <input id="to_date" wire:model="to_date"  x-ref="picker" class="form-control" type="text" placeholder="Any Date" />
-                        </div>
+                            <p class="text-secondary">From Date&nbsp;&nbsp;</p>
+                            <div class="input-group input-group-static  mb-2 me-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
+                            dateFormat:  '{{config('app_settings.date_format.value')}}' });">
+                                <input id="from_date" wire:model="from_date"  x-ref="picker" class="form-control" type="text" placeholder="Any Date" />
+                            </div>
                     </div>
 
-                    <div class="">
-                        <button type="submit" class="btn btn-sm mb-0 me-4 btn btn-outline-secondary">Filter</button>
-                    </div>
-                </form>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <p class="text-secondary">To Date&nbsp;&nbsp;</p>
+                            <div class="input-group input-group-static  mb-2 me-2" wire:ignore x-data x-init="flatpickr($refs.picker, {allowInput: false, enableTime: 'false',
+                            dateFormat:  '{{config('app_settings.date_format.value')}}' });">
+                                <input id="to_date" wire:model="to_date"  x-ref="picker" class="form-control" type="text" placeholder="Any Date" />
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <button type="submit" class="btn btn-sm mb-0 me-4 btn btn-outline-secondary">Filter</button>
+                        </div>
+                    </form> -->
 
                     <div class="mt-3">
                         <input  wire:model="search" type="text" class="form-control" placeholder="Search...">
