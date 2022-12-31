@@ -57,4 +57,5 @@ class Index extends Component
     {
         return view('livewire.dashboard.home');
     }
+    
 }
