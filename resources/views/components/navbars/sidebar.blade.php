@@ -226,7 +226,16 @@
         </li>
  
         <hr class="horizontal light mt-0">
-        <li class="nav-item mt-3">
+        <li class="nav-item">
+            <a class="nav-link text-white {{ Route::currentRouteName() == 'fixed-deposit-management' ? 'active' : '' }} "
+                href="{{ route('fixed-deposit-management') }}">
+                <span class="material-symbols-outlined">
+                        account_balance_wallet
+                </span>
+                <span class="sidenav-normal ms-2 ps-1"> Fixed Deposits</span>
+            </a>
+        </li>
+        <!-- <li class="nav-item mt-3">
             <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder text-white">MANAGE INSURENCES</h6>
         </li>
         <li class="nav-item">
@@ -239,18 +248,7 @@
             </a>
             <div class="collapse {{ strpos(Request::route()->uri(), 'insurences') === false ? '' : 'show' }}   "
                 id="insurenceExample">
-                <ul class="nav nav-sm flex-column ms-2">
-
-                    <li class="nav-item">
-                        <a class="nav-link text-white {{ Route::currentRouteName() == 'fixed-deposit-management' ? 'active' : '' }} "
-                            href="{{ route('fixed-deposit-management') }}">
-                            <span class="material-symbols-outlined">
-                                 account_balance_wallet
-                            </span>
-                            <span class="sidenav-normal ms-2 ps-1"> Fixed Deposits</span>
-                        </a>
-                    </li>
-<!-- 
+                <ul class="nav nav-sm flex-column ms-2">            
                     <li class="nav-item">
                         <a class="nav-link text-white {{ Route::currentRouteName() == 'insurence-category-management' ? 'active' : '' }} "
                             href="{{ route('insurence-category-management') }}">
@@ -259,12 +257,10 @@
                             </span>
                             <span class="sidenav-normal ms-2 ps-1"> Category </span>
                         </a>
-                    </li> -->
-
-                   
+                    </li>                  
                 </ul>
             </div>
-        </li>
+        </li> -->
 
         <hr class="horizontal light mt-0">
         <li class="nav-item mt-3">

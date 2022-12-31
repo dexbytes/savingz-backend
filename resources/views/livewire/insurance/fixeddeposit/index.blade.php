@@ -10,7 +10,7 @@
                         </div>
                         <div class="col-6 text-end">
                         <a class="btn bg-gradient-dark mb-0 me-4" href="{{ route('import-file', 'fixed-deposit') }}"><i
-                                    class="material-icons text-sm">upload</i>&nbsp;&nbsp;Fixed Deposit</a> 
+                                    class="material-icons text-sm">upload</i>&nbsp;&nbsp;Import Fixed Deposit</a> 
                        
                         </div>
                     </div>
