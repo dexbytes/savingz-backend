@@ -68,7 +68,7 @@
                         <div class="col-7 text-start">
                             <p class="text-sm mb-1 text-capitalize font-weight-bold">Total Bank Cards</p>
                             <h5 class="font-weight-bolder mb-0">
-                                {{ $totalCompletedOrders }}
+                                {{ $totalBankCards }}
                             </h5>
                         </div>
                         <div class="col-5">
