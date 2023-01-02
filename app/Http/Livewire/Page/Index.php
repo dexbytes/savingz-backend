@@ -20,7 +20,7 @@ class Index extends Component
     public $pageId = '';
     protected $listeners = ['remove'];
 
-    protected $defaultPages = ['about-us'];
+    protected $defaultPages = ['about-us','term-and-conditions','privacy-policy'];
 
     protected $queryString = ['sortField', 'sortDirection'];
     protected $paginationTheme = 'bootstrap';
