@@ -76,7 +76,7 @@
                         <div class="col-6">
 
                             <div class="input-group input-group-static">
-                                <label>Name</label>
+                                <label>Name *</label>
                                 <input wire:model.lazy="user.name" type="text" class="form-control" placeholder="Alec">
                             </div>
                             @error('user.name')
@@ -86,7 +86,7 @@
                         <div class="col-6">
 
                             <div class="input-group input-group-static">
-                                <label>Email</label>
+                                <label>Email *</label>
                                 <input wire:model.lazy="user.email" type="email" class="form-control"
                                     placeholder="example@email.com" disabled>
                             </div>
@@ -100,7 +100,7 @@
                         <div class="col-6">
 
                             <div class="input-group input-group-static">
-                                <label>Phone Number</label>
+                                <label>Phone Number *</label>
                                 <input wire:model.lazy="user.phone" type="number" class="form-control"
                                     placeholder="966 735 631 620" disabled>
                             </div>
@@ -153,7 +153,7 @@
 
                         <div class="input-group input-group-outline">
                             <input wire:model.lazy="old_password" type="password" class="form-control"
-                                placeholder="Current Password">
+                                placeholder="Current Password *">
                         </div>
                         @error('old_password')
                         <p class='text-danger inputerror'>{{ $message }} </p>
@@ -161,14 +161,14 @@
 
                         <div class="input-group input-group-outline mt-4">
                             <input wire:model.lazy='new_password' type="password" class="form-control"
-                                placeholder="New Password">
+                                placeholder="New Password *">
                         </div>
                         @error('new_password')
                         <p class='text-danger inputerror'>{{ $message }} </p>
                         @enderror
                         <div class="input-group input-group-outline mt-4">
                             <input wire:model="confirmationPassword" type="password" class="form-control"
-                                placeholder="Confirm New Password">
+                                placeholder="Confirm New Password *">
                         </div>
                         <button class="btn bg-gradient-dark btn-sm mt-6 mb-0">Update password</button>
                     </form>

@@ -42,8 +42,8 @@ class Create extends Component
         'passwordConfirmation' => 'required|min:7|same:password',
         'role_id' => 'required|exists:Spatie\Permission\Models\Role,name',
         'country_code' => 'nullable|exists:App\Models\Worlds\Country,country_code',
-        'aadhar_card_number' => 'nullable|regex:/^\d{12}$/|unique:App\Models\User,aadhar_card_number',
-        'pan_card_number' => 'nullable|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/|unique:App\Models\User,pan_card_number',
+        'aadhar_card_number' => 'nullable|regex:/^\d{12}$/',
+        'pan_card_number' => 'nullable|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/',
     ];
 
     public function mount() {

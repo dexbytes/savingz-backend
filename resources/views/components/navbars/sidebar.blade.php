@@ -18,7 +18,7 @@
     <hr class="horizontal light mt-0 mb-2">
     <div class="collapse navbar-collapse  w-auto h-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
-            <li class="nav-item mb-2 mt-0">
+           {{-- <li class="nav-item mb-2 mt-0">
                 <a data-bs-toggle="collapse" href="#ProfileNav" class="nav-link text-white {{ strpos(Request::route()->uri(), 'account')=== false ? '' : 'active' }} " aria-controls="ProfileNav"
                     role="button" aria-expanded="false">
                     @if (auth()->user() && auth()->user()->profile_photo)
@@ -44,10 +44,10 @@
                         </li>
                     </ul>
                 </div>
-            </li>
+            </li> --}}
             
         @can('dashboard')
-            <hr class="horizontal light mt-0">
+          
             <li class="nav-item  {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }} ">
                 <a data-bs-toggle="" href="{{ route('dashboard') }}"
                     class="nav-link text-white {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }} "
